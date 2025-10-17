@@ -213,6 +213,7 @@ textarea {
   text-transform: uppercase;
   letter-spacing: 2px;
   display: inline-block;
+  font-size: 1.8rem;
   font-weight: 700;
   border-radius: 5px;
   box-shadow: 0 5px 15px 0 rgba(0, 0, 0, 0.15);
@@ -240,12 +241,21 @@ textarea {
 .btn--bg {
   background: #fff;
   color: #BA0C2F;
+  /* scarlet red text */
   border: 2px solid #BA0C2F;
+  font-size: 2rem;
+  /* ✅ make it larger */
+  padding: 1.6rem 8rem;
+  transition: all 0.3s ease;
 }
 
 .btn--bg:hover {
-  background: #BA0C2F;
-  color: #fff;
+  background: #fff;
+  /* keep white background */
+  color: #006A4E;
+  /* ✅ bottle green text */
+  border-color: #006A4E;
+  /* border changes to green too */
   transform: translateY(-3px);
 }
 
