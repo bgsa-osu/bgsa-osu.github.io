@@ -230,6 +230,11 @@ textarea {
   box-shadow: none;
   padding: calc(1.5rem - 2px) calc(5rem - 2px);
 }
+.btn--theme-inv:hover {
+  color: #fff;
+  background: var(--color-secondary);
+  border-color: var(--color-secondary);
+}
 
 /* Section padding */
 .sec-pad {
