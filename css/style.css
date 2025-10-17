@@ -1004,7 +1004,8 @@ textarea {
 #executive .projects__content {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 3rem;
+  row-gap: 10rem;
+  column-gap: 3rem;
   justify-items: center;
   align-items: stretch;
   margin-top: 3rem;
