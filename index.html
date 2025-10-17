@@ -30,7 +30,6 @@
       </div>
 
       <div class="header__main">
-        <!-- Desktop Navigation -->
         <ul class="header__links">
           <li class="header__link-wrapper"><a href="#home" class="header__link">Home</a></li>
           <li class="header__link-wrapper"><a href="#about" class="header__link">About</a></li>
@@ -41,27 +40,11 @@
           <li class="header__link-wrapper"><a href="#contact" class="header__link">Contact</a></li>
         </ul>
 
-        <!-- Mobile Menu Icon -->
         <div class="header__main-ham-menu-cont">
           <img src="./assets/svg/ham-menu.svg" alt="hamburger menu" class="header__main-ham-menu" />
           <img src="./assets/svg/ham-menu-close.svg" alt="hamburger menu close"
             class="header__main-ham-menu-close d-none" />
         </div>
-      </div>
-    </div>
-
-    <!-- Mobile Menu -->
-    <div class="header__sm-menu">
-      <div class="header__sm-menu-content">
-        <ul class="header__sm-menu-links">
-          <li class="header__sm-menu-link"><a href="#home">Home</a></li>
-          <li class="header__sm-menu-link"><a href="#about">About</a></li>
-          <li class="header__sm-menu-link"><a href="#news">News</a></li>
-          <li class="header__sm-menu-link"><a href="#gallery">Gallery</a></li>
-          <li class="header__sm-menu-link"><a href="#database">Database</a></li>
-          <li class="header__sm-menu-link"><a href="#executive">Executive Members</a></li>
-          <li class="header__sm-menu-link"><a href="#contact">Contact</a></li>
-        </ul>
       </div>
     </div>
   </header>
@@ -80,7 +63,6 @@
       </div>
     </div>
 
-    <!-- Social Icons -->
     <div class="home-hero__socials">
       <div class="home-hero__social">
         <a href="#" class="home-hero__social-icon-link">
@@ -185,15 +167,36 @@
       <h2 class="heading heading-sec heading-sec__mb-med">
         <span class="heading-sec__main">Member Database</span>
         <span class="heading-sec__sub">
-          We are building a comprehensive database of BGSA members, alumni, and affiliates
-          to strengthen our network and support collaboration.
+          A comprehensive list of BGSA members, their degree programs, and contact identifiers at The Ohio State
+          University.
         </span>
       </h2>
-      <p class="text-primary">
+
+      <div class="database__actions" style="text-align:center; margin-bottom: 2rem;">
         <a href="https://forms.gle/your-bgsa-form-link" target="_blank" class="btn btn--med btn--theme">
           Add / Update Your Info
         </a>
-      </p>
+      </div>
+
+      <div class="database__search" style="text-align:center; margin-bottom:2rem;">
+        <input type="text" id="searchInput" placeholder="Search by name or program..."
+          style="padding:1rem; width:60%; max-width:400px; border-radius:5px; border:1px solid #ccc; font-size:1.6rem;">
+      </div>
+
+      <div class="database__table-container" style="overflow-x:auto;">
+        <table id="members-table" style="width:100%; border-collapse:collapse; text-align:left;">
+          <thead>
+            <tr style="background-color:#BA0C2F; color:#fff;">
+              <th style="padding:1rem;">First Name</th>
+              <th style="padding:1rem;">Last Name</th>
+              <th style="padding:1rem;">Degree</th>
+              <th style="padding:1rem;">Program</th>
+              <th style="padding:1rem;">Name.#</th>
+            </tr>
+          </thead>
+          <tbody id="members-body"></tbody>
+        </table>
+      </div>
     </div>
   </section>
 
@@ -310,7 +313,44 @@
 
   <script>
     document.getElementById("year").textContent = new Date().getFullYear();
+
+    // --- Load and display CSV data dynamically ---
+    async function loadCSV() {
+      try {
+        const response = await fetch("./assets/csv/database.csv");
+        const text = await response.text();
+        const rows = text.trim().split("\n").map(r => r.split(","));
+        rows.shift(); // remove headers
+        const tableBody = document.getElementById("members-body");
+        const searchInput = document.getElementById("searchInput");
+
+        function renderTable(filterText = "") {
+          tableBody.innerHTML = "";
+          rows
+            .filter(r => r.join(" ").toLowerCase().includes(filterText.toLowerCase()))
+            .forEach(row => {
+              const tr = document.createElement("tr");
+              tr.innerHTML = `
+                <td style="padding:1rem; border-bottom:1px solid #ddd;">${row[0]}</td>
+                <td style="padding:1rem; border-bottom:1px solid #ddd;">${row[1]}</td>
+                <td style="padding:1rem; border-bottom:1px solid #ddd;">${row[2]}</td>
+                <td style="padding:1rem; border-bottom:1px solid #ddd;">${row[3]}</td>
+                <td style="padding:1rem; border-bottom:1px solid #ddd;">${row[4]}</td>
+              `;
+              tableBody.appendChild(tr);
+            });
+        }
+
+        renderTable();
+        searchInput.addEventListener("input", e => renderTable(e.target.value));
+      } catch (err) {
+        console.error("Error loading CSV:", err);
+      }
+    }
+
+    loadCSV();
   </script>
+
   <script src="./index.js"></script>
 </body>
 
