@@ -1072,13 +1072,14 @@ textarea {
 #executive .projects__row-content-desc {
   font-size: 1.6rem;
   color: #444;
-  margin-bottom: 1rem;
+  margin-bottom: 1.8rem;
 }
 
 /* Extra info */
 #executive .projects__row-content-deg,
 #executive .projects__row-content-sub,
 #executive .projects__row-content-mail {
+  margin-top: 0.5rem;
   font-size: 1.45rem;
   color: #555;
   font-style: italic;
