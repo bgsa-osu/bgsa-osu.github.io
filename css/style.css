@@ -1147,3 +1147,26 @@ textarea {
     font-size: 1.3rem;
   }
 }
+/* --- LEARN MORE BUTTON FIX --- */
+.home-hero .btn--bg {
+  background: #fff;
+  color: #BA0C2F;
+  /* default scarlet text */
+  border: 2px solid #BA0C2F;
+  font-size: 2.2rem;
+  /* larger text */
+  padding: 1.6rem 8rem;
+  transition: all 0.3s ease-in-out;
+}
+
+.home-hero .btn--bg:hover {
+  background: #fff;
+  /* keep background white */
+  color: #006A4E;
+  /* ✅ bottle green text */
+  border-color: #006A4E;
+  /* ✅ green border */
+  transform: translateY(-4px);
+  box-shadow: 0 6px 18px rgba(0, 106, 78, 0.25);
+  /* ✅ soft green glow */
+}
