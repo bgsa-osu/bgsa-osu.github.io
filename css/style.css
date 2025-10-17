@@ -1,16 +1,17 @@
 /*
-0 - 600px:      Phone
-600 - 900px:    Tablet portrait
-900 - 1200px:   Tablet landscape
-[1200 - 1800] is where our normal styles apply
-1800px + :      Big desktop
+Responsive breakpoints:
+0 - 600px: Phone
+600 - 900px: Tablet portrait
+900 - 1200px: Tablet landscape
+[1200 - 1800]: Normal styles
+1800px+: Big desktop
 */
 
 :root {
   --color-primary: #BA0C2F;
   /* Scarlet Red */
   --color-secondary: #006A4E;
-  /* Bottle Green */
+  /* Bottle Green (Accent) */
   --color-dark: #333;
   --color-light: #fff;
   --color-grey: #777;
@@ -82,8 +83,9 @@ textarea {
   resize: none;
 }
 
-/* =================== HEADINGS =================== */
-
+/* -----------------------------
+   Headings
+----------------------------- */
 .heading-primary {
   font-size: 6rem;
   text-transform: uppercase;
@@ -187,18 +189,19 @@ textarea {
   width: 92%;
 }
 
-/* =================== BUTTONS =================== */
-
+/* -----------------------------
+   Buttons
+----------------------------- */
 .btn {
   background: #fff;
-  color: #333;
+  color: var(--color-dark);
   text-transform: uppercase;
   letter-spacing: 2px;
   display: inline-block;
   font-weight: 700;
   border-radius: 5px;
   box-shadow: 0 5px 15px 0 rgba(0, 0, 0, 0.15);
-  transition: all .3s ease;
+  transition: all 0.3s;
 }
 
 .btn:hover {
@@ -230,15 +233,18 @@ textarea {
   border: 2px solid var(--color-primary);
   box-shadow: none;
   padding: calc(1.5rem - 2px) calc(5rem - 2px);
+  transition: all 0.3s;
 }
 
 .btn--theme-inv:hover {
-  color: var(--color-light);
+  color: #fff;
   background: var(--color-secondary);
   border-color: var(--color-secondary);
 }
 
-/* =================== SECTION PADDING =================== */
+/* -----------------------------
+   Section Padding
+----------------------------- */
 .sec-pad {
   padding: 12rem 0;
 }
@@ -249,7 +255,9 @@ textarea {
   }
 }
 
-/* =================== TEXT =================== */
+/* -----------------------------
+   Text Styles
+----------------------------- */
 .text-primary {
   color: #fff;
   font-size: 2.2rem;
@@ -268,14 +276,16 @@ textarea {
   display: none;
 }
 
-/* =================== HOME HERO =================== */
+/* -----------------------------
+   Home Hero
+----------------------------- */
 .home-hero {
   color: #fff;
   background: linear-gradient(to right,
-      rgba(186, 12, 47, 0.85),
-      rgba(0, 106, 78, 0.85)), url(../../assets/svg/common-bg.svg);
+      rgba(186, 12, 47, 0.8),
+      rgba(186, 12, 47, 0.8)),
+    url(../../assets/svg/common-bg.svg);
   background-position: center;
-  background-size: cover;
   height: 100vh;
   min-height: 80rem;
   max-height: 120rem;
@@ -289,128 +299,44 @@ textarea {
   }
 }
 
-.home-hero__socials {
-  position: absolute;
-  top: 50%;
-  border: 2px solid #eee;
-  transform: translateY(-50%);
+/* Link hover accent in header/footer */
+.header__link:hover,
+.main-footer__icon:hover {
+  color: var(--color-secondary);
+  filter: brightness(1.1);
+  transform: scale(1.05);
 }
 
-@media only screen and (max-width: 56.25em) {
-  .home-hero__socials {
-    display: none;
-  }
-}
-
-.home-hero__mouse-scroll-cont {
-  position: absolute;
-  bottom: 3%;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-@media only screen and (max-width: 37.5em) {
-  .home-hero__mouse-scroll-cont {
-    display: none;
-  }
-}
-
-.home-hero__social {
-  width: 5rem;
-}
-
-.home-hero__social-icon-link {
-  width: 100%;
-  display: block;
-  padding: 1.2rem;
-  border-bottom: 2px solid #eee;
-  transition: background .3s;
-}
-
-.home-hero__social-icon-link:hover {
-  background: rgba(255, 255, 255, 0.15);
-}
-
-.home-hero__social-icon-link--bd-none {
-  border-bottom: 0;
-}
-
-.home-hero__social-icon {
-  width: 100%;
-}
-
-.home-hero__content {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  max-width: 90rem;
-  width: 92%;
-}
-
-@media only screen and (max-width: 37.5em) {
-  .home-hero__content {
-    padding: 19rem 0 13rem 0;
-    margin: auto;
-    position: static;
-    transform: translate(0, 0);
-  }
-}
-
-.home-hero__info {
-  margin: 3rem auto 0 auto;
-  max-width: 80rem;
-}
-
-.home-hero__cta {
-  margin-top: 5rem;
-  text-align: center;
-}
-
-/* =================== CONTACT =================== */
+/* -----------------------------
+   Contact
+----------------------------- */
 .contact {
   background: linear-gradient(to right,
-      rgba(186, 12, 47, 0.85),
-      rgba(0, 106, 78, 0.85)), url(../../assets/svg/common-bg.svg);
+      rgba(186, 12, 47, 0.8),
+      rgba(186, 12, 47, 0.8)),
+    url(../../assets/svg/common-bg.svg);
   background-size: cover;
   background-position: center;
 }
 
-.contact__form-container {
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  background: white;
-  padding: 4rem;
-  margin-top: 6rem;
-  max-width: 80rem;
-  text-align: right;
-  width: 95%;
-  border-radius: 5px;
-  margin: 5rem auto 0 auto;
-}
-
 .contact__btn {
-  width: 30%;
-  padding: 2rem 4rem;
-  font-size: 1.6rem;
   background: var(--color-primary);
   color: #fff;
-  transition: background .3s;
+  transition: background 0.3s;
 }
 
 .contact__btn:hover {
   background: var(--color-secondary);
 }
 
-/* =================== HEADER =================== */
-.header {
-  position: fixed;
-  width: 100%;
-  z-index: 1000;
-  background: #fff;
-  box-shadow: 0 10px 100px rgba(0, 0, 0, 0.1);
+/* -----------------------------
+   Header Hover Accent
+----------------------------- */
+.header__logo-container:hover {
+  color: var(--color-secondary);
 }
 
-.header__logo-container:hover {
+.header__link:hover {
   color: var(--color-secondary);
 }
 
@@ -418,20 +344,42 @@ textarea {
   background: var(--color-primary);
 }
 
-.header__link:hover {
-  color: var(--color-secondary);
+/* -----------------------------
+   Footer
+----------------------------- */
+.main-footer__icon:hover {
+  opacity: 0.85;
 }
 
-/* =================== FOOTER =================== */
-.main-footer {
-  background: #000;
-  color: #fff;
+/* -----------------------------
+   Mouse Scroll
+----------------------------- */
+.mouse {
+  width: 25px;
+  height: 40px;
+  border: 2px solid #eee;
+  border-radius: 60px;
+  position: relative;
+  overflow: hidden;
 }
 
-.main-footer__lower a {
-  color: var(--color-primary);
+.mouse::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  position: absolute;
+  top: 7px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #eee;
+  border-radius: 50%;
+  opacity: 1;
+  animation: wheel 1.3s infinite;
 }
 
-.main-footer__lower a:hover {
-  color: var(--color-secondary);
+@keyframes wheel {
+  to {
+    opacity: 0;
+    top: 27px;
+  }
 }
