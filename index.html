@@ -217,7 +217,7 @@
     async function loadExcelAndRender() {
       try {
         // Load Excel file (must be in same folder)
-        const response = await fetch("./assets/excel/members.xlsx");
+        const response = await fetch("./assets/csv/database.xlsx");
         const arrayBuffer = await response.arrayBuffer();
 
         // Parse with SheetJS
