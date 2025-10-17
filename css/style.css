@@ -224,16 +224,11 @@ textarea {
 }
 
 .btn--theme-inv {
-  color: var(--color-primary);
+  color: var(--color-secondary);
   background: #fff;
-  border: 2px solid var(--color-primary);
+  border: 2px solid var(--color-secondary);
   box-shadow: none;
   padding: calc(1.5rem - 2px) calc(5rem - 2px);
-}
-.btn--theme-inv:hover {
-  color: #fff;
-  background: var(--color-secondary);
-  border-color: var(--color-secondary);
 }
 
 /* Section padding */
