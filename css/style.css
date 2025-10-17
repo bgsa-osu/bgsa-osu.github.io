@@ -999,3 +999,18 @@ textarea {
     top: 27px;
   }
 }
+
+/* Smaller Executive Member Photos */
+#executive .projects__row-img-cont {
+  max-width: 200px;
+  /* adjust to your liking (default ~400px) */
+  margin: auto;
+  /* centers the image container */
+}
+
+#executive .projects__row-img {
+  width: 100%;
+  border-radius: 10px;
+  /* optional: softer edges */
+  object-fit: cover;
+}
