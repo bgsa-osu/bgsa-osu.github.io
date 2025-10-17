@@ -191,6 +191,21 @@ textarea {
   width: 92%;
 }
 
+.header__logo-container {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: #333;
+  text-decoration: none;
+  /* ✅ removes underline */
+  transition: color 0.3s;
+}
+
+.header__logo-container:hover {
+  color: #BA0C2F;
+  /* or your theme color */
+}
+
 /* Buttons */
 .btn {
   background: #fff;
