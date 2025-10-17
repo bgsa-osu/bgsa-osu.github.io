@@ -216,34 +216,37 @@ textarea {
   font-weight: 700;
   border-radius: 5px;
   box-shadow: 0 5px 15px 0 rgba(0, 0, 0, 0.15);
-  transition: all .3s;
+  transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+  /* ✅ smoother transition */
 }
 
 .btn:hover {
-  transform: var(--color-secondary);
+  transform: translateY(-3px);
 }
 
-.btn--bg {
-  padding: 1.5rem 8rem;
-  font-size: 2rem;
-}
-
-.btn--med {
-  padding: 1.5rem 5rem;
-  font-size: 1.6rem;
-}
-
+/* Scarlet Red themed button */
 .btn--theme {
-  background: var(--color-primary);
+  background: #BA0C2F;
   color: #fff;
+  border: 2px solid #BA0C2F;
 }
 
-.btn--theme-inv {
-  color: var(--color-secondary);
+.btn--theme:hover {
   background: #fff;
-  border: 2px solid var(--color-secondary);
-  box-shadow: none;
-  padding: calc(1.5rem - 2px) calc(5rem - 2px);
+  color: #BA0C2F;
+}
+
+/* For Learn More (white background initially) */
+.btn--bg {
+  background: #fff;
+  color: #BA0C2F;
+  border: 2px solid #BA0C2F;
+}
+
+.btn--bg:hover {
+  background: #BA0C2F;
+  color: #fff;
+  transform: translateY(-3px);
 }
 
 /* Section padding */
