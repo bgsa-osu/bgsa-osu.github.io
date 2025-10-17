@@ -1044,6 +1044,28 @@ textarea {
   font-size: 1.5rem;
   color: #555;
 }
+/* Extra info line under each executive member */
+#executive .projects__row-content-deg {
+  font-size: 1.4rem;
+  color: #777;
+  font-style: italic;
+  margin-top: 0.3rem;
+  line-height: 1.4;
+}
+#executive .projects__row-content-sub {
+  font-size: 1.4rem;
+  color: #777;
+  font-style: italic;
+  margin-top: 0.3rem;
+  line-height: 1.4;
+}
+#executive .projects__row-content-mail {
+  font-size: 1.4rem;
+  color: #777;
+  font-style: italic;
+  margin-top: 0.3rem;
+  line-height: 1.4;
+}
 
 /* Responsive tweak for smaller screens */
 @media (max-width: 768px) {
@@ -1062,6 +1084,15 @@ textarea {
   }
 
   #executive .projects__row-content-desc {
+    font-size: 1.4rem;
+  }
+  #executive .projects__row-content-deg {
+    font-size: 1.4rem;
+  }
+  #executive .projects__row-content-sub {
+    font-size: 1.4rem;
+  }
+  #executive .projects__row-content-mail {
     font-size: 1.4rem;
   }
 }
