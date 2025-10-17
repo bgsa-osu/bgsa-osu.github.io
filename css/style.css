@@ -1000,14 +1000,15 @@ textarea {
   }
 }
 
-/* Executive Members Section Fix */
+/* Executive Members Section Fix — perfectly aligned cards */
 #executive .projects__content {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
   gap: 3rem;
   text-align: center;
-  align-items: start;
   justify-items: center;
+  align-items: stretch;
+  /* ensures equal height */
   margin-top: 3rem;
 }
 
@@ -1015,17 +1016,26 @@ textarea {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: flex-start;
+  height: 100%;
+  background: #fff;
+  padding: 1.5rem 1rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#executive .projects__row:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 #executive .projects__row-img-cont {
   width: 160px;
-  /* smaller photo */
   height: 200px;
-  /* uniform height */
   overflow: hidden;
   border-radius: 12px;
-  margin-bottom: 1rem;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.2rem;
 }
 
 #executive .projects__row-img {
@@ -1037,34 +1047,25 @@ textarea {
 #executive .projects__row-content-title {
   font-size: 1.8rem;
   font-weight: 700;
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.3rem;
+  line-height: 1.2;
 }
 
 #executive .projects__row-content-desc {
   font-size: 1.5rem;
-  color: #555;
+  color: #444;
+  margin-bottom: 0.5rem;
 }
-/* Extra info line under each executive member */
-#executive .projects__row-content-deg {
-  font-size: 1.4rem;
-  color: #777;
-  font-style: italic;
-  margin-top: 0.3rem;
-  line-height: 1.4;
-}
-#executive .projects__row-content-sub {
-  font-size: 1.4rem;
-  color: #777;
-  font-style: italic;
-  margin-top: 0.3rem;
-  line-height: 1.4;
-}
+
+#executive .projects__row-content-deg,
+#executive .projects__row-content-sub,
 #executive .projects__row-content-mail {
   font-size: 1.4rem;
-  color: #777;
+  color: #666;
   font-style: italic;
-  margin-top: 0.3rem;
   line-height: 1.4;
+  margin: 0.2rem 0;
+  max-width: 90%;
 }
 
 /* Responsive tweak for smaller screens */
@@ -1075,8 +1076,8 @@ textarea {
   }
 
   #executive .projects__row-img-cont {
-    width: 140px;
-    height: 180px;
+    width: 130px;
+    height: 170px;
   }
 
   #executive .projects__row-content-title {
@@ -1086,13 +1087,10 @@ textarea {
   #executive .projects__row-content-desc {
     font-size: 1.4rem;
   }
-  #executive .projects__row-content-deg {
-    font-size: 1.4rem;
-  }
-  #executive .projects__row-content-sub {
-    font-size: 1.4rem;
-  }
+
+  #executive .projects__row-content-deg,
+  #executive .projects__row-content-sub,
   #executive .projects__row-content-mail {
-    font-size: 1.4rem;
+    font-size: 1.3rem;
   }
 }
