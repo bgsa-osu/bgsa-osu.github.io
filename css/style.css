@@ -15,6 +15,7 @@ Inside media queries 1em is always 16px i.e 1em = 16px at every screen size only
 
 :root {
   --color-primary: #BA0C2F;
+  --color-secondary: #006A4E;
   --color-dark: #333;
   --color-light: #fff;
   --color-grey: #777;
@@ -200,11 +201,11 @@ textarea {
   font-weight: 700;
   border-radius: 5px;
   box-shadow: 0 5px 15px 0 rgba(0, 0, 0, 0.15);
-  transition: transform .3s;
+  transition: all .3s;
 }
 
 .btn:hover {
-  transform: translateY(-3px);
+  transform: var(--color-secondary);
 }
 
 .btn--bg {
@@ -314,7 +315,7 @@ textarea {
   display: block;
   padding: 1.2rem;
   border-bottom: 2px solid #eee;
-  transition: background .3s;
+  transition: all .3s;
 }
 
 .home-hero__social-icon-link:hover {
@@ -718,11 +719,11 @@ textarea {
   align-items: center;
   cursor: pointer;
   color: #333;
-  transition: color .3s;
+  transition: all .3s;
 }
 
 .header__logo-container:hover {
-  color: var(--color-primary);
+  color: var(--color-secondary);
 }
 
 .header__logo-img-cont {
@@ -775,11 +776,11 @@ textarea {
   text-transform: uppercase;
   letter-spacing: 1px;
   font-weight: 700;
-  transition: color .3s;
+  transition: all .3s;
 }
 
 .header__link:hover {
-  color: var(--color-primary);
+  color: var(--color-secondary);
 }
 
 @media only screen and (max-width: 56.25em) {
@@ -843,11 +844,11 @@ textarea {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 2px;
-  transition: color .3s;
+  transition: all .3s;
 }
 
 .header__sm-menu-link a:hover {
-  color: var(--color-primary);
+  color: var(--color-secondary);
 }
 
 .header__sm-menu-link:first-child a {
