@@ -538,47 +538,84 @@ textarea {
 }
 
 /* CONTACT INFO SECTION */
-.contact__info-container {
+/* Make the light heading actually readable on the gradient */
+.heading-sec__sub--lt {
+  color: rgba(255, 255, 255, 0.92);
+  font-weight: 600;
+}
+
+/* Contact grid with icons */
+.contact__cards {
+  margin-top: 4rem;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(160px, 1fr));
+  gap: 2.4rem;
+}
+
+@media (max-width: 1100px) {
+  .contact__cards {
+    grid-template-columns: repeat(3, minmax(160px, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .contact__cards {
+    grid-template-columns: repeat(2, minmax(150px, 1fr));
+  }
+}
+
+@media (max-width: 420px) {
+  .contact__cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+.contact__card {
   background: #fff;
-  border-radius: 10px;
-  padding: 4rem 5rem;
-  max-width: 60rem;
-  margin: 5rem auto 0;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  text-align: left;
+  border-radius: 14px;
+  padding: 2.2rem 1.8rem 2rem;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  color: var(--color-dark);
+  transition: transform .2s ease, box-shadow .2s ease;
 }
 
-.contact__info-item {
-  font-size: 1.8rem;
-  color: #333;
-  margin-bottom: 1.8rem;
-  line-height: 1.6;
+.contact__card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.12);
 }
 
-.contact__info-item strong {
-  color: var(--color-primary);
-  font-weight: 700;
-}
-
-.contact__info-item a {
+.contact__icon {
+  width: 76px;
+  height: 76px;
+  margin: 0 auto 1.2rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
   color: var(--color-secondary);
-  text-decoration: none;
-  transition: color 0.3s ease;
+  /* icon color */
+  background: #fff;
+  border: 3px solid var(--color-secondary);
+  box-shadow: 0 6px 16px rgba(0, 106, 78, 0.15);
+  transition: color .2s ease, border-color .2s ease, box-shadow .2s ease;
 }
 
-.contact__info-item a:hover {
+.contact__card:hover .contact__icon {
   color: var(--color-primary);
-  text-decoration: underline;
+  border-color: var(--color-primary);
+  box-shadow: 0 8px 22px rgba(186, 12, 47, 0.18);
 }
 
-@media (max-width: 768px) {
-  .contact__info-container {
-    padding: 3rem;
-  }
+.contact__label {
+  font-size: 1.6rem;
+  font-weight: 800;
+  margin-bottom: .4rem;
+}
 
-  .contact__info-item {
-    font-size: 1.6rem;
-  }
+.contact__value {
+  font-size: 1.6rem;
+  color: var(--color-secondary);
+  word-break: break-word;
 }
 
 /* Project Case Study */
