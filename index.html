@@ -501,26 +501,36 @@
             <td style="padding:1rem 1.5rem;">${member["Last Name"] || ""}</td>
             <td style="padding:1rem 1.5rem;">${member["What degree are you currently pursuing/ what degree did you complete at tOSU?"] || member["Degree"] || ""}</td>
             <td style="padding:1rem 1.5rem;">${member["Name of the program/department"] || member["Program"] || ""}</td>
-            <td style="padding:1rem 1.5rem;">${member["tOSU Name.#"] || member["tOSU Name.#"] || ""}</td>
+            <td style="padding:1rem 1.5rem;">${member["tOSU Name.#"] || member["Name.#"] || ""}</td>
           `;
                 tableBody.appendChild(row);
               });
           }
 
+          // ✅ Define map between display names and actual sheet headers
+          const columnMap = {
+            "First Name": "First Name",
+            "Last Name": "Last Name",
+            "Degree": "What degree are you currently pursuing/ what degree did you complete at tOSU?",
+            "Program": "Name of the program/department",
+            "Name.#": "tOSU Name.#"
+          };
+
           headersEls.forEach((header, index) => {
             header.addEventListener("click", () => {
-              const keys = ["First Name", "Last Name", "Degree", "Program", "Name.#"];
-              const key = keys[index];
-              sortState[key] = !sortState[key];
+              const displayKeys = ["First Name", "Last Name", "Degree", "Program", "Name.#"];
+              const displayKey = displayKeys[index];
+              const sheetKey = columnMap[displayKey]; // ✅ get the actual sheet field name
+              sortState[sheetKey] = !sortState[sheetKey];
 
               data.sort((a, b) => {
-                const aVal = (a[key] || "").toLowerCase();
-                const bVal = (b[key] || "").toLowerCase();
-                return sortState[key] ? bVal.localeCompare(aVal) : aVal.localeCompare(bVal);
+                const aVal = (a[sheetKey] || "").toLowerCase();
+                const bVal = (b[sheetKey] || "").toLowerCase();
+                return sortState[sheetKey] ? bVal.localeCompare(aVal) : aVal.localeCompare(bVal);
               });
 
-              headersEls.forEach(h => (h.innerHTML = h.innerHTML.replace(/ ↑| ↓| ⬍/g, " ⬍")));
-              header.innerHTML = header.innerHTML.replace("⬍", sortState[key] ? " ↓" : " ↑");
+              headersEls.forEach(h => h.innerHTML = h.innerHTML.replace(/ ↑| ↓| ⬍/g, " ⬍"));
+              header.innerHTML = header.innerHTML.replace("⬍", sortState[sheetKey] ? " ↓" : " ↑");
 
               renderTable(searchInput.value);
             });
