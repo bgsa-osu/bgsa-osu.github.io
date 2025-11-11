@@ -429,7 +429,48 @@
           const text = await response.text();
 
           // Parse CSV into rows and headers
-          const rows = text.trim().split("\n").map(r => r.split(","));
+          // ✅ Add this function ABOVE where you parse the CSV
+          function parseCSV(text) {
+            const rows = [];
+            let current = "";
+            let row = [];
+            let insideQuotes = false;
+
+            for (let i = 0; i < text.length; i++) {
+              const char = text[i];
+              const next = text[i + 1];
+
+              if (char === '"') {
+                // Handle escaped quotes
+                if (insideQuotes && next === '"') {
+                  current += '"';
+                  i++;
+                } else {
+                  insideQuotes = !insideQuotes;
+                }
+              } else if (char === "," && !insideQuotes) {
+                row.push(current);
+                current = "";
+              } else if ((char === "\n" || char === "\r") && !insideQuotes) {
+                if (current || row.length) row.push(current);
+                if (row.length) rows.push(row);
+                current = "";
+                row = [];
+              } else {
+                current += char;
+              }
+            }
+
+            if (current || row.length) {
+              row.push(current);
+              rows.push(row);
+            }
+
+            return rows;
+          }
+
+          // ✅ Replace your simple split() with this:
+          const rows = parseCSV(text);
           const headers = rows[0];
           const data = rows.slice(1).map(row =>
             Object.fromEntries(headers.map((h, i) => [h.trim(), row[i]?.trim() || ""]))
