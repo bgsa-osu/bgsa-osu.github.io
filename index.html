@@ -417,73 +417,82 @@
   <script>
     document.getElementById("year").textContent = new Date().getFullYear();
 
-    async function loadExcelAndRender() {
-      try {
-        const response = await fetch("./assets/csv/database.xlsx");
-        const arrayBuffer = await response.arrayBuffer();
-        const workbook = XLSX.read(arrayBuffer, { type: "array" });
-        const sheet = workbook.Sheets[workbook.SheetNames[0]];
-        let data = XLSX.utils.sheet_to_json(sheet);
+    // ✅ LIVE GOOGLE SHEET INTEGRATION
+      document.getElementById("year").textContent = new Date().getFullYear();
 
-        const tableBody = document.getElementById("members-body");
-        const searchInput = document.getElementById("searchInput");
-        const headers = Array.from(document.querySelectorAll("#members-table th"));
+      async function loadGoogleSheet() {
+        try {
+          // Replace this URL with your actual published Google Sheet CSV link
+          const SHEET_URL = "https://docs.google.com/spreadsheets/d/1aYswoTJ8g6oZvnHb6-dNScaVIj9GYMA_lvorK_2yY_U/edit?usp=sharing";
 
-        data.sort((a, b) => (a["First Name"] || "").localeCompare(b["First Name"] || ""));
-        let sortState = {};
+          const response = await fetch(SHEET_URL);
+          const text = await response.text();
 
-        function renderTable(filterText = "") {
-          tableBody.innerHTML = "";
-          data
-            .filter(member =>
-              Object.values(member).some(value =>
-                String(value).toLowerCase().includes(filterText.toLowerCase())
+          // Parse CSV into rows and headers
+          const rows = text.trim().split("\n").map(r => r.split(","));
+          const headers = rows[0];
+          const data = rows.slice(1).map(row =>
+            Object.fromEntries(headers.map((h, i) => [h.trim(), row[i]?.trim() || ""]))
+          );
+
+          const tableBody = document.getElementById("members-body");
+          const searchInput = document.getElementById("searchInput");
+          const headersEls = Array.from(document.querySelectorAll("#members-table th"));
+
+          let sortState = {};
+
+          function renderTable(filterText = "") {
+            tableBody.innerHTML = "";
+            data
+              .filter(member =>
+                Object.values(member).some(value =>
+                  String(value).toLowerCase().includes(filterText.toLowerCase())
+                )
               )
-            )
-            .forEach(member => {
-              const row = document.createElement("tr");
-              row.style.transition = "background 0.2s ease";
-              row.onmouseover = () => row.style.background = "rgba(186,12,47,0.05)";
-              row.onmouseout = () => row.style.background = "transparent";
-              row.innerHTML = `
-                <td style="padding:1rem 1.5rem;">${member["First Name"] || ""}</td>
-                <td style="padding:1rem 1.5rem;">${member["Last Name"] || ""}</td>
-                <td style="padding:1rem 1.5rem;">${member["What degree are you currently pursuing/ what degree did you complete at tOSU?"] || member["Degree"] || ""}</td>
-                <td style="padding:1rem 1.5rem;">${member["Name of the program/department"] || member["Program"] || ""}</td>
-                <td style="padding:1rem 1.5rem;">${member["tOSU Name.#"] || member["Name.#"] || ""}</td>
-              `;
-              tableBody.appendChild(row);
+              .forEach(member => {
+                const row = document.createElement("tr");
+                row.style.transition = "background 0.2s ease";
+                row.onmouseover = () => (row.style.background = "rgba(186,12,47,0.05)");
+                row.onmouseout = () => (row.style.background = "transparent");
+
+                row.innerHTML = `
+            <td style="padding:1rem 1.5rem;">${member["First Name"] || ""}</td>
+            <td style="padding:1rem 1.5rem;">${member["Last Name"] || ""}</td>
+            <td style="padding:1rem 1.5rem;">${member["Degree"] || ""}</td>
+            <td style="padding:1rem 1.5rem;">${member["Program"] || ""}</td>
+            <td style="padding:1rem 1.5rem;">${member["Name.#"] || ""}</td>
+          `;
+                tableBody.appendChild(row);
+              });
+          }
+
+          headersEls.forEach((header, index) => {
+            header.addEventListener("click", () => {
+              const keys = ["First Name", "Last Name", "Degree", "Program", "Name.#"];
+              const key = keys[index];
+              sortState[key] = !sortState[key];
+
+              data.sort((a, b) => {
+                const aVal = (a[key] || "").toLowerCase();
+                const bVal = (b[key] || "").toLowerCase();
+                return sortState[key] ? bVal.localeCompare(aVal) : aVal.localeCompare(bVal);
+              });
+
+              headersEls.forEach(h => (h.innerHTML = h.innerHTML.replace(/ ↑| ↓| ⬍/g, " ⬍")));
+              header.innerHTML = header.innerHTML.replace("⬍", sortState[key] ? " ↓" : " ↑");
+
+              renderTable(searchInput.value);
             });
-        }
-
-        headers.forEach((header, index) => {
-          header.addEventListener("click", () => {
-            const keys = ["First Name", "Last Name", "Degree", "Name of the program/department", "tOSU Name.#"];
-            const key = keys[index];
-            sortState[key] = !sortState[key];
-
-            data.sort((a, b) => {
-              const aVal = (a[key] || "").toLowerCase();
-              const bVal = (b[key] || "").toLowerCase();
-              return sortState[key] ? bVal.localeCompare(aVal) : aVal.localeCompare(bVal);
-            });
-
-            headers.forEach(h => h.innerHTML = h.innerHTML.replace(/ ↑| ↓| ⬍/g, " ⬍"));
-            header.innerHTML = header.innerHTML.replace("⬍", sortState[key] ? " ↓" : " ↑");
-
-            renderTable(searchInput.value);
           });
-        });
 
-        renderTable();
-        searchInput.addEventListener("input", e => renderTable(e.target.value));
-
-      } catch (err) {
-        console.error("Error loading Excel file:", err);
+          renderTable();
+          searchInput.addEventListener("input", e => renderTable(e.target.value));
+        } catch (err) {
+          console.error("Error loading Google Sheet:", err);
+        }
       }
-    }
 
-    loadExcelAndRender();
+      loadGoogleSheet();
   </script>
 </body>
 
