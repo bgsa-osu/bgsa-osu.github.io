@@ -539,6 +539,39 @@ textarea {
 
 /* CONTACT INFO SECTION */
 /* Make the light heading actually readable on the gradient */
+
+/* --- CONTACT SECTION VISIBILITY FIX --- */
+#contact {
+  background: #fafafa;
+  /* light grey for contrast */
+  color: #222;
+}
+
+#contact .heading-sec__main--lt {
+  color: var(--color-primary);
+  /* Scarlet heading */
+}
+
+#contact .heading-sec__sub--lt {
+  color: #444;
+  /* readable dark grey */
+  font-weight: 500;
+}
+
+/* If you prefer a colored background (instead of white) */
+#contact.dynamicBg {
+  background: linear-gradient(to right, rgba(186, 12, 47, 0.9), rgba(0, 106, 78, 0.9));
+  color: #fff;
+}
+
+#contact.dynamicBg .heading-sec__main--lt {
+  color: #fff;
+}
+
+#contact.dynamicBg .heading-sec__sub--lt {
+  color: rgba(255, 255, 255, 0.9);
+}
+
 .heading-sec__sub--lt {
   color: rgba(255, 255, 255, 0.92);
   font-weight: 600;
