@@ -458,9 +458,9 @@
                 row.innerHTML = `
             <td style="padding:1rem 1.5rem;">${member["First Name"] || ""}</td>
             <td style="padding:1rem 1.5rem;">${member["Last Name"] || ""}</td>
-            <td style="padding:1rem 1.5rem;">${member["Degree"] || ""}</td>
-            <td style="padding:1rem 1.5rem;">${member["Program"] || ""}</td>
-            <td style="padding:1rem 1.5rem;">${member["Name.#"] || ""}</td>
+            <td style="padding:1rem 1.5rem;">${member["What degree are you currently pursuing/ what degree did you complete at tOSU?"] || member["Degree"] || ""}</td>
+            <td style="padding:1rem 1.5rem;">${member["Name of the program/department"] || member["Program"] || ""}</td>
+            <td style="padding:1rem 1.5rem;">${member["tOSU Name.#"] || member["tOSU Name.#"] || ""}</td>
           `;
                 tableBody.appendChild(row);
               });
