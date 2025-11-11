@@ -1236,11 +1236,11 @@ textarea {
   /* ✅ soft green glow */
 }
 
-/* NEWS SECTION (side-by-side layout) */
+/* --- NEWS SECTION (side-by-side layout for announcements) --- */
 .news__content {
   display: flex;
   flex-direction: column;
-  gap: 8rem;
+  gap: 6rem;
 }
 
 .news__item {
@@ -1248,10 +1248,16 @@ textarea {
   align-items: center;
   justify-content: space-between;
   gap: 4rem;
+  background: #fff;
+  padding: 3rem;
+  border-radius: 16px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
-.news__item--reverse {
-  flex-direction: row-reverse;
+.news__item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.12);
 }
 
 .news__image {
@@ -1261,40 +1267,33 @@ textarea {
 
 .news__image img {
   width: 100%;
+  height: auto;
   border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
   object-fit: cover;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
 }
 
 .news__text {
   flex: 1;
+  text-align: left;
 }
 
 .news__title {
-  font-size: 2.4rem;
-  font-weight: 700;
+  font-size: 2.6rem;
+  font-weight: 800;
   color: var(--color-primary);
-  margin-bottom: 1.2rem;
+  margin-bottom: 1.5rem;
 }
 
 .news__desc {
   font-size: 1.8rem;
-  color: #555;
   line-height: 1.7;
-  margin-bottom: 2rem;
+  color: #444;
 }
 
-.btn--small {
-  padding: 0.8rem 2rem;
-  font-size: 1.4rem;
-  border-radius: 4px;
-}
-
-/* Responsive: Stack image and text */
+/* Responsive — stack image on top */
 @media (max-width: 900px) {
-
-  .news__item,
-  .news__item--reverse {
+  .news__item {
     flex-direction: column;
     text-align: center;
   }
