@@ -1124,18 +1124,21 @@ textarea {
 
 /* Photo container */
 #executive .projects__row-img-cont {
-  width: 180px;
-  height: 220px;
+  width: 220px;
+  /* slightly larger and uniform */
+  height: 260px;
   overflow: hidden;
   border-radius: 14px;
-  margin-bottom: 1.8rem;
+  margin-bottom: 2rem;
   flex-shrink: 0;
+  background: #f2f2f2;
 }
 
 #executive .projects__row-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  /* ensures equal size */
   border-radius: 14px;
 }
 
