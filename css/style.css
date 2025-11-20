@@ -1375,3 +1375,31 @@ textarea {
     height: 200px;
   }
 }
+
+.db-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.db-tab {
+  padding: 1rem 2rem;
+  font-size: 1.6rem;
+  font-weight: 700;
+  background: #eee;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.db-tab:hover {
+  background: #ddd;
+}
+
+.db-tab.active {
+  background: var(--color-primary);
+  color: #fff;
+  border-color: var(--color-primary);
+}

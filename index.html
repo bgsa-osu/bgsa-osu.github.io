@@ -195,37 +195,46 @@
   </div>
 </section>
 
-  <!-- ✅ DATABASE (improved) -->
-  <section id="database" class="projects sec-pad">
-    <div class="main-container">
-      <h2 class="heading heading-sec heading-sec__mb-med">
-        <span class="heading-sec__main">Member Database</span>
-        <span class="heading-sec__sub">
-          Explore our vibrant BGSA community. Sort, search, and connect with fellow members.
-        </span>
-      </h2>
+<section id="database" class="projects sec-pad">
+  <div class="main-container">
+    <h2 class="heading heading-sec heading-sec__mb-med">
+      <span class="heading-sec__main">Member Database</span>
+      <span class="heading-sec__sub">
+        Browse different groups of the BGSA community.
+      </span>
+    </h2>
 
-      <div class="database__search" style="text-align:center; margin-bottom:2.5rem;">
-        <input type="text" id="searchInput" placeholder="🔍 Search by name, degree, or program..."
-          style="padding:1.2rem; width:70%; max-width:450px; border-radius:8px; border:1.5px solid #ccc; font-size:1.8rem;">
-      </div>
-
-      <div class="database__table-container" style="overflow-x:auto;">
-        <table id="members-table" style="width:100%; border-collapse:collapse; text-align:left; font-size:1.8rem;">
-          <thead>
-            <tr style="background-color:#BA0C2F; color:#fff; cursor:pointer;">
-              <th style="padding:1.2rem;">First Name ⬍</th>
-              <th style="padding:1.2rem;">Last Name ⬍</th>
-              <th style="padding:1.2rem;">Degree ⬍</th>
-              <th style="padding:1.2rem;">Program ⬍</th>
-              <th style="padding:1.2rem;">Name.# ⬍</th>
-            </tr>
-          </thead>
-          <tbody id="members-body"></tbody>
-        </table>
-      </div>
+    <!-- Tabs -->
+    <div class="db-tabs">
+      <button class="db-tab active" data-target="grad">Graduate Students</button>
+      <button class="db-tab" data-target="postdoc">Post-docs & Staff</button>
+      <button class="db-tab" data-target="alumni">Alumni</button>
+      <button class="db-tab" data-target="faculty">Faculty</button>
     </div>
-  </section>
+
+    <!-- Search -->
+    <div class="database__search" style="text-align:center; margin-bottom:2.5rem;">
+      <input type="text" id="searchInput" placeholder="🔍 Search..."
+        style="padding:1.2rem; width:70%; max-width:450px; border-radius:8px; border:1.5px solid #ccc; font-size:1.8rem;">
+    </div>
+
+    <!-- TABLE CONTAINER -->
+    <div class="database__table-container" style="overflow-x:auto;">
+      <table id="members-table" style="width:100%; border-collapse:collapse; text-align:left; font-size:1.8rem;">
+        <thead>
+          <tr style="background-color:#BA0C2F; color:#fff; cursor:pointer;">
+            <th>First Name ⬍</th>
+            <th>Last Name ⬍</th>
+            <th>Degree / Position ⬍</th>
+            <th>Program / Department ⬍</th>
+            <th>Name.# ⬍</th>
+          </tr>
+        </thead>
+        <tbody id="members-body"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
 
   <!-- EXECUTIVE MEMBERS -->
   <section id="executive" class="about sec-pad">
