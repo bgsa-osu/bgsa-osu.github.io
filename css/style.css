@@ -1155,33 +1155,27 @@ textarea {
   flex-grow: 1;
 }
 
-/* Member name */
 #executive .projects__row-content-title {
-  font-size: 1.9rem;
-  font-weight: 700;
-  margin-bottom: 0.4rem;
-  line-height: 1.3;
-  color: #000;
+  font-size: 2.2rem;
+  /* bigger name */
+  font-weight: 800;
 }
 
-/* Role title */
 #executive .projects__row-content-desc {
-  font-size: 1.6rem;
+  font-size: 1.9rem;
+  /* role */
+  font-weight: 600;
   color: #444;
-  margin-bottom: 1.8rem;
 }
 
-/* Extra info */
 #executive .projects__row-content-deg,
 #executive .projects__row-content-sub,
 #executive .projects__row-content-mail {
-  margin-top: 0.5rem;
-  font-size: 1.45rem;
+  font-size: 1.7rem;
+  /* degree & department */
   color: #555;
   font-style: italic;
-  line-height: 1.5;
-  margin: 0.2rem 0;
-  max-width: 100%;
+  margin-top: 0.4rem;
 }
 
 /* Equalize text area heights */
