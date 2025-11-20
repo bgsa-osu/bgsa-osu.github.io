@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Resources | BGSA @ The Ohio State University</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700;900&display=swap"
+        rel="stylesheet" />
+</head>
+
+<body>
+
+    <!-- HEADER (same as main site) -->
+    <header class="header">
+        <div class="header__content">
+
+            <div class="header__logo-container" onclick="location.href='index.html'">
+                <div class="header__logo-img-cont">
+                    <img src="./assets/png/tOSU_BGSA_logo.png" class="header__logo-img" />
+                </div>
+                <span class="header__logo-sub">BGSA @ tOSU</span>
+            </div>
+
+            <div class="header__main">
+                <ul class="header__links">
+                    <li class="header__link-wrapper"><a href="index.html#home">Home</a></li>
+                    <li class="header__link-wrapper"><a href="index.html#about">About</a></li>
+                    <li class="header__link-wrapper"><a href="index.html#news">News</a></li>
+                    <li class="header__link-wrapper"><a href="index.html#gallery">Gallery</a></li>
+                    <li class="header__link-wrapper"><a href="index.html#database">Database</a></li>
+                    <li class="header__link-wrapper"><a class="header__link" href="resources.html">Resources</a></li>
+                    <li class="header__link-wrapper"><a href="index.html#contact">Contact</a></li>
+                </ul>
+
+                <div class="header__main-ham-menu-cont">
+                    <img src="./assets/svg/ham-menu.svg" class="header__main-ham-menu" />
+                    <img src="./assets/svg/ham-menu-close.svg" class="header__main-ham-menu-close d-none" />
+                </div>
+            </div>
+        </div>
+
+        <div class="header__sm-menu">
+            <div class="header__sm-menu-link"><a href="index.html#home">Home</a></div>
+            <div class="header__sm-menu-link"><a href="index.html#about">About</a></div>
+            <div class="header__sm-menu-link"><a href="index.html#news">News</a></div>
+            <div class="header__sm-menu-link"><a href="index.html#gallery">Gallery</a></div>
+            <div class="header__sm-menu-link"><a href="index.html#database">Database</a></div>
+            <div class="header__sm-menu-link"><a href="resources.html">Resources</a></div>
+            <div class="header__sm-menu-link header__sm-menu-link-last"><a href="index.html#contact">Contact</a></div>
+        </div>
+    </header>
+
+
+    <!-- RESOURCES SECTION -->
+    <section class="sec-pad">
+        <div class="main-container">
+            <h2 class="heading heading-sec heading-sec__mb-med">
+                <span class="heading-sec__main">Resources</span>
+                <span class="heading-sec__sub">Useful links, guides, forms, and documents for BGSA members</span>
+            </h2>
+
+            <div class="projects__content">
+
+                <!-- item -->
+                <div class="projects__row">
+                    <div class="projects__row-content">
+                        <h3 class="projects__row-content-title">📘 New Graduate Student Survival Guide</h3>
+                        <p class="projects__row-content-desc">Housing, transportation, cost of living, grocery stores,
+                            winter prep, and more.</p>
+                        <a href="#" class="btn btn--theme">Download PDF</a>
+                    </div>
+                </div>
+
+                <!-- item -->
+                <div class="projects__row">
+                    <div class="projects__row-content">
+                        <h3 class="projects__row-content-title">🎓 Academic Resources</h3>
+                        <p class="projects__row-content-desc">Important OSU academic links & tools: BuckeyeMail,
+                            CarmenCanvas, Advising, Calendars.</p>
+                        <a href="https://osu.edu" target="_blank" class="btn btn--theme">Open OSU Website</a>
+                    </div>
+                </div>
+
+                <!-- item -->
+                <div class="projects__row">
+                    <div class="projects__row-content">
+                        <h3 class="projects__row-content-title">📝 BGSA Forms & Requests</h3>
+                        <p class="projects__row-content-desc">Event proposals, reimbursements, volunteering, and
+                            participation forms.</p>
+                        <a href="#" class="btn btn--theme">Open Forms</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+
+    <!-- FOOTER -->
+    <footer class="main-footer">
+        <div class="main-container">
+            <div class="main-footer__upper">
+                <div class="main-footer__row main-footer__row-1">
+                    <h2 class="heading heading-sm main-footer__heading-sm"><span>Connect With Us</span></h2>
+                    <div class="main-footer__social-cont">
+                        <img class="main-footer__icon" src="./assets/png/facebook-ico.png">
+                        <img class="main-footer__icon" src="./assets/png/insta-ico.png">
+                        <img class="main-footer__icon" src="./assets/png/yt-ico.png">
+                    </div>
+                </div>
+
+                <div class="main-footer__row main-footer__row-2">
+                    <h4 class="heading heading-sm text-lt">Bangladeshi Graduate Student Association (BGSA)</h4>
+                    <p class="main-footer__short-desc">
+                        Promoting unity, culture, and collaboration among Bangladeshi graduate students at The Ohio
+                        State University.
+                    </p>
+                </div>
+            </div>
+
+            <div class="main-footer__lower">&copy; <span id="year"></span> BGSA @ tOSU</div>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById("year").textContent = new Date().getFullYear();
+    </script>
+
+</body>
+
+</html>
