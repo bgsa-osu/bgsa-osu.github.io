@@ -1541,3 +1541,31 @@ textarea {
   visibility: visible;
   opacity: 1;
 }
+/* FINAL OVERRIDE FOR EC IMAGES */
+.about-content#about-ec .projects__row-img-cont {
+  width: 260px !important;
+  height: 300px !important;
+  overflow: hidden !important;
+  border-radius: 14px !important;
+  background: #f2f2f2 !important;
+}
+
+.about-content#about-ec .projects__row-img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center !important;
+}
+
+/* font fix */
+.about-content#about-ec .projects__row-content-title {
+  font-size: 2.4rem !important;
+  font-weight: 800 !important;
+}
+
+.about-content#about-ec .projects__row-content-desc,
+.about-content#about-ec .projects__row-content-deg,
+.about-content#about-ec .projects__row-content-sub,
+.about-content#about-ec .projects__row-content-mail {
+  font-size: 1.9rem !important;
+}
