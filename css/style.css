@@ -1456,6 +1456,38 @@ textarea {
 #about .projects__row:hover {
   transform: translateY(-5px);
 }
+/* Uniform Executive Member Images inside ABOUT tab */
+#about .projects__row-img-cont {
+  width: 220px;
+  height: 260px;
+  overflow: hidden;
+  border-radius: 14px;
+  background: #f2f2f2;
+}
+
+#about .projects__row-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+#about .projects__row-content-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+}
+
+#about .projects__row-content-desc {
+  font-size: 1.9rem;
+  font-weight: 600;
+  color: #444;
+}
+
+#about .projects__row-content-deg,
+#about .projects__row-content-sub,
+#about .projects__row-content-mail {
+  font-size: 1.7rem;
+  color: #555;
+  font-style: italic;
+}
 
 .header__sm-menu {
   background: #fff;
