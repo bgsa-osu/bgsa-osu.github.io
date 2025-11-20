@@ -1489,6 +1489,43 @@ textarea {
   font-style: italic;
 }
 
+/* --- FIX EXECUTIVE COMMITTEE IMAGE SIZE INSIDE ABOUT SECTION --- */
+#about-ec .projects__row-img-cont {
+  width: 260px;
+  height: 300px;
+  overflow: hidden;
+  border-radius: 14px;
+  background: #f2f2f2;
+  margin-bottom: 2rem;
+}
+
+#about-ec .projects__row-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* forces image to fill box evenly */
+  object-position: center;
+}
+
+/* Bigger text for EC section */
+#about-ec .projects__row-content-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+}
+
+#about-ec .projects__row-content-desc {
+  font-size: 1.9rem;
+  font-weight: 600;
+}
+
+#about-ec .projects__row-content-deg,
+#about-ec .projects__row-content-sub,
+#about-ec .projects__row-content-mail {
+  font-size: 1.7rem;
+  font-style: italic;
+  color: #444;
+}
+
 .header__sm-menu {
   background: #fff;
   position: absolute;
