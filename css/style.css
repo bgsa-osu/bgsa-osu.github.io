@@ -1611,3 +1611,53 @@ textarea {
 .past-ec-card li {
   margin-bottom: 0.7rem;
 }
+
+.goals-list ul {
+  list-style: disc;
+  padding-left: 3rem;
+  max-width: 80rem;
+  margin: 0 auto;
+  font-size: 1.9rem;
+  line-height: 1.8;
+  color: #444;
+}
+
+.goals-list ul li {
+  margin-bottom: 1.2rem;
+}
+
+/* GOALS TAB STYLING */
+.goals__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2.4rem 3rem;
+  max-width: 900px;
+  margin: auto;
+  margin-top: 3rem;
+}
+
+.goal-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.2rem;
+}
+
+.goal-icon {
+  font-size: 2rem;
+  color: var(--color-primary);
+  margin-top: 0.3rem;
+  font-weight: 900;
+}
+
+.goal-text {
+  font-size: 1.9rem;
+  color: #444;
+  line-height: 1.6;
+}
+
+/* Mobile responsive */
+@media (max-width: 700px) {
+  .goals__grid {
+    grid-template-columns: 1fr;
+  }
+}
