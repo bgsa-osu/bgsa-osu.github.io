@@ -15,7 +15,7 @@ hamMenuBtn.addEventListener('click', () => {
 });
 
 // Close menu when clicking any link
-document.querySelectorAll('.header__sm-menu-link').forEach(link => {
+document.querySelectorAll('.header__sm-menu-link a').forEach(link => {
   link.addEventListener('click', () => {
     smallMenu.classList.remove('header__sm-menu--active');
     hamOpen.classList.remove('d-none');
