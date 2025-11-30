@@ -1902,7 +1902,7 @@ body {
 }
 
 .slide3 {
-  background-image: url('baby_buckeye.JPG');
+  background-image: url('purdue.jpg');
   animation-delay: 12s;
 }
 
@@ -1926,4 +1926,18 @@ body {
 /* REMOVE static background */
 .home-hero {
   background: transparent !important;
+}
+/* MOBILE HERO FIX */
+@media (max-width: 600px) {
+
+  .hero-slider {
+    height: 100dvh !important;
+    margin-top: 10rem !important;
+    /* below header */
+  }
+
+  .home-hero__content {
+    margin-top: 8rem !important;
+    /* avoids overlap */
+  }
 }
