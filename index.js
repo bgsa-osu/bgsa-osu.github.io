@@ -2,34 +2,16 @@
    HAMBURGER MENU FUNCTIONALITY
    ============================ */
 
-const hamMenuBtn = document.querySelector('.header__main-ham-menu-cont');
-const smallMenu = document.querySelector('.header__sm-menu');
-const hamOpen = document.querySelector('.header__main-ham-menu');
-const hamClose = document.querySelector('.header__main-ham-menu-close');
+const hamBtn = document.querySelector('.header__main-ham-menu-cont');
+const overlay = document.getElementById('mobile-overlay');
 
-// Toggle mobile menu visibility
-hamMenuBtn.addEventListener('click', () => {
-  smallMenu.classList.toggle('header__sm-menu--active');
-  hamOpen.classList.toggle('d-none');
-  hamClose.classList.toggle('d-none');
+hamBtn.addEventListener('click', () => {
+  overlay.style.display = "flex";
 });
 
-// Close menu when clicking any link
-document.querySelectorAll('.header__sm-menu-link a').forEach(link => {
+// close when clicking any link
+document.querySelectorAll('#mobile-overlay a').forEach(link => {
   link.addEventListener('click', () => {
-    smallMenu.classList.remove('header__sm-menu--active');
-    hamOpen.classList.remove('d-none');
-    hamClose.classList.add('d-none');
+    overlay.style.display = "none";
   });
-});
-
-
-/* ============================
-   LOGO CLICK TO GO HOME
-   ============================ */
-
-const headerLogoContainer = document.querySelector('.header__logo-container');
-
-headerLogoContainer.addEventListener('click', () => {
-  location.href = 'index.html';
 });
