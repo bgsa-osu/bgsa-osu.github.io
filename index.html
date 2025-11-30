@@ -688,20 +688,12 @@
     
       <div class="addinfo-grid">
     
-        <a class="addinfo-card" href="YOUR_GOOGLE_FORM_LINK_1" target="_blank">
-          <div class="addinfo-title">Graduate Students</div>
+        <a class="addinfo-card" href="https://forms.gle/uMfjqBhZtubrjgKA6" target="_blank">
+          <div class="addinfo-title">Graduate Students, Post-docs & Staffs</div>
         </a>
     
-        <a class="addinfo-card" href="YOUR_GOOGLE_FORM_LINK_2" target="_blank">
-          <div class="addinfo-title">Post-Docs & Staff</div>
-        </a>
-    
-        <a class="addinfo-card" href="YOUR_GOOGLE_FORM_LINK_3" target="_blank">
+        <a class="addinfo-card" href="https://forms.gle/r5ZRP6CDQKErogDbA" target="_blank">
           <div class="addinfo-title">Alumni</div>
-        </a>
-    
-        <a class="addinfo-card" href="YOUR_GOOGLE_FORM_LINK_4" target="_blank">
-          <div class="addinfo-title">Faculty</div>
         </a>
     
       </div>
@@ -1054,17 +1046,35 @@
 
   // Load section on tab click
   async function loadSection(section) {
-    document
-      .querySelectorAll(".db-tab")
-      .forEach(btn => btn.classList.remove("active"));
 
-    document
-      .querySelector(`.db-tab[data-target="${section}"]`)
-      .classList.add("active");
+      // Remove active class from all tabs
+      document.querySelectorAll(".db-tab").forEach(btn =>
+        btn.classList.remove("active")
+      );
+      document.querySelector(`.db-tab[data-target="${section}"]`).classList.add("active");
 
-    activeData = await loadExcel(FILES[section]);
-    renderTable("");
-  }
+      const tableContainer = document.querySelector(".database__table-container");
+      const searchInput = document.getElementById("searchInput");
+      const addInfoSection = document.getElementById("addinfo");
+
+      // Hide AddInfo section by default
+      addInfoSection.style.display = "none";
+
+      // If user clicks "Add Your Information" tab
+      if (section === "addinfo") {
+        tableContainer.style.display = "none";
+        searchInput.style.display = "none";
+        addInfoSection.style.display = "block";
+        return; // 🔥 Do NOT load Excel
+      }
+
+      // For all other tabs
+      tableContainer.style.display = "block";
+      searchInput.style.display = "block";
+
+      activeData = await loadExcel(FILES[section]);
+      renderTable("");
+    }
 
   // Tab click listener
   document.querySelectorAll(".db-tab").forEach(btn => {
