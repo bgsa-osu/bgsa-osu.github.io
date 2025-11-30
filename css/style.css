@@ -1694,3 +1694,33 @@ textarea {
 .resources-list a:hover {
   color: #006A4E;
 }
+
+.addinfo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.addinfo-card {
+  padding: 2rem;
+  border-radius: 12px;
+  background: #f7f7f7;
+  border: 2px solid #ba0c2f;
+  color: #ba0c2f;
+  text-align: center;
+  font-size: 1.9rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.addinfo-card:hover {
+  background: #ba0c2f;
+  color: white;
+  transform: translateY(-4px);
+}
+
+.addinfo-title {
+  margin-top: 0.5rem;
+}
