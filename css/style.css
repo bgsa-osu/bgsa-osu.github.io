@@ -1808,3 +1808,55 @@ textarea {
     padding: 1rem 0;
   }
 }
+
+/* ============================
+   📱 FINAL WORKING MOBILE MENU
+   ============================ */
+
+/* hidden by default */
+.header__sm-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: #fff;
+  z-index: 9999;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* visible when toggled */
+.header__sm-menu--active {
+  display: block;
+}
+
+/* mobile link styles */
+.header__sm-menu-link a {
+  display: block;
+  padding: 2rem 2.5rem;
+  border-bottom: 1px solid #eee;
+  font-size: 1.8rem;
+  color: #333;
+  text-align: right;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.header__sm-menu-link a:hover {
+  color: var(--color-secondary);
+}
+
+/* show hamburger icon on small screens */
+@media (max-width: 700px) {
+  .header__main-ham-menu-cont {
+    display: block;
+  }
+}
+
+/* hide menu links on small screens */
+@media (max-width: 700px) {
+  .header__links {
+    display: none;
+  }
+}
