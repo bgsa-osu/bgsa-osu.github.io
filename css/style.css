@@ -1930,3 +1930,14 @@ body {
     /* avoids overlap */
   }
 }
+.home-hero__content h1,
+.home-hero__content p,
+.home-hero__content .btn {
+  color: #fff !important;
+}
+
+.home-hero__content .btn--bg {
+  background: rgba(255, 255, 255, 0.9);
+  color: #BA0C2F !important;
+  border: 2px solid #fff;
+}
