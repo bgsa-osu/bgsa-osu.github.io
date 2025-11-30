@@ -1776,3 +1776,23 @@ body {
   max-width: 100% !important;
   box-sizing: border-box;
 }
+
+/* --- FIX DATABASE TABLE ON MOBILE --- */
+.database__table-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+#members-table {
+  min-width: 650px;
+  /* force horizontal scrolling instead of breaking layout */
+  border-collapse: collapse;
+}
+
+#members-table th,
+#members-table td {
+  white-space: nowrap;
+  /* prevent headings from wrapping and breaking rows */
+  padding: 1rem;
+}
