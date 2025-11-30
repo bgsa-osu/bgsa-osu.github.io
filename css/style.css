@@ -903,39 +903,6 @@ textarea {
   width: 100%;
 }
 
-@media only screen and (max-width: 37.5em) {
-  .header__sm-menu--active {
-    visibility: visible;
-    opacity: 1;
-  }
-}
-
-.header__sm-menu-link a {
-  display: block;
-  text-decoration: none;
-  padding: 2.5rem 3rem;
-  font-size: 1.6rem;
-  color: #333;
-  text-align: right;
-  border-bottom: 1px solid #eee;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  transition: all .3s;
-}
-
-.header__sm-menu-link a:hover {
-  color: var(--color-secondary);
-}
-
-.header__sm-menu-link:first-child a {
-  border-top: 1px solid #eee;
-}
-
-.header__sm-menu-link-last {
-  border-bottom: 0;
-}
-
 /* Footer */
 .main-footer {
   background: #000;
@@ -1508,31 +1475,6 @@ textarea {
   font-size: 1.7rem;
   font-style: italic;
   color: #444;
-}
-
-.header__sm-menu {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  width: 100%;
-  background: #fff;
-  z-index: 2000;
-  /* 🔥 Fix: menu appears above the header */
-  padding: 0;
-  margin: 0;
-  visibility: hidden;
-  opacity: 0;
-  transform: translateY(-10px);
-  transition: all 0.3s ease;
-  box-shadow: 0px 5px 12px rgba(0, 0, 0, 0.12);
-  display: block;
-  /* 🔥 Required so visibility/opacity can animate */
-}
-
-.header__sm-menu--active {
-  visibility: visible;
-  opacity: 1;
-  transform: translateY(0);
 }
 /* FINAL OVERRIDE FOR EC IMAGES */
 .about-content#about-ec .projects__row-img-cont {
