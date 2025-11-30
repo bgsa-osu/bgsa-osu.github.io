@@ -1969,3 +1969,53 @@ body {
   font-size: 2rem;
   padding: 1.2rem 5rem;
 }
+
+/* =====================
+   FINAL HERO TEXT FIX
+   ===================== */
+
+.home-hero {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.home-hero__content {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  text-align: center !important;
+  width: 90% !important;
+  z-index: 10 !important;
+  color: white !important;
+}
+
+/* Force all hero text white + readable */
+.home-hero__content h1,
+.home-hero__content p {
+  color: white !important;
+  text-shadow: 0px 0px 18px rgba(0, 0, 0, 0.7);
+}
+
+/* Keep the button visible */
+.home-hero__content .btn--bg {
+  background: rgba(255, 255, 255, 0.9) !important;
+  color: #BA0C2F !important;
+  border: 2px solid white !important;
+  z-index: 11 !important;
+}
+
+/* Make sure slider stays BEHIND text */
+.hero-slide {
+  z-index: 1 !important;
+}
+
+.hero-slider::before {
+  z-index: 2 !important;
+}
+
+/* Text ALWAYS above everything */
+.home-hero__content {
+  z-index: 20 !important;
+}
