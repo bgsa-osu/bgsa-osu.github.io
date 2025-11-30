@@ -1771,14 +1771,10 @@ body {
   padding: 1.2rem 1.6rem;
 }
 
-/* prevent wide elements */
-img,
-video,
-iframe {
-  max-width: 100%;
-}
+/* ----------------------------------
+   FIX DATABASE TABLE ON MOBILE
+---------------------------------- */
 
-/* --- FIX DATABASE TABLE ON MOBILE --- */
 .database__table-container {
   width: 100%;
   overflow-x: auto;
@@ -1786,14 +1782,14 @@ iframe {
 }
 
 #members-table {
-  min-width: 650px;
-  /* force horizontal scrolling instead of breaking layout */
+  min-width: 700px;
+  /* Force horizontal scroll */
   border-collapse: collapse;
 }
 
 #members-table th,
 #members-table td {
   white-space: nowrap;
-  /* prevent headings from wrapping and breaking rows */
+  /* Prevent wrapping */
   padding: 1rem;
 }
