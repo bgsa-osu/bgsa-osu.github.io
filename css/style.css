@@ -1838,7 +1838,6 @@ body {
   overflow: hidden;
 }
 
-/* Each slide */
 .hero-slide {
   position: absolute;
   top: 0;
@@ -1848,34 +1847,35 @@ body {
   background-size: cover;
   background-position: center;
   opacity: 0;
-  animation: slideAnimation 18s infinite;
+  animation: slideAnimation 30s infinite;
 }
 
-/* Slide images */
+/* Slides — UPDATED PATHS */
 .slide1 {
-  background-image: url('./36th_July.jpg');
+  background-image: url('36th_July.jpg');
   animation-delay: 0s;
 }
 
 .slide2 {
-  background-image: url('./baby_buckeye.JPG');
+  background-image: url('cleaning.jpg');
   animation-delay: 6s;
 }
 
 .slide3 {
-  background-image: url('./cleaning.jpg');
+  background-image: url('baby_buckeye.JPG');
   animation-delay: 12s;
 }
+
 .slide4 {
-  background-image: url('./pitt.jpeg');
+  background-image: url('pitt.jpeg');
   animation-delay: 18s;
 }
+
 .slide5 {
-  background-image: url('./Deshi_Bucks_Solar_Eclipse.jpg');
+  background-image: url('Deshi_Bucks_Solar_Eclipse.jpg');
   animation-delay: 24s;
 }
 
-/* Animation */
 @keyframes slideAnimation {
   0% {
     opacity: 0;
@@ -1898,8 +1898,13 @@ body {
   }
 }
 
-/* Ensure content is above slider */
+/* Ensure hero content stays visible */
 .home-hero__content {
   position: relative;
   z-index: 10;
+}
+
+/* REMOVE OLD BACKGROUND — IMPORTANT */
+.home-hero {
+  background: transparent !important;
 }
