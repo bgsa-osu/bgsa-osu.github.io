@@ -1793,3 +1793,38 @@ body {
   /* Prevent wrapping */
   padding: 1rem;
 }
+
+/* ----------------------------------
+   FIX DATABASE TABS ON MOBILE
+---------------------------------- */
+
+@media (max-width: 600px) {
+  .db-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    /* allow items to wrap */
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .db-tab {
+    flex: 1 1 48%;
+    /* 2 items per row */
+    font-size: 1.4rem;
+    /* slightly smaller text */
+    padding: 1rem 0.5rem;
+    /* reduce padding */
+    text-align: center;
+    white-space: normal;
+    /* allow text wrapping */
+    border-radius: 8px;
+  }
+}
+
+@media (max-width: 400px) {
+  .db-tab {
+    flex: 1 1 100%;
+    /* 1 item per row on very small screens */
+    font-size: 1.35rem;
+  }
+}
