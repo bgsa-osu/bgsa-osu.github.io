@@ -1941,3 +1941,31 @@ body {
   color: #BA0C2F !important;
   border: 2px solid #fff;
 }
+/* HERO TEXT ON TOP OF IMAGES */
+.home-hero__content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 5 !important;
+  /* ABOVE overlay */
+  width: 90%;
+  color: white !important;
+}
+
+/* Force all hero text white */
+.home-hero__content h1,
+.home-hero__content p {
+  color: white !important;
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+}
+
+/* Button on hero */
+.home-hero__content .btn--bg {
+  background: rgba(255, 255, 255, 0.92);
+  color: #BA0C2F !important;
+  border: 2px solid white;
+  font-size: 2rem;
+  padding: 1.2rem 5rem;
+}
