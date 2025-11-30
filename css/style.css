@@ -1828,3 +1828,78 @@ body {
     font-size: 1.35rem;
   }
 }
+/* ================================
+   HOME HERO BACKGROUND SLIDER
+================================ */
+
+.hero-slider {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Each slide */
+.hero-slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  animation: slideAnimation 18s infinite;
+}
+
+/* Slide images */
+.slide1 {
+  background-image: url('./assets/jpeg/36th July.jpg');
+  animation-delay: 0s;
+}
+
+.slide2 {
+  background-image: url('./assets/jpeg/baby_buckeye.JPG');
+  animation-delay: 6s;
+}
+
+.slide3 {
+  background-image: url('./assets/jpeg/cleaning.jpg');
+  animation-delay: 12s;
+}
+.slide4 {
+  background-image: url('./assets/jpeg/pitt.jpeg');
+  animation-delay: 12s;
+}
+.slide5 {
+  background-image: url('./assets/jpeg/Deshi Bucks Solar Eclipse.jpg');
+  animation-delay: 12s;
+}
+
+/* Animation */
+@keyframes slideAnimation {
+  0% {
+    opacity: 0;
+  }
+
+  8% {
+    opacity: 1;
+  }
+
+  30% {
+    opacity: 1;
+  }
+
+  38% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Ensure content is above slider */
+.home-hero__content {
+  position: relative;
+  z-index: 10;
+}
