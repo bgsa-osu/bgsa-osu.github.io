@@ -1853,7 +1853,7 @@ body {
 
 /* Slide images */
 .slide1 {
-  background-image: url('./36th July.jpg');
+  background-image: url('./36th_July.jpg');
   animation-delay: 0s;
 }
 
@@ -1871,7 +1871,7 @@ body {
   animation-delay: 18s;
 }
 .slide5 {
-  background-image: url('./Deshi Bucks Solar Eclipse.jpg');
+  background-image: url('./Deshi_Bucks_Solar_Eclipse.jpg');
   animation-delay: 24s;
 }
 
