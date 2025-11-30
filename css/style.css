@@ -883,26 +883,6 @@ textarea {
   }
 }
 
-.header__main-ham-menu-cont {
-  display: none;
-  width: 3rem;
-  padding: 2.2rem 0;
-}
-
-@media only screen and (max-width: 37.5em) {
-  .header__main-ham-menu-cont {
-    display: block;
-  }
-}
-
-.header__main-ham-menu {
-  width: 100%;
-}
-
-.header__main-ham-menu-close {
-  width: 100%;
-}
-
 /* Footer */
 .main-footer {
   background: #000;
@@ -1745,27 +1725,11 @@ textarea {
   .header__logo-sub {
     font-size: 1.6rem;
   }
-
-  .header__main-ham-menu-cont {
-    padding: 1rem 0;
-  }
 }
 
 /* ============================
    📱 FINAL WORKING MOBILE MENU
    ============================ */
-
-/* Show hamburger icon on mobile */
-@media (max-width: 768px) {
-  .header__main-ham-menu-cont {
-    display: block !important;
-    z-index: 3000;
-  }
-
-  .header__links {
-    display: none !important;
-  }
-}
 
 /* Mobile menu dropdown */
 .mobile-menu {
@@ -1791,4 +1755,17 @@ textarea {
 
 .mobile-menu li a:hover {
   color: #BA0C2F;
+}
+@media (max-width: 768px) {
+  .header__links {
+    display: flex !important;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .header__link {
+    padding: 1rem 1.4rem;
+    font-size: 1.4rem;
+  }
 }
