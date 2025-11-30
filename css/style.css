@@ -1815,3 +1815,10 @@ textarea {
     padding: 1rem 0;
   }
 }
+.header__sm-menu {
+  display: none;
+}
+
+.header__sm-menu--active {
+  display: block;
+}
