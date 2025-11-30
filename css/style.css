@@ -1802,10 +1802,16 @@ textarea {
   background: #ddd;
   margin: 3.5rem 0;
 }
-.header__sm-menu {
-  display: none;
-}
+@media (max-width: 600px) {
+  .header__content {
+    padding: 1rem 1.5rem;
+  }
 
-.header__sm-menu--active {
-  display: block;
+  .header__logo-sub {
+    font-size: 1.6rem;
+  }
+
+  .header__main-ham-menu-cont {
+    padding: 1rem 0;
+  }
 }
