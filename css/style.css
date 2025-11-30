@@ -1839,15 +1839,9 @@ body {
 }
 
 .hero-slide {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
   background-size: cover;
   background-position: center;
   opacity: 0.5;
-  animation: slideAnimation 30s infinite;
 }
 
 /* Slides — UPDATED PATHS */
