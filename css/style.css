@@ -1737,23 +1737,24 @@ body {
 }
 
 /* center mobile navbar */
+/* Responsive header — fully working */
 @media (max-width: 768px) {
   .header__content {
-    padding: 1rem 1.2rem !important;
     flex-direction: column;
     gap: 1rem;
+    padding: 1.2rem !important;
   }
 
   .header__links {
-    display: flex !important;
+    display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 1.2rem;
+    gap: 1rem;
     width: 100%;
   }
 
   .header__link {
-    padding: 0.8rem 1.2rem;
+    padding: 0.6rem 1.2rem;
     font-size: 1.4rem;
   }
 }
