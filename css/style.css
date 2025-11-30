@@ -1772,9 +1772,10 @@ body {
 }
 
 /* prevent wide elements */
-* {
-  max-width: 100% !important;
-  box-sizing: border-box;
+img,
+video,
+iframe {
+  max-width: 100%;
 }
 
 /* --- FIX DATABASE TABLE ON MOBILE --- */
