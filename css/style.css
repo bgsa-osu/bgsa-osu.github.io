@@ -2019,3 +2019,34 @@ body {
 .home-hero__content {
   z-index: 20 !important;
 }
+/* ============================
+   FIX HERO SOCIAL ICONS + MOUSE
+   ============================ */
+
+.home-hero__socials,
+.home-hero__social,
+.home-hero__mouse-scroll-cont {
+  position: absolute;
+  z-index: 15 !important;
+  /* ABOVE overlay, BELOW hero text */
+}
+
+.home-hero__socials {
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+}
+
+.home-hero__social {
+  right: 0;
+}
+
+.home-hero__mouse-scroll-cont {
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.home-hero__social-icon {
+  filter: drop-shadow(0px 0px 6px rgba(0, 0, 0, 0.5));
+}
