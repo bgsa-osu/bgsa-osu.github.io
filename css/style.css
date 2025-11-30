@@ -289,17 +289,6 @@ textarea {
   display: none;
 }
 
-/* Home Hero */
-.home-hero {
-  color: #fff;
-  background: linear-gradient(to right, rgba(186, 12, 47, 0.8), rgba(186, 12, 47, 0.8)), url(../../assets/svg/common-bg.svg);
-  background-position: center;
-  height: 100vh;
-  min-height: 80rem;
-  max-height: 120rem;
-  position: relative;
-}
-
 @media only screen and (max-width: 37.5em) {
   .home-hero {
     height: unset;
