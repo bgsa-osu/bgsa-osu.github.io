@@ -1802,3 +1802,10 @@ textarea {
   background: #ddd;
   margin: 3.5rem 0;
 }
+.header__sm-menu {
+  display: none;
+}
+
+.header__sm-menu--active {
+  display: block;
+}
