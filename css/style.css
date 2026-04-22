@@ -2035,7 +2035,7 @@ body {
   transform: translateX(-50%);
 }
 .news__date {
-  font-size: 1.5rem;
+  font-size: 2.5rem;
   color: var(--color-primary);
   font-weight: 600;
   margin-bottom: 1rem;
