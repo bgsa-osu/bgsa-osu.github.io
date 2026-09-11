@@ -34,7 +34,8 @@ youtube_url: https://www.youtube.com/@bgsa-osu
 youtube_handle: "@bgsa-osu"
 
 # ---------- Homepage ----------
-news_on_homepage: 6        # latest news items shown on the homepage
+events_on_homepage: 4        # latest events shown on the homepage
+achievements_on_homepage: 6  # latest achievements shown on the homepage
 blog_on_homepage: 3        # latest blog stories shown on the homepage
 news_card_max_words: 90    # longer news posts show a preview + "Read more"
 
@@ -51,6 +52,7 @@ defaults:
       type: posts
     values:
       layout: post
+      section: events        # posts with `section: achievements` go to Achievements
       permalink: /news/:year/:month/:title/
   - scope:
       path: "blog"

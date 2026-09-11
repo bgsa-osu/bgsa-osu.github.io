@@ -3,8 +3,10 @@ layout: default
 ---
 {%- if page.categories contains "blog" -%}
   {%- assign back_url = "/blog/" -%}{%- assign back_label = "All stories" -%}
+{%- elsif page.section == "achievements" -%}
+  {%- assign back_url = "/news/achievements/" -%}{%- assign back_label = "All achievements" -%}
 {%- else -%}
-  {%- assign back_url = "/news/" -%}{%- assign back_label = "All news" -%}
+  {%- assign back_url = "/news/events/" -%}{%- assign back_label = "All events" -%}
 {%- endif -%}
 <main class="page-main">
   <article class="main-container post">

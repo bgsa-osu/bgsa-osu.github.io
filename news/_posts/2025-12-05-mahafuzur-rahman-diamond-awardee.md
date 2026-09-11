@@ -1,4 +1,5 @@
 ---
+section: achievements
 title: "Dr. Mohammad Mahafuzur Rahman Honored as a Diamond Awardee!"
 image: /assets/jpeg/mahfuz_diamond.jpg
 ---

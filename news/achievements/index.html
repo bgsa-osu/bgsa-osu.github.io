@@ -1,0 +1,21 @@
+---
+layout: default
+title: Achievements
+description: Defenses, awards, and fellowships from the BGSA community.
+---
+{%- assign achievements = site.categories.news | where: "section", "achievements" %}
+<main class="page-main">
+  <section class="projects">
+    <div class="main-container">
+      <h1 class="heading heading-sec heading-sec__mb-med">
+        <span class="heading-sec__main">Achievements</span>
+        <span class="heading-sec__sub">Defenses, awards, and fellowships from our community. · <a class="news__jump" href="{{ '/news/events/' | relative_url }}">See events →</a></span>
+      </h1>
+      <div class="achievements__grid">
+        {%- for post in achievements %}
+          {% include achievement-card.html %}
+        {%- endfor %}
+      </div>
+    </div>
+  </section>
+</main>

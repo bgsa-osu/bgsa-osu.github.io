@@ -1,4 +1,5 @@
 ---
+section: achievements
 title: "Milon Mondal Receives the 2025-26 Presidential Fellowship!"
 image: /assets/jpeg/milon_presidential.jpg
 ---

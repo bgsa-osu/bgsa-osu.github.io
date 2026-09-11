@@ -13,7 +13,7 @@ the site automatically, and your change is live in 1–2 minutes.
 
 | To change…                        | Edit this                     |
 | --------------------------------- | ----------------------------- |
-| News & announcements              | `news/_posts/` (one file per item) |
+| News: events & achievements       | `news/_posts/` (one file per item) |
 | Blog stories                      | `blog/_posts/` (one file per story) |
 | Executive Committee (current + past) | `_data/committees.yml`     |
 | Gallery                           | `_data/gallery.yml`           |
@@ -53,9 +53,32 @@ Links look like this: [Read more](https://example.com)
 - like this
 ```
 
-The homepage shows the latest 6 items automatically. Every item also gets its
-own page (good for sharing) and appears on the full news page at `/news/`.
-Long items show a preview on the homepage with a "Read more" link.
+### Event or achievement?
+
+News is split into two groups:
+
+- **Events**: things BGSA organized or took part in (tournaments, festivals,
+  fairs, volunteering, panels). This is the default, so you don't need to add anything.
+- **Achievements**: members' defenses, awards, and fellowships. Add one line,
+  `section: achievements`, to the top block:
+
+```markdown
+---
+section: achievements
+title: "Congratulations Dr. Rahman!"
+image: /assets/jpeg/rahman_defense.jpg
+---
+```
+
+The homepage shows the latest 4 events as full cards and the latest 6
+achievements as a photo grid (change the numbers in `_config.yml`). Every item
+also gets its own page (good for sharing), and the full lists are at
+`/news/events/` and `/news/achievements/`. Long event posts show a preview on
+the homepage with a "Read more" link.
+
+Tip: the easiest way to start is to copy an existing post of the same kind
+(an old defense post for a new defense), then change the filename, title,
+image, and text.
 
 Optional: add `image_alt: "..."` under `image` to describe the photo for
 screen readers (otherwise the title is used).
@@ -108,6 +131,23 @@ gem install jekyll
 jekyll serve
 # then open http://localhost:4000
 ```
+
+## Post not showing up? Check these first
+
+- **The filename must end in `.md`.** `2026-05-01-minhaz-defense` is ignored;
+  `2026-05-01-minhaz-defense.md` works.
+- **The filename must start with the date**: `YYYY-MM-DD-title.md`.
+- **Dates in the future don't appear** until that day arrives.
+- **Image names are case-sensitive.** If the file is `photo.jpg`, writing
+  `photo.JPG` in the post gives a broken image (it may look fine on your
+  laptop but breaks on the live site).
+- **Keep the two `---` lines** at the top of the post, around `title` and `image`.
+- **Don't paste Facebook's fancy bold text** (𝐥𝐢𝐤𝐞 𝐭𝐡𝐢𝐬). It's made of special
+  symbols, not letters. Type normal text and use `**double asterisks**` instead.
+- **When copying an old post as a template, update the title.**
+- **Achievement showing under Events?** Add `section: achievements` to its top block.
+- **Posts go in `news/_posts/` or `blog/_posts/`**, not in `news/` or a
+  top-level `_posts/` folder.
 
 ## If the site doesn't update
 

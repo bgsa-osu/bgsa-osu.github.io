@@ -1,0 +1,21 @@
+---
+layout: default
+title: Events
+description: All BGSA events, newest first.
+---
+{%- assign events = site.categories.news | where: "section", "events" %}
+<main class="page-main">
+  <section class="projects">
+    <div class="main-container">
+      <h1 class="heading heading-sec heading-sec__mb-med">
+        <span class="heading-sec__main">Events</span>
+        <span class="heading-sec__sub">Every BGSA event, newest first. · <a class="news__jump" href="{{ '/news/achievements/' | relative_url }}">See achievements →</a></span>
+      </h1>
+      <div class="news__content">
+        {%- for post in events %}
+          {% include news-card.html %}
+        {%- endfor %}
+      </div>
+    </div>
+  </section>
+</main>

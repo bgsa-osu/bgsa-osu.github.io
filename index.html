@@ -147,22 +147,34 @@ layout: default
   </div>
 </section>
 
-<!-- NEWS (latest items; add posts in news/_posts/) -->
+<!-- NEWS: events + achievements (add posts in news/_posts/; see README) -->
+{%- assign events = site.categories.news | where: "section", "events" %}
+{%- assign achievements = site.categories.news | where: "section", "achievements" %}
 <section id="news" class="projects sec-pad">
   <div class="main-container">
     <h2 class="heading heading-sec heading-sec__mb-bg">
       <span class="heading-sec__main">News & Announcements</span>
-      <span class="heading-sec__sub">Stay updated with the latest BGSA news, events, and announcements.</span>
+      <span class="heading-sec__sub">Stay updated with the latest BGSA events and our community’s achievements.</span>
     </h2>
 
+    <h3 class="news__group-title">Events</h3>
     <div class="news__content">
-      {%- for post in site.categories.news limit: site.news_on_homepage %}
+      {%- for post in events limit: site.events_on_homepage %}
         {% include news-card.html %}
       {%- endfor %}
     </div>
-
     <div class="section-more">
-      <a href="{{ '/news/' | relative_url }}" class="btn btn--theme section-more__btn">See all news</a>
+      <a href="{{ '/news/events/' | relative_url }}" class="btn btn--theme section-more__btn">See all events</a>
+    </div>
+
+    <h3 class="news__group-title news__group-title--spaced">Achievements</h3>
+    <div class="achievements__grid">
+      {%- for post in achievements limit: site.achievements_on_homepage %}
+        {% include achievement-card.html %}
+      {%- endfor %}
+    </div>
+    <div class="section-more">
+      <a href="{{ '/news/achievements/' | relative_url }}" class="btn btn--theme section-more__btn">See all achievements</a>
     </div>
   </div>
 </section>

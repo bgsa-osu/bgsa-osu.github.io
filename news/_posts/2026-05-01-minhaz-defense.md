@@ -1,4 +1,5 @@
 ---
+section: achievements
 title: "Congratulations Dr. Minhaz!"
 image: /assets/jpeg/minhaz_defense.jpg
 ---

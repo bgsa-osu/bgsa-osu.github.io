@@ -1,18 +1,32 @@
 ---
 layout: default
 title: News & Announcements
-description: All BGSA news, events, and announcements.
+description: BGSA events and our community's achievements.
 ---
+{%- assign events = site.categories.news | where: "section", "events" %}
+{%- assign achievements = site.categories.news | where: "section", "achievements" %}
 <main class="page-main">
   <section class="projects">
     <div class="main-container">
-      <h1 class="heading heading-sec heading-sec__mb-bg">
+      <h1 class="heading heading-sec heading-sec__mb-med">
         <span class="heading-sec__main">News & Announcements</span>
-        <span class="heading-sec__sub">Every BGSA update, newest first.</span>
+        <span class="heading-sec__sub">
+          <a class="news__jump" href="{{ '/news/events/' | relative_url }}">Events ({{ events.size }})</a> ·
+          <a class="news__jump" href="{{ '/news/achievements/' | relative_url }}">Achievements ({{ achievements.size }})</a>
+        </span>
       </h1>
+
+      <h2 id="events" class="news__group-title">Events</h2>
       <div class="news__content">
-        {%- for post in site.categories.news %}
+        {%- for post in events %}
           {% include news-card.html %}
+        {%- endfor %}
+      </div>
+
+      <h2 id="achievements" class="news__group-title news__group-title--spaced">Achievements</h2>
+      <div class="achievements__grid">
+        {%- for post in achievements %}
+          {% include achievement-card.html %}
         {%- endfor %}
       </div>
     </div>

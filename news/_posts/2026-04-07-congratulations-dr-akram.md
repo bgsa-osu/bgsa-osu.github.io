@@ -1,4 +1,5 @@
 ---
+section: achievements
 title: "Congratulations Dr. Akram!"
 image: /assets/jpeg/washim_defense.jpg
 ---
