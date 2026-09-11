@@ -1,6 +1,6 @@
 ---
-title: "BGSA Cricket Tournament 2026"
-image: /assets/jpeg/football_tournament.JPG
+title: "BGSA Football Tournament 2026"
+image: /assets/jpeg/football_tournament.jpg
 ---
 We are thrilled to announce the successful completion of সেয়ানে সেয়ানে লড়াই ২.০! ⚽️🔥
 A huge shoutout to everyone who participated, gave their all on the field, and cheered from the sidelines to make this football tournament an incredible success. The passion, excitement, and sportsmanship throughout the tournament were truly unforgettable!
