@@ -1,0 +1,20 @@
+---
+layout: default
+title: Blog
+description: Articles, reflections, and creative writing from the BGSA community.
+---
+<main class="page-main">
+  <section class="about">
+    <div class="main-container">
+      <h1 class="heading heading-sec heading-sec__mb-med">
+        <span class="heading-sec__main">Blog</span>
+        <span class="heading-sec__sub">Articles, reflections, and creative writing from our BGSA community. Send your stories to {{ site.email }}.</span>
+      </h1>
+      <div class="blog-list">
+        {%- for post in site.categories.blog %}
+          {% include blog-card.html %}
+        {%- endfor %}
+      </div>
+    </div>
+  </section>
+</main>

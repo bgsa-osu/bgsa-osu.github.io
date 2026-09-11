@@ -1,0 +1,68 @@
+# ============================================================
+#  BGSA website settings
+#  Edit the values below; the whole site picks them up.
+#  (After editing this file, GitHub Pages rebuilds automatically.
+#   If you run the site locally, restart `jekyll serve`.)
+# ============================================================
+
+title: "Bangladesh Graduate Student Association | The Ohio State University"
+name: "Bangladesh Graduate Student Association (BGSA)"
+short_name: "BGSA @ tOSU"
+description: >-
+  The Bangladesh Graduate Student Association (BGSA) at The Ohio State University
+  fosters community, cultural exchange, and professional networking among
+  Bangladeshi graduate students, alumni, and researchers.
+footer_tagline: >-
+  Promoting unity, culture, and collaboration among Bangladeshi graduate students
+  at The Ohio State University.
+
+url: "https://bgsa-osu.github.io"
+baseurl: ""
+
+# Default image shown when a page is shared on Facebook, WhatsApp, etc.
+og_image: /assets/icons/og-image.jpg
+
+# ---------- Contact & social ----------
+email: bgsa.osu.1@gmail.com
+phone: "+16145549782"
+phone_display: "+1 (614) 554 9782"
+facebook_url: https://www.facebook.com/BGSA.OSU.1
+facebook_handle: BGSA.OSU.1
+instagram_url: https://www.instagram.com/bgsa.osu/
+instagram_handle: "@bgsa.osu"
+youtube_url: https://www.youtube.com/@bgsa-osu
+youtube_handle: "@bgsa-osu"
+
+# ---------- Homepage ----------
+news_on_homepage: 6        # latest news items shown on the homepage
+blog_on_homepage: 3        # latest blog stories shown on the homepage
+news_card_max_words: 90    # longer news posts show a preview + "Read more"
+
+# ---------- Build settings (no need to touch) ----------
+timezone: America/New_York
+markdown: kramdown
+kramdown:
+  input: GFM
+  hard_wrap: true          # a new line in a post = a new line on the site
+
+defaults:
+  - scope:
+      path: "news"
+      type: posts
+    values:
+      layout: post
+      permalink: /news/:year/:month/:title/
+  - scope:
+      path: "blog"
+      type: posts
+    values:
+      layout: post
+      permalink: /blog/:title/
+
+exclude:
+  - README.md
+  - LICENSE
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor

@@ -1,0 +1,36 @@
+{%- comment -%} Page <head>: title, description, favicon, social-share preview tags. {%- endcomment -%}
+{%- if page.title -%}
+  {%- assign page_title = page.title | append: " | " | append: site.title -%}
+{%- else -%}
+  {%- assign page_title = site.title -%}
+{%- endif -%}
+{%- if page.description -%}
+  {%- assign page_desc = page.description -%}
+{%- elsif page.excerpt -%}
+  {%- assign page_desc = page.excerpt | strip_html | normalize_whitespace | truncatewords: 40 -%}
+{%- else -%}
+  {%- assign page_desc = site.description | normalize_whitespace -%}
+{%- endif -%}
+{%- assign share_image = page.image | default: site.og_image -%}
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>{{ page_title | escape }}</title>
+<meta name="description" content="{{ page_desc | escape }}" />
+<link rel="canonical" href="{{ page.url | absolute_url }}" />
+
+<link rel="icon" type="image/png" sizes="32x32" href="{{ '/assets/icons/favicon-32.png' | relative_url }}" />
+<link rel="apple-touch-icon" href="{{ '/assets/icons/apple-touch-icon.png' | relative_url }}" />
+<meta name="theme-color" content="#BA0C2F" />
+
+<meta property="og:site_name" content="{{ site.name | escape }}" />
+<meta property="og:title" content="{{ page.title | default: site.name | escape }}" />
+<meta property="og:description" content="{{ page_desc | escape }}" />
+<meta property="og:url" content="{{ page.url | absolute_url }}" />
+<meta property="og:image" content="{{ share_image | absolute_url | uri_escape }}" />
+<meta property="og:type" content="{% if page.date %}article{% else %}website{% endif %}" />
+<meta name="twitter:card" content="summary_large_image" />
+
+<link rel="stylesheet" href="{{ '/css/style.css' | relative_url }}" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700;900&display=swap" rel="stylesheet" />

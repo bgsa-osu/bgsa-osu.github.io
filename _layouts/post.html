@@ -1,0 +1,26 @@
+---
+layout: default
+---
+{%- if page.categories contains "blog" -%}
+  {%- assign back_url = "/blog/" -%}{%- assign back_label = "All stories" -%}
+{%- else -%}
+  {%- assign back_url = "/news/" -%}{%- assign back_label = "All news" -%}
+{%- endif -%}
+<main class="page-main">
+  <article class="main-container post">
+    <a class="post__back" href="{{ back_url | relative_url }}">← {{ back_label }}</a>
+
+    <h1 class="post__title"{% if page.lang %} lang="{{ page.lang }}"{% endif %}>{{ page.title }}</h1>
+    <p class="post__meta">
+      {%- if page.author %}By <strong>{{ page.author }}</strong>{% else %}📅 {{ page.date | date: "%B %d, %Y" }}{% endif -%}
+    </p>
+
+    {%- if page.image %}
+    <img class="post__image" src="{{ page.image | relative_url }}" alt="{{ page.image_alt | default: page.title | escape }}" />
+    {%- endif %}
+
+    <div class="post__body"{% if page.lang %} lang="{{ page.lang }}"{% endif %}>
+      {{ content }}
+    </div>
+  </article>
+</main>

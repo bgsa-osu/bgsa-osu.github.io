@@ -1,0 +1,20 @@
+---
+layout: default
+title: News & Announcements
+description: All BGSA news, events, and announcements.
+---
+<main class="page-main">
+  <section class="projects">
+    <div class="main-container">
+      <h1 class="heading heading-sec heading-sec__mb-bg">
+        <span class="heading-sec__main">News & Announcements</span>
+        <span class="heading-sec__sub">Every BGSA update, newest first.</span>
+      </h1>
+      <div class="news__content">
+        {%- for post in site.categories.news %}
+          {% include news-card.html %}
+        {%- endfor %}
+      </div>
+    </div>
+  </section>
+</main>

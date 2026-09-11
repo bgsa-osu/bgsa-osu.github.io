@@ -1,89 +1,42 @@
-<!DOCTYPE html>
-<html lang="en">
+---
+layout: default
+---
+<!--
+  HOMEPAGE LAYOUT. Most content is NOT edited here:
+    News ............ news/_posts/        Blog ........... blog/_posts/
+    Committee ....... _data/committees.yml Gallery ........ _data/gallery.yml
+    Hero photos ..... _data/hero.yml       Resources ...... _data/resources.yml
+    Goals ........... _data/goals.yml      Contact/social . _config.yml
+  See README.md for step-by-step instructions.
+-->
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-  <title>Bangladesh Graduate Student Association | The Ohio State University</title>
-  <meta name="description"
-    content="The Bangladesh Graduate Student Association (BGSA) at The Ohio State University fosters community, cultural exchange, and professional networking among Bangladeshi graduate students, alumni, and researchers." />
+<!-- HOME -->
+<section id="home" class="home-hero">
+  <div class="hero-slider" aria-hidden="true">
+    {%- for slide in site.data.hero %}
+    {%- assign slide_url = slide.image | relative_url %}
+    {%- if forloop.first %}
+    <div class="hero-slide is-active" style="background-image: url('{{ slide_url }}')"></div>
+    {%- else %}
+    <div class="hero-slide" data-bg="{{ slide_url }}"></div>
+    {%- endif %}
+    {%- endfor %}
+  </div>
 
-  <link rel="stylesheet" href="css/style.css" />
-
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700;900&display=swap"
-    rel="stylesheet" />
-
-  <!-- ✅ SheetJS Library for Excel reading -->
-  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
-</head>
-
-<body>
-
-  <!-- HEADER -->
-  <header class="header">
-    <div class="header__content">
-  
-      <!-- Correct single logo container -->
-      <a href="#home" class="header__logo-container">
-        <div class="header__logo-img-cont">
-          <img src="./assets/png/tOSU_BGSA_logo.png" alt="BGSA Logo" class="header__logo-img" />
-        </div>
-        <span class="header__logo-sub">BGSA @ tOSU</span>
-      </a>
-  
-      <div class="header__main">
-        <ul class="header__links">
-          <li><a href="#home" class="header__link">Home</a></li>
-          <li><a href="#about" class="header__link">About</a></li>
-          <li><a href="#news" class="header__link">News</a></li>
-          <li><a href="#gallery" class="header__link">Gallery</a></li>
-          <li><a href="#database" class="header__link">Database</a></li>
-          <li><a href="#resources" class="header__link">Resources</a></li>
-          <li><a href="#blog" class="header__link">Blog</a></li>
-          <li><a href="#contact" class="header__link">Contact</a></li>
-        </ul>
-      </div>
-  
+  <div class="home-hero__content">
+    <h1 class="heading-primary">{{ site.name }}</h1>
+    <div class="home-hero__info">
+      <p class="text-primary">The Ohio State University</p>
     </div>
-  
-  </header>
+    <div class="home-hero__cta">
+      <a href="#about" class="btn btn--bg">Learn More</a>
+    </div>
+  </div>
 
-  <!-- HOME -->
-  <section id="home" class="home-hero">
-  
-    <!-- SLIDER -->
-    <div class="hero-slider">
-      <div class="hero-slide slide1"></div>
-      <div class="hero-slide slide2"></div>
-      <div class="hero-slide slide3"></div>
-      <div class="hero-slide slide4"></div>
-      <div class="hero-slide slide5"></div>
-    </div>
-  
-    <!-- HERO TEXT (ON TOP OF IMAGES) -->
-    <div class="home-hero__content">
-      <h1 class="heading-primary">
-        Bangladesh Graduate Student Association (BGSA)
-      </h1>
-  
-      <div class="home-hero__info">
-        <p class="text-primary">The Ohio State University</p>
-      </div>
-  
-      <div class="home-hero__cta">
-        <a href="#about" class="btn btn--bg">Learn More</a>
-      </div>
-    </div>
-  
-    <!-- MOUSE SCROLL -->
-    <div class="home-hero__mouse-scroll-cont">
-      <div class="mouse"></div>
-    </div>
-  
-  </section>
+  <div class="home-hero__mouse-scroll-cont">
+    <div class="mouse"></div>
+  </div>
+</section>
 
 <!-- ABOUT (WITH TABS) -->
 <section id="about" class="about sec-pad">
@@ -94,7 +47,6 @@
       <span class="heading-sec__sub">Learn about our organization & leadership</span>
     </h2>
 
-    <!-- ABOUT TABS -->
     <div class="about-tabs">
       <button class="about-tab active" data-target="about-info">About BGSA</button>
       <button class="about-tab" data-target="about-goals">Goals</button>
@@ -102,293 +54,92 @@
       <button class="about-tab" data-target="about-past">Previous Executive Committees</button>
     </div>
 
-    <!-- TAB CONTENT WRAPPER -->
     <div class="about-tab-content">
 
-      <!-- TAB 1 — ABOUT DESCRIPTION -->
+      <!-- TAB 1 — ABOUT -->
       <div id="about-info" class="about-content active">
         <div class="about__split">
           <div class="about__logo-side">
-            <img src="./assets/png/tOSU_BGSA_logo.png" alt="BGSA Logo" class="about__logo-img" />
+            <img src="{{ '/assets/png/tOSU_BGSA_logo.png' | relative_url }}" alt="BGSA logo" class="about__logo-img" />
           </div>
           <div class="about__text-side">
-            <p class="about__description">              
-              The Bangladesh Graduate Students Association (BGSA) was established with the motivation to foster a stronger sense of
+            <p class="about__description">
+              The Bangladesh Graduate Student Association (BGSA) was established with the motivation to foster a stronger sense of
               community and enhance connectivity among members. One of the association’s primary goals has been to support graduate
               students and their families as they settle in and navigate their academic journey abroad.
-              
+            </p>
+            <p class="about__description">
               In 2022, a small group of four students stepped forward, with support from the broader community, to form the first
               leadership committee. They organized several meet-and-greet events featuring cultural activities and Bengali cuisine.
               From this modest beginning, subsequent committees have grown in size and expanded BGSA’s functions, activities, and
               impact both within the organization and across the community.
-              
+            </p>
+            <p class="about__description">
               Today, BGSA serves as a strong anchor connecting graduate students, post-doctoral researchers, Bengali faculty members,
               and even student groups from other universities. With increasingly effective leadership and continued community support,
               BGSA aims to remain at the forefront of improving the experience of every graduate student and their family as they
               navigate their journey at OSU.
-  
             </p>
           </div>
         </div>
       </div>
 
-    <!-- TAB 3 — GOALS -->
-    <div id="about-goals" class="about-content">
-      <h3 class="heading heading-sec heading-sec__mb-med">
-        <span class="heading-sec__main">Our Goals</span>
-      </h3>
-
-      <div class="goals__grid">
-
-        <div class="goal-item">
-          <span class="goal-icon">✔</span>
-          <p class="goal-text">Foster social change and promote an inclusive campus environment.</p>
-        </div>
-
-        <div class="goal-item">
-          <span class="goal-icon">✔</span>
-          <p class="goal-text">Encourage meaningful student engagement through collaboration and events.</p>
-        </div>
-
-        <div class="goal-item">
-          <span class="goal-icon">✔</span>
-          <p class="goal-text">Strengthen cultural connection among Bangladeshi students at OSU.</p>
-        </div>
-
-        <div class="goal-item">
-          <span class="goal-icon">✔</span>
-          <p class="goal-text">Serve as the representative body for Bangladeshi graduate students.</p>
-        </div>
-
-        <div class="goal-item">
-          <span class="goal-icon">✔</span>
-          <p class="goal-text">Create a supportive space empowering students academically and socially.</p>
-        </div>
-
-        <div class="goal-item">
-          <span class="goal-icon">✔</span>
-          <p class="goal-text">Build and sustain a central association connecting Bangladeshi students.</p>
-        </div>
-
-        <div class="goal-item">
-          <span class="goal-icon">✔</span>
-          <p class="goal-text">Celebrate Bangladeshi heritage, culture, and identity at OSU.</p>
-        </div>
-
-        <div class="goal-item">
-          <span class="goal-icon">✔</span>
-          <p class="goal-text">Promote a strong sense of community, belonging, and cultural pride.</p>
-        </div>
-
-        <div class="goal-item">
-          <span class="goal-icon">✔</span>
-          <p class="goal-text">Advance advocacy, collaboration, and engagement for student well-being.</p>
-        </div>
-
-        <div class="goal-item">
-          <span class="goal-icon">✔</span>
-          <p class="goal-text">Strengthen cross-cultural understanding within the Buckeye community.</p>
-        </div>
-
-      </div>
-    </div>
-
-      <!-- TAB 3 — EXECUTIVE COMMITTEE -->
-      <div id="about-ec" class="about-content">
-
+      <!-- TAB 2 — GOALS (edit in _data/goals.yml) -->
+      <div id="about-goals" class="about-content">
         <h3 class="heading heading-sec heading-sec__mb-med">
-          <span class="heading-sec__main">Executive Committee 2025-2026</span>
+          <span class="heading-sec__main">Our Goals</span>
         </h3>
-
-        <div class="projects__content">
-
-          <!-- Advisor -->
-          <div class="projects__row">
-            <div class="projects__row-img-cont">
-              <img src="./assets/jpeg/ExCom 25-26/akbar_advisor.jpeg" class="projects__row-img" />
-            </div>
-            <div class="projects__row-content">
-              <h3 class="projects__row-content-title">Dr. Sheikh A. Akbar</h3>
-              <p class="projects__row-content-desc">Advisor</p>
-              <p class="projects__row-content-deg">Professor</p>
-              <p class="projects__row-content-sub">Materials Science and Engineering</p>
-              <p class="projects__row-content-mail">akbar.1@osu.edu</p>
-            </div>
+        <div class="goals__grid">
+          {%- for goal in site.data.goals %}
+          <div class="goal-item">
+            <span class="goal-icon">✔</span>
+            <p class="goal-text">{{ goal }}</p>
           </div>
-
-          <!-- PRESIDENT -->
-          <div class="projects__row">
-            <div class="projects__row-img-cont">
-              <img src="./assets/jpeg/ExCom 25-26/Mujahid.jpeg" class="projects__row-img" />
-            </div>
-            <div class="projects__row-content">
-              <h3 class="projects__row-content-title">Mujahidul Islam</h3>
-              <p class="projects__row-content-desc">President</p>
-              <p class="projects__row-content-deg">PhD Student</p>
-              <p class="projects__row-content-sub">Agricultural, Environmental, and Development Economics</p>
-              <p class="projects__row-content-mail">islam.209@osu.edu</p>
-            </div>
-          </div>
-
-          <!-- VICE PRESIDENT -->
-          <div class="projects__row">
-            <div class="projects__row-img-cont">
-              <img src="./assets/jpeg/ExCom 25-26/Mashnur.jpg" class="projects__row-img" />
-            </div>
-            <div class="projects__row-content">
-              <h3 class="projects__row-content-title">Mashnur Rashid</h3>
-              <p class="projects__row-content-desc">Vice President</p>
-              <p class="projects__row-content-deg">PhD Student</p>
-              <p class="projects__row-content-sub">Industrial Engineering</p>
-              <p class="projects__row-content-mail">rashid.118@osu.edu</p>
-            </div>
-          </div>
-
-          <div class="projects__row">
-            <div class="projects__row-img-cont">
-              <img src="./assets/jpeg/ExCom 25-26/Naimul.jpg" alt="General Secretary" class="projects__row-img" />
-            </div>
-            <div class="projects__row-content">
-              <h3 class="projects__row-content-title">K M Naimul Hassan</h3>
-              <p class="projects__row-content-desc">General Secretary</p>
-              <p class="projects__row-content-deg">PhD Student</p>
-              <p class="projects__row-content-sub">Computer Science and Engineering</p>
-              <p class="projects__row-content-mail">hassan.491@osu.edu</p>
-            </div>
-          </div>
-          
-          <div class="projects__row">
-            <div class="projects__row-img-cont">
-              <img src="./assets/jpeg/ExCom 25-26/Mahmud.JPG" alt="Treasurer" class="projects__row-img" />
-            </div>
-            <div class="projects__row-content">
-              <h3 class="projects__row-content-title">Abdullah Al Mahmud</h3>
-              <p class="projects__row-content-desc">Treasurer</p>
-              <p class="projects__row-content-deg">PhD Student</p>
-              <p class="projects__row-content-sub">Chemical and Biomolecular Engineering</p>
-              <p class="projects__row-content-mail">almahmud.1@osu.edu</p>
-            </div>
-          </div>
-          
-          <div class="projects__row">
-            <div class="projects__row-img-cont">
-              <img src="./assets/jpeg/ExCom 25-26/Shuvo.jpg" alt="Alumni Liaison Secretary" class="projects__row-img" />
-            </div>
-            <div class="projects__row-content">
-              <h3 class="projects__row-content-title">Md Shahneoug Shuvo</h3>
-              <p class="projects__row-content-desc">Alumni Liaison Secretary</p>
-              <p class="projects__row-content-deg">PhD Student</p>
-              <p class="projects__row-content-sub">Mechanical and Aerospace Engineering</p>
-              <p class="projects__row-content-mail">shuvo.2@osu.edu</p>
-            </div>
-          </div>
-          
-          <div class="projects__row">
-            <div class="projects__row-img-cont">
-              <img src="./assets/jpeg/ExCom 25-26/Sharmila.jpeg" alt="Media & Communication Secretary"
-                class="projects__row-img" />
-            </div>
-            <div class="projects__row-content">
-              <h3 class="projects__row-content-title">Nowshin Sharmila</h3>
-              <p class="projects__row-content-desc">Media & Communication Secretary</p>
-              <p class="projects__row-content-deg">MA Student</p>
-              <p class="projects__row-content-sub">Women’s, Gender, and Sexuality Studies</p>
-              <p class="projects__row-content-mail">sharmila.1@osu.edu</p>
-            </div>
-          </div>
-          
-          <div class="projects__row">
-            <div class="projects__row-img-cont">
-              <img src="./assets/jpeg/ExCom 25-26/Mehidi.jpg" alt="Sports & Events Secretary" class="projects__row-img" />
-            </div>
-            <div class="projects__row-content">
-              <h3 class="projects__row-content-title">Md Mehidi Hassan</h3>
-              <p class="projects__row-content-desc">Sports & Events Secretary</p>
-              <p class="projects__row-content-deg">PhD Student</p>
-              <p class="projects__row-content-sub">Materials Science and Engineering</p>
-              <p class="projects__row-content-mail">hassan.541@osu.edu</p>
-            </div>
-          </div>
-
-          <div class="projects__row">
-            <div class="projects__row-img-cont">
-              <img src="./assets/jpeg/ExCom 25-26/Partha.png" alt="Membership Co-ordinator" class="projects__row-img" />
-            </div>
-            <div class="projects__row-content">
-              <h3 class="projects__row-content-title">Partha Biswas</h3>
-              <p class="projects__row-content-desc">Membership Co-ordinator</p>
-              <p class="projects__row-content-deg">PhD Student</p>
-              <p class="projects__row-content-sub">Biomedical Sciences Graduate Program (BSGP)</p>
-              <p class="projects__row-content-mail">biswas.177@osu.edu</p>
-            </div>
-          </div>
-          
-          <div class="projects__row">
-            <div class="projects__row-img-cont">
-              <img src="./assets/jpeg/ExCom 25-26/Rezwan.jpg" alt="Cultural Secretary" class="projects__row-img" />
-            </div>
-            <div class="projects__row-content">
-              <h3 class="projects__row-content-title">Rezwan Zakaria</h3>
-              <p class="projects__row-content-desc">Cultural Secretary</p>
-              <p class="projects__row-content-deg">PhD Student</p>
-              <p class="projects__row-content-sub">Electrical and Computer Engineering</p>
-              <p class="projects__row-content-mail">zakaria.37@osu.edu</p>
-            </div>
-          </div>
-
-          <!-- (REST OF EC — PASTE ALL EXACTLY LIKE BEFORE) -->
-
+          {%- endfor %}
         </div>
-
       </div>
 
-      <!-- TAB 4 — PAST EXECUTIVE COMMITTEE -->
+      {%- assign current = site.data.committees.first %}
 
+      <!-- TAB 3 — EXECUTIVE COMMITTEE (edit in _data/committees.yml) -->
+      <div id="about-ec" class="about-content">
+        <h3 class="heading heading-sec heading-sec__mb-med">
+          <span class="heading-sec__main">Executive Committee {{ current.term }}</span>
+        </h3>
+        <div class="projects__content">
+          {%- for member in current.members %}
+          <div class="projects__row">
+            <div class="projects__row-img-cont">
+              <img src="{{ member.photo | relative_url }}" alt="{{ member.name }}, {{ member.role }}" class="projects__row-img" loading="lazy" />
+            </div>
+            <div class="projects__row-content">
+              <h3 class="projects__row-content-title">{{ member.name }}</h3>
+              <p class="projects__row-content-desc">{{ member.role }}</p>
+              <p class="projects__row-content-deg">{{ member.degree }}</p>
+              <p class="projects__row-content-sub">{{ member.department }}</p>
+              <p class="projects__row-content-mail">{{ member.email }}</p>
+            </div>
+          </div>
+          {%- endfor %}
+        </div>
+      </div>
+
+      <!-- TAB 4 — PREVIOUS COMMITTEES (every term after the first in _data/committees.yml) -->
       <div id="about-past" class="about-content">
-
         <h3 class="heading heading-sec heading-sec__mb-med">
           <span class="heading-sec__main">Previous Executive Committees</span>
         </h3>
-
         <div class="past-ec-grid">
-
-          <!-- 2024–2025 -->
+          {%- for committee in site.data.committees offset: 1 %}
           <div class="past-ec-card">
-            <h4>Executive Committee 2024–2025</h4>
+            <h4>Executive Committee {{ committee.term }}</h4>
             <ul>
-              <li><strong>President:</strong> Mostahidul Alam</li>
-              <li><strong>Vice President:</strong> Md Minaruzzaman</li>
-              <li><strong>General Secretary:</strong> Md Faiyaz Jamil</li>
-              <li><strong>Treasurer:</strong> H Rainak Khan Real</li>
-              <li><strong>Media & Communication Secretary:</strong> Afia Mubassira Islam</li>
-              <li><strong>Sports & Events Secretary:</strong> Md Saklain Morshed</li>
-              <li><strong>Membership Co-ordinator:</strong> Abdul Mukit Majumder</li>
+              {%- for member in committee.members %}
+              <li><strong>{{ member.role }}:</strong> {{ member.name }}</li>
+              {%- endfor %}
             </ul>
           </div>
-
-          <!-- 2023–2024 -->
-          <div class="past-ec-card">
-            <h4>Executive Committee 2023–2024</h4>
-            <ul>
-              <li><strong>President:</strong> Sadikul Alam</li>
-              <li><strong>Vice President:</strong> Milon Mondal,</li>
-              <li><strong>General Secretary:</strong> Mohammed Raihan Uddin</li>
-              <li><strong>Treasurer:</strong> Sifat Hossain</li>
-              <li><strong>Cultural Secretary:</strong> Mahzabeen Kamrul Shuha</li>
-            </ul>
-          </div>
-
-          <!-- 2022–2023 -->
-          <div class="past-ec-card">
-            <h4>Executive Committee 2022–2023</h4>
-            <ul>
-              <li><strong>President:</strong> Md Atif Haider</li>
-              <li><strong>Vice President:</strong> Eshita Akter Eva</li>
-              <li><strong>General Secretary:</strong> Reashed Tasvir Omi</li>
-              <li><strong>Treasurer:</strong> Ahmad Ilderim Tokey</li>
-            </ul>
-          </div>
-
+          {%- endfor %}
         </div>
       </div>
 
@@ -396,297 +147,41 @@
   </div>
 </section>
 
-
-
-
-<!-- NEWS -->
+<!-- NEWS (latest items; add posts in news/_posts/) -->
 <section id="news" class="projects sec-pad">
   <div class="main-container">
     <h2 class="heading heading-sec heading-sec__mb-bg">
       <span class="heading-sec__main">News & Announcements</span>
-      <span class="heading-sec__sub">
-        Stay updated with the latest BGSA news, events, and announcements.
-      </span>
+      <span class="heading-sec__sub">Stay updated with the latest BGSA news, events, and announcements.</span>
     </h2>
 
     <div class="news__content">
+      {%- for post in site.categories.news limit: site.news_on_homepage %}
+        {% include news-card.html %}
+      {%- endfor %}
+    </div>
 
-      <!-- News Item 17 -->
-      <div class="news__item">
-        <div class="news__image">
-          <img src="./assets/jpeg/washim_defense.jpg" alt="Congratulations Dr. Akram!" loading="lazy" />
-        </div>
-        <div class="news__text">
-          <h3 class="news__title">Congratulations Dr. Akram!</h3>
-          <p class="news__date">📅 April 07, 2026</p>
-          <p class="news__desc">
-            Let's give a huge 𝐂𝐨𝐧𝐠𝐫𝐚𝐭𝐮𝐥𝐚𝐭𝐢𝐨𝐧𝐬 to the newest doctor in Columbus, 𝐃𝐫. Md Washim Akram on
-            successfully defending his PhD thesis!
-            Your incredible work and commitment throughout this journey have been truly inspiring. We extend our heartfelt warm
-            wishes for your upcoming days. We are so proud to celebrate you as the new 𝐛𝐮𝐜𝐤𝐞𝐲𝐞 𝐁𝐆𝐒𝐀 𝐚𝐥𝐮𝐦𝐧𝐢!
-          </p>
-        </div>
-      </div>
-
-
-      <!-- News Item 16 -->
-      <div class="news__item">
-        <div class="news__image">
-          <img src="./assets/jpeg/mother_language.jpg" alt="International Mother Language Day 2026 Discussion Panel" loading="lazy" />
-        </div>
-        <div class="news__text">
-          <h3 class="news__title">International Mother Language Day 2026 Discussion Panel</h3>
-          <p class="news__date">📅 February 20, 2026</p>
-          <p class="news__desc">
-            Nowshin Sharmila and Mashnur Rashid, representing BGSA, attended as speakers in an International Mother Language Day 2026 discussion panel on how languages shape identity and community on
-            Friday, Feb 20. All the Speakers in the panel share stories from Bangladesh, Türkiye, India, and Paraguay
-          </p>
-        </div>
-      </div>
-
-      <!-- News Item 15 -->
-      <div class="news__item">
-        <div class="news__image">
-          <img src="./assets/jpeg/shamma_defense.jpg" alt="Congratulations Dr. Jabeen!" loading="lazy" />
-        </div>
-        <div class="news__text">
-          <h3 class="news__title">Congratulations Dr. Jabeen!</h3>
-          <p class="news__date">📅 February 17, 2026</p>
-          <p class="news__desc">
-            Let's give a huge 𝐂𝐨𝐧𝐠𝐫𝐚𝐭𝐮𝐥𝐚𝐭𝐢𝐨𝐧𝐬 to the newest doctor in Columbus, 𝐃𝐫. Shamma Jabeen on
-            successfully defending her PhD thesis!
-            Your incredible work and commitment throughout this journey have been truly inspiring. We extend our heartfelt
-            warm
-            wishes for your upcoming days. We are so proud to celebrate you as the new 𝐛𝐮𝐜𝐤𝐞𝐲𝐞 𝐁𝐆𝐒𝐀 𝐚𝐥𝐮𝐦𝐧𝐢!
-          </p>
-        </div>
-      </div>
-
-      <!-- News Item 14 -->
-      <div class="news__item">
-        <div class="news__image">
-          <img src="./assets/jpeg/pitha_utshob.jpg" alt="Pitha Utshob 2026" loading="lazy" />
-        </div>
-        <div class="news__text">
-          <h3 class="news__title">Pitha Utshob 2026</h3>
-          <p class="news__date">📅 February 14, 2026</p>
-          <p class="news__desc">
-            BGSA celebrated Pitha Utshob in a festive way with delicious pitha, fun games and warm vibes. A big thank you to everyone who generously contributed homemade pitha - we truly appreciate you.
-          </p>
-        </div>
-      </div>
-
-      <!-- News Item 13 -->
-      <div class="news__item">
-        <div class="news__image">
-          <img src="./assets/jpeg/cricket.JPG" alt="BGSA Cricket Tournament 2026"
-            loading="lazy" />
-        </div>
-        <div class="news__text">
-          <h3 class="news__title">BGSA Cricket Tournament 2026</h3>
-          <p class="news__date">📅 February 07, 2026</p>
-          <p class="news__desc">
-            What an incredible day it was! A huge shoutout to everyone who showed up for the cricket tournament, played their hearts out, and cheered from the
-            sidelines to make this event a massive success. The energy on the field was unmatched, and the sportsmanship was truly
-            inspiring! ✴️👏
-            𝐇𝐚𝐥𝐥 𝐨𝐟 𝐅𝐚𝐦𝐞🏆
-            • 𝐂𝐡𝐚𝐦𝐩𝐢𝐨𝐧𝐬: 𝐓𝐞𝐚𝐦 𝐎𝐧𝐭𝐢𝐤
-            • 𝐑𝐮𝐧𝐧𝐞𝐫𝐬-𝐔𝐩: 𝐓𝐞𝐚𝐦 𝐑𝐚𝐡𝐢𝐝
-            • 𝐌𝐨𝐬𝐭 𝐕𝐚𝐥𝐮𝐚𝐛𝐥𝐞 𝐏𝐥𝐚𝐲𝐞𝐫 : 𝐈𝐦𝐚𝐦
-            • 𝐏𝐥𝐚𝐲𝐞𝐫 𝐨𝐟 𝐭𝐡𝐞 𝐓𝐨𝐮𝐫𝐧𝐚𝐦𝐞𝐧𝐭: 𝐈𝐬𝐡𝐭𝐢𝐚𝐪 𝐓𝐚𝐧𝐯𝐢𝐫
-          </p>
-        </div>
-      </div>
-
-      <!-- News Item 12 -->
-      <div class="news__item">
-        <div class="news__image">
-          <img src="./assets/jpeg/spring_involvement.jpg" alt="BGSA at Spring 2026 Spring Involvement Fair"
-            loading="lazy" />
-        </div>
-        <div class="news__text">
-          <h3 class="news__title">BGSA at Spring 2026 Spring Involvement Fair</h3>
-          <p class="news__date">📅 January 22, 2026</p>
-          <p class="news__desc">
-            BGSA participated at the Spring 2026 Spring Involvement Fair where we had a booth to explore culture, connect with our community, and network with many other student organizations across campus.
-        </div>
-      </div>
-
-      <!-- News Item 12 -->
-      <div class="news__item">
-        <div class="news__image">
-          <img src="./assets/jpeg/milon_presidential.jpg" alt="Milon Mondal Receives the 2025-26 Presidential Fellowship!"
-            loading="lazy" />
-        </div>
-        <div class="news__text">
-          <h3 class="news__title">Milon Mondal Receives the 2025-26 Presidential Fellowship!</h3>
-          <p class="news__date">📅 December 05, 2026</p>
-          <p class="news__desc">
-            Milon Mondal has been named a 2025–26 Presidential Fellowship Recipient by the Ohio State Graduate School — the
-            most
-            prestigious award given to graduate students at OSU.
-            🔗 Read more: https://gradsch.osu.edu/news/2025/11/24/2025-26-presidential-fellowship-recipients
-          </p>
-        </div>
-      </div>
-
-      <!-- News Item 11 -->
-      <div class="news__item">
-        <div class="news__image">
-          <img src="./assets/jpeg/mahfuz_diamond.jpg" alt="Dr. Mohammad Mahafuzur Rahman Honored as a Diamond Awardee!"
-            loading="lazy" />
-        </div>
-        <div class="news__text">
-          <h3 class="news__title">Dr. Mohammad Mahafuzur Rahman Honored as a Diamond Awardee!</h3>
-          <p class="news__date">📅 December 05, 2026</p>
-          <p class="news__desc">
-            Dr. Mohammad Mahafuzur Rahman has been honored as a Diamond Awardee by the American Ceramic Society, recognizing his
-            exceptional research and academic excellence.
-            🔗 Read more: https://mse.osu.edu/news/2025/11/mohammad-mahafuzur-rahaman-honored-diamond-awardee-american-ceramic-society-achievements-graduate-student
-          </p>
-        </div>
-      </div>
-
-
-      <!-- News Item 10 -->
-      <div class="news__item">
-        <div class="news__image">
-          <img src="./assets/jpeg/freshers_reception.jpg" alt="Freshers' Reception 2025" loading="lazy" />
-        </div>
-        <div class="news__text">
-          <h3 class="news__title">Freshers' Reception 2025</h3>
-          <p class="news__date">📅 November 30, 2026</p>
-          <p class="news__desc">
-            A warm reception to the Freshers from BGSA - Welcome to the Deshi Buckeye family!
-          </p>
-        </div>
-      </div>
-
-      <!-- News Item 9 -->
-      <div class="news__item">
-        <div class="news__image">
-          <img src="./assets/jpeg/cleaning.jpg" alt="BGSA participated in the Cleanup Columbus program" loading="lazy" />
-        </div>
-        <div class="news__text">
-          <h3 class="news__title">BGSA participated in the Cleanup Columbus program</h3>
-          <p class="news__date">📅 November 23, 2026</p>
-          <p class="news__desc">
-            Happy to share that BGSA participated in the Cleanup Columbus program today. It’s an event where number of student
-            organizations do some volunteer cleaning work. Special thanks to all the Bangladeshi people who showed up and helped
-            cleaning our Columbus.
-          </p>
-        </div>
-      </div>
-
-      <!-- News Item 8 -->
-      <div class="news__item">
-        <div class="news__image">
-          <img src="./assets/jpeg/defense-saqeeb.jpg" alt="Congratulations, Dr. Saqeeb Adnan" loading="lazy" />
-        </div>
-        <div class="news__text">
-          <h3 class="news__title">Congratulations, Dr. Saqeeb Adnan</h3>
-          <p class="news__date">📅 November 21, 2026</p>
-          <p class="news__desc">
-            Let's give a huge 𝐂𝐨𝐧𝐠𝐫𝐚𝐭𝐮𝐥𝐚𝐭𝐢𝐨𝐧𝐬 to the newest doctor in Columbus, 𝐃𝐫. <b>Saqeeb Adnan</b> on
-            successfully defending his PhD thesis!🎓
-            Your incredible work and commitment throughout this journey have been truly inspiring. We extend our heartfelt warm
-            wishes for your upcoming days. We are so proud to celebrate you as the new 𝐛𝐮𝐜𝐤𝐞𝐲𝐞 𝐁𝐆𝐒𝐀 𝐚𝐥𝐮𝐦𝐧𝐢!
-          </p>
-        </div>
-      </div>
-
-      <!-- News Item 5 -->
-      <div class="news__item">
-        <div class="news__image">
-          <img src="./assets/jpeg/purdue.jpg" alt="Match update : Purdue vs OSU" loading="lazy" />
-        </div>
-        <div class="news__text">
-          <h3 class="news__title">Soccer Match update : Purdue vs OSU</h3>
-          <p class="news__date">📅 November 15, 2026</p>
-          <p class="news__desc">
-            Yesterday, our OSU BGSA soccer team faced off against Purdue University in a tightly contested match that ended in a 0–0
-            draw. It was a tough game, and our players showed incredible determination throughout the entire match.
-            A huge thank you to everyone who came out to support us; your energy truly made a difference. And an even bigger thank
-            you to our players for giving their all on and off the field. We’re genuinely proud of each and every one of you.
-          </p>
-        </div>
-      </div>
-
-      <!-- News Item 4 -->
-      <div class="news__item">
-        <div class="news__image">
-          <img src="./assets/jpeg/defense-mahfuz.jpg" alt="Congratulations, Dr. Md. Mahafuzur Rahman" loading="lazy" />
-        </div>
-        <div class="news__text">
-          <h3 class="news__title">Congratulations, Dr. Md. Mahafuzur Rahman</h3>
-          <p class="news__date">📅 November 13, 2026</p>
-          <p class="news__desc">
-            Let's give a massive 𝐂𝐨𝐧𝐠𝐫𝐚𝐭𝐮𝐥𝐚𝐭𝐢𝐨𝐧𝐬 to the newest doctor in Columbus, 𝐃𝐫. 𝐌𝐝. 𝐌𝐚𝐡𝐚𝐟𝐮𝐳𝐮𝐫
-            𝐑𝐚𝐡𝐦𝐚𝐧 on successfully defending his PhD thesis!🎓
-            Your incredible work and commitment throughout this journey have been truly inspiring. We extend our heartfelt warm
-            wishes for your upcoming days. We are so proud to celebrate you as the new 𝐛𝐮𝐜𝐤𝐞𝐲𝐞 𝐁𝐆𝐒𝐀 𝐚𝐥𝐮𝐦𝐧𝐢!
-          </p>
-        </div>
-      </div>
-
-
+    <div class="section-more">
+      <a href="{{ '/news/' | relative_url }}" class="btn btn--theme section-more__btn">See all news</a>
     </div>
   </div>
 </section>
 
-<!-- GALLERY -->
+<!-- GALLERY (edit in _data/gallery.yml) -->
 <section id="gallery" class="sec-pad about">
   <div class="main-container">
     <h2 class="heading heading-sec heading-sec__mb-med">
       <span class="heading-sec__main">Gallery</span>
-      <span class="heading-sec__sub">
-        Snapshots from our events and community moments. Send your photos at bgsa.osu.1@gmail.com.
-      </span>
+      <span class="heading-sec__sub">Snapshots from our events and community moments. Send your photos to {{ site.email }}.</span>
     </h2>
 
     <div class="gallery__grid">
+      {%- for item in site.data.gallery %}
       <div class="gallery__item">
-        <img src="./assets/jpeg/Deshi Bucks Solar Eclipse.jpg" alt="Deshi Buckeyes Challenging The Sun" loading="lazy" />
-        <div class="gallery__caption">Deshi Buckeyes Challenging The Sun</div>
+        <img src="{{ item.image | relative_url }}" alt="{{ item.caption | escape }}" loading="lazy" />
+        <div class="gallery__caption">{{ item.caption }}</div>
       </div>
-
-      <div class="gallery__item">
-        <img src="./assets/jpeg/baby_buckeye.JPG" alt="Our Buckeye story began as an intentional choice as we stepped into THE OSU to grow, he arrived already taking roots." loading="lazy" />
-        <div class="gallery__caption">Our Buckeye story began as an intentional choice as we stepped into THE OSU to grow, he arrived already taking roots.</div>
-      </div>
-
-      <div class="gallery__item">
-        <img src="./assets/jpeg/36th July.jpg" alt="From Bloodshed to Sunrise—Bangladesh Rose: A Memory of 36th July."
-          loading="lazy" />
-        <div class="gallery__caption">From Bloodshed to Sunrise—Bangladesh Rose: A Memory of 36th July.</div>
-      </div>
-
-      <div class="gallery__item">
-        <img src="./assets/jpeg/samaira.jpeg"
-          alt="Spinning into spring like the whole world is cheering for her twirls."
-          loading="lazy" />
-        <div class="gallery__caption">Spinning into spring like the whole world is cheering for her twirls.</div>
-      </div>
-
-      <div class="gallery__item">
-        <img src="./assets/jpeg/pitt.jpeg" alt="Deshi Buckeyes at the Cathedral of Learning"
-          loading="lazy" />
-        <div class="gallery__caption">Deshi Buckeyes at the Cathedral of Learning</div>
-      </div>
-
-      <div class="gallery__item">
-        <img src="./assets/jpeg/Tasnin Nila_Photography Competition.jpg" alt="Winter in Buckeye Nest" loading="lazy" />
-        <div class="gallery__caption">Winter in Buckeye Nest</div>
-      </div>
-
-      <div class="gallery__item">
-        <img src="./assets/jpeg/solar.jpeg" alt="The darkest day. The total solar eclipse, as seen from Ohio." loading="lazy" />
-        <div class="gallery__caption">The darkest day. The total solar eclipse, as seen from Ohio.</div>
-      </div>
-
-
-
-
+      {%- endfor %}
     </div>
   </div>
 </section>
@@ -759,6 +254,7 @@
   </div>
 </section>
 
+<!-- RESOURCES (edit in _data/resources.yml) -->
 <section id="resources" class="sec-pad">
   <div class="main-container">
     <h2 class="heading heading-sec heading-sec__mb-med">
@@ -767,196 +263,44 @@
     </h2>
 
     <div class="projects__content">
-
-      <!-- GUIDE -->
+      {%- for card in site.data.resources %}
       <div class="projects__row resource-card">
         <div class="projects__row-content">
-      
-          <h3 class="resources-title">📘 New Graduate Student Survival Guide</h3>
-          <p class="resources-desc">
-            A complete guide for incoming students — housing, commute, wellness, orientation, banking, legal & community
-            support.
-          </p>
-      
+          <h3 class="resources-title">{{ card.title }}</h3>
+          <p class="resources-desc">{{ card.description }}</p>
           <ul class="resources-list">
-            <li><strong>Housing (On/Off Campus):</strong>
-              Explore verified rentals, safety info, and roommate finder:
-              <a href="https://offcampus.osu.edu/off-campus-housing-network/" target="_blank">OSU Off-Campus Housing
-                Network</a>.
-            </li>
-      
-            <li><strong>Graduate Student Living Guide (PDF):</strong>
-              Moving checklist, budgeting, transportation & utilities:
-              <a href="https://offcampus.osu.edu/posts/documents/graduate-and-professional-student-living-guide-2024-2025.pdf"
-                target="_blank">Download Guide</a>.
-            </li>
-      
-            <li><strong>Campus Transit – CABS:</strong>
-              Free OSU shuttle system with live route maps:
-              <a href="https://ttm.osu.edu/cabs" target="_blank">CABS Routes</a>.
-            </li>
-      
-            <li><strong>City Transit – COTA:</strong>
-              Access anywhere in Columbus:
-              <a href="https://cota.com" target="_blank">COTA Bus</a>.
-            </li>
-      
-            <li><strong>Health & Wellness:</strong>
-              Counseling, nutrition, coaching at
-              <a href="https://swc.osu.edu" target="_blank">Student Wellness Center</a>.
-              Financial help, food pantry, emergency support at
-              <a href="https://msrc.osu.edu" target="_blank">Monda Student Resource Center</a>.
-            </li>
-      
-            <li><strong>Graduate Student Support:</strong>
-              Academic resources, funding, milestones, and policies:
-              <a href="https://gradsch.osu.edu" target="_blank">OSU Graduate School</a>.
-            </li>
+            {%- for item in card.items %}
+            <li><strong>{{ item.label }}:</strong> {{ item.text | markdownify | remove: "<p>" | remove: "</p>" | strip }}</li>
+            {%- endfor %}
           </ul>
-      
         </div>
       </div>
-
-      <!-- ACADEMIC RESOURCES -->
-      <div class="projects__row resource-card">
-        <div class="projects__row-content">
-      
-          <h3 class="resources-title">🎓 Academic Resources</h3>
-          <p class="resources-desc">
-            Essential OSU academic tools for coursework, advising, calendars, and student success.
-          </p>
-      
-          <ul class="resources-list">
-      
-            <li><strong>BuckeyeMail:</strong>
-              Your official OSU email — required for all university communication.
-              <a href="https://buckeyemail.osu.edu" target="_blank">Access BuckeyeMail</a>
-            </li>
-      
-            <li><strong>CarmenCanvas:</strong>
-              Course materials, deadlines, assignments, quizzes, and grades.
-              <a href="https://carmen.osu.edu" target="_blank">Go to CarmenCanvas</a>
-            </li>
-      
-            <li><strong>Advising & Academic Support:</strong>
-              Connect with your academic advisor and explore tutoring or academic coaching.
-              <a href="https://advising.osu.edu" target="_blank">Academic Advising</a>
-            </li>
-      
-            <li><strong>OSU Academic Calendar:</strong>
-              Semester start/end dates, deadlines, payment schedules, breaks.
-              <a href="https://registrar.osu.edu/staff/bigcal.asp" target="_blank">Academic Calendar</a>
-            </li>
-      
-            <li><strong>Library System:</strong>
-              Access millions of digital/physical resources, study spaces, printing, and workshops.
-              <a href="https://library.osu.edu" target="_blank">University Libraries</a>
-            </li>
-      
-            <li><strong>Research Tools:</strong>
-              Grant writing help, research funding, workshops, and mentoring.
-              <a href="https://research.osu.edu" target="_blank">OSU Research Support</a>
-            </li>
-      
-            <li><strong>Graduate School Resources:</strong>
-              Registration, exams, forms, thesis guidelines, funding opportunities.
-              <a href="https://gradsch.osu.edu/current-students" target="_blank">Graduate Student Resources</a>
-            </li>
-          </ul>
-      
-        </div>
-      </div>
-
-      
+      {%- endfor %}
     </div>
   </div>
 </section>
 
-<!-- BLOG -->
+<!-- BLOG (latest stories; add posts in blog/_posts/) -->
 <section id="blog" class="sec-pad about">
   <div class="main-container">
     <h2 class="heading heading-sec heading-sec__mb-med">
       <span class="heading-sec__main">Blog</span>
-      <span class="heading-sec__sub">Articles, reflections, and creative writing from our BGSA community. Send your stories at bgsa.osu.1@gmail.com.</span>
+      <span class="heading-sec__sub">Articles, reflections, and creative writing from our BGSA community. Send your stories to {{ site.email }}.</span>
     </h2>
 
     <div class="blog-list">
+      {%- for post in site.categories.blog limit: site.blog_on_homepage %}
+        {% include blog-card.html %}
+      {%- endfor %}
+    </div>
 
-      <!-- BLOG POST EXAMPLE -->
-      <div class="blog-card">
-        <h3 class="blog-title">Outside Home – Inside OSU</h3>
-        <p class="blog-author">By: <strong>Tasnin Nila</strong></p>
-        <p class="blog-body">
-          Pursuing higher studies abroad was a long-held dream of mine, much like many of my friends who achieved it before me. Whenever I scrolled through Facebook and saw their photos, I felt the joy of their gatherings and parties. Yet, behind those cheerful snapshots, I sensed something fragile—adjusting to new places, missing home-cooked meals, and the warmth of loved ones. I realized their journeys were not just about opportunity, but also about sacrifice. Then, with the grace of the Almighty, I received the chance to pursue a Ph.D. at Ohio State University (OSU). My heart bumped with joy—but beneath that joy was a quiet fear. Moving to a foreign land is challenging; moving with two young children felt like stepping into an unfamiliar world filled with uncertainty. I knew only one person in the entire OSU community—just one. Still, I believed that when the Almighty opens a door, He paves the way with unexpected kindness. And I was right.
-          
-          I vividly remember our first night in Columbus. My friend and two of his friends—whom I had never met—welcomed us at the airport like family. After nearly two exhausting days of travel without Bangladeshi food, we finally enjoyed a warm Deshi meal at my friend’s home. It felt as though home itself had crossed the ocean to reach me. In that moment, I understood how powerfully community can hold you when you are far from everything familiar. Though Columbus was new to me, that night marked the beginning of a chapter filled with kindness and comfort.
-          
-          Over time, I met more people who added warmth and color to my journey. The Bangladeshi community at OSU became part of my everyday life—faces that felt familiar, hands that offered help, hearts that shared the same longing for home. Our trips to different places brought laughter and adventure, but the most cherished moments were cooking together, sharing meals, telling stories, and watching our children play. In those moments, we were not just a group of families abroad—we were one big family, bound by shared roots and dreams. My kids are fortunate to have many Bangladeshi friends here. They run out to play with them, speaking Bangla with ease and joining BBQs, gatherings, and celebrations that give them the sense of belonging I once feared they might lose.
-          
-          Every moment, friendship and shared meals have woven a safety net around us—one made not of blood, but of love. I feel profoundly blessed to be part of the OSU Bangladeshi community, which has given me a home thousands of miles from the one I left behind.
-        </p>
-      </div>
-
-      <div class="blog-card">
-        <h3 class="blog-title">ওভাল-এর বেঞ্চে বসে</h3>
-        <p class="blog-author">By: <strong>Sadia Afroz Mouri</strong></p>
-        <p class="blog-body">
-          
-          ওহাইও স্টেট ইউনিভার্সিটিতে শীত তখন ধীরে ধীরে নামছে। বাতাসের গায়ে ঠান্ডার খোঁচা, আর সামনে যতদূর চোখ যায়—লালচে-কমলা পাতা। প্রথম সেমিস্টারের চাপে ক্লান্ত শৈকত সেদিন একা বসেছিল ওভাল-এর পুরোনো কাঠের বেঞ্চে। ব্যাকপ্যাকে laptop, মাথায় হাজারো চিন্তা—ল্যাব রিপোর্ট, স্ট্যাটস কুইজ, আর হোমসিকনেস।
-          
-          “আমি কি সত্যিই পারব?”—এই প্রশ্নটাই তাকে প্রতিদিন তাড়া করে বেড়াত।
-          
-          হঠাৎ তার পাশের বেঞ্চে বসে গেল এক বয়স্কা মহিলা। মুখে উষ্ণ হাসি, হাতে OSU-র লাল মগ। তিনি জিজ্ঞেস করলেন, “তোমাকে দেখে মনে হচ্ছে একটু চিন্তায় আছো। নতুন এসেছো?”
-          
-          শৈকত একটু লজ্জা পেয়ে মাথা নাড়ল।
-          “জি… কয়েক মাস হলো। কিন্তু বুঝতে পারছি না—এত বড় জায়গায় আমি নিজের জায়গাটা আসলে কোথায় খুঁজে পাব।”
-          
-          মহিলা হাসলেন।
-          “আমি এখানে ৩২ বছর ধরে কাজ করছি। জানো, OSU-তে যারা প্রথম আসে, সবার মুখেই তোমার মতো অস্থিরতা থাকে। কিন্তু একদিন তারা বুঝে—এই ক্যাম্পাস মানুষের মতোই, সময় দিলে বন্ধুত্ব করেই ফেলে।”
-          
-          শৈকত অবাক হয়ে বলল,
-          “আপনি কীভাবে এত নিশ্চিত?”
-          
-          তিনি মগটা একটু উঁচু করে বললেন,
-          “কারণ আমি দেখেছি। হাজার হাজার ছাত্র এসেছে, হারিয়ে গেছে, আবার নিজেদের খুঁজে পেয়েছে। ওভাল-এর এই বেঞ্চে লোকেরা যেমন দুঃখ নিয়ে বসে, আবার সাফল্যের দিনেও এখানে এসে হাসে।”
-          
-          এমন সময় পাশের ফুটপাথ দিয়ে হেঁটে গেল চারজন OSU ছাত্র—একজন গিটার বাজাচ্ছে, কেউ হাসছে, কেউ গান ধরেছে “Carmen Ohio”। তাদের আনন্দ যেন বাতাসে ভেসে এল।
-          
-          মহিলা বললেন,
-          “তোমাকে একটা কথা বলি—OSU কখনো কাউকে একা থাকতে দেয় না। তুমি চাইলেই দেখবে, কেউ না কেউ হাত বাড়িয়ে দেবে—একজন প্রফেসর, একজন বন্ধু, বা এমনকি একজন অপরিচিত… যেমন আমি।”
-          
-          শৈকত অর্ধেক বিস্ময় আর অর্ধেক স্বস্তিতে তার দিকে তাকাল।
-          “আপনার কথা শুনে ভালো লাগল। মনে হচ্ছে… হয়তো আমি পারব।”
-          
-          মহিলা উঠে দাঁড়ালেন।
-          “তুমি নিশ্চয়ই পারবে। আর হ্যাঁ, ওভাল-এর যে বেঞ্চে আজ বসে আছো—এটা অনেকের ‘টার্নিং পয়েন্ট’ হয়েছে। হয়তো তোমারও।”
-          
-          তিনি আস্তে আস্তে হাঁটতে লাগলেন। দূর থেকে দেখা গেল তার কোটের পেছনে ছোট্ট একটি বাক্য লেখা—
-          “Once a Buckeye, always a Buckeye.”
-          
-          শৈকতের মনে এক অদ্ভুত শক্তি জেগে উঠল। বাতাসে উড়ে এল কয়েকটি লাল পাতা—নরম, উজ্জ্বল, আশার মতো। শৈকত গভীর শ্বাস নিল।
-          
-          “হ্যাঁ,” সে মনে মনে বলল,
-          “এই শহর, এই ক্যাম্পাস—হয়তো আমাকেও একদিন তার আপন করে নেবে।”
-          
-          আর সেই দিন থেকেই ওভালের বেঞ্চটিই হয়ে গেল তার সাহস খুঁজে পাওয়ার জায়গা।
-        </p>
-      </div>
-
-      <!-- ADD MORE BLOG POSTS BELOW -->
-      <!--
-      <div class="blog-card">
-        <h3 class="blog-title">TITLE</h3>
-        <p class="blog-author">By: <strong>AUTHOR NAME</strong></p>
-        <p class="blog-body">WRITING CONTENT HERE</p>
-      </div>
-      -->
-
+    <div class="section-more">
+      <a href="{{ '/blog/' | relative_url }}" class="btn btn--theme section-more__btn">All stories</a>
     </div>
   </div>
 </section>
- 
-<!-- CONTACT -->
+
+<!-- CONTACT (edit details in _config.yml) -->
 <section id="contact" class="contact sec-pad dynamicBg">
   <div class="main-container">
     <h2 class="heading heading-sec heading-sec__mb-med">
@@ -967,110 +311,63 @@
     </h2>
 
     <div class="contact__cards">
-      <!-- Email -->
-      <a class="contact__card" href="mailto:bgsa.osu.1@gmail.com" aria-label="Email BGSA">
+      <a class="contact__card" href="mailto:{{ site.email }}" aria-label="Email BGSA">
         <div class="contact__icon">
-          <!-- email icon -->
           <svg width="36" height="36" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
             <path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm0 4-8 5-8-5V6l8 5 8-5Z" />
           </svg>
         </div>
         <h3 class="contact__label">Email</h3>
-        <p class="contact__value">bgsa.osu.1@gmail.com</p>
+        <p class="contact__value">{{ site.email }}</p>
       </a>
 
-      <!-- Phone -->
-      <a class="contact__card" href="tel:+16145549782" aria-label="Call BGSA">
+      <a class="contact__card" href="tel:{{ site.phone }}" aria-label="Call BGSA">
         <div class="contact__icon">
-          <!-- phone icon -->
           <svg width="36" height="36" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path
-              d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1.1-.24c1.2.48 2.6.74 4 .74a1 1 0 0 1 1 1v3.5a1 1 0 0 1-1 1A18.5 18.5 0 0 1 3.5 5a1 1 0 0 1 1-1H8a1 1 0 0 1 1 1c0 1.4.26 2.8.74 4a1 1 0 0 1-.24 1.1L6.6 10.8Z" />
+            <path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1.1-.24c1.2.48 2.6.74 4 .74a1 1 0 0 1 1 1v3.5a1 1 0 0 1-1 1A18.5 18.5 0 0 1 3.5 5a1 1 0 0 1 1-1H8a1 1 0 0 1 1 1c0 1.4.26 2.8.74 4a1 1 0 0 1-.24 1.1L6.6 10.8Z" />
           </svg>
         </div>
         <h3 class="contact__label">Phone</h3>
-        <p class="contact__value">+1 (614) 554 9782</p>
+        <p class="contact__value">{{ site.phone_display }}</p>
       </a>
 
-      <!-- Facebook -->
-      <a class="contact__card" href="https://www.facebook.com/BGSA.OSU.1" target="_blank" rel="noopener"
-        aria-label="BGSA on Facebook">
+      <a class="contact__card" href="{{ site.facebook_url }}" aria-label="BGSA on Facebook">
         <div class="contact__icon">
-          <!-- facebook icon -->
           <svg width="36" height="36" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path
-              d="M22 12a10 10 0 1 0-11.6 9.9v-7h-2.3V12h2.3V9.7c0-2.3 1.3-3.6 3.4-3.6.98 0 2 .18 2 .18v2.2h-1.1c-1.1 0-1.5.7-1.5 1.4V12h2.6l-.4 2.9h-2.2v7A10 10 0 0 0 22 12Z" />
+            <path d="M22 12a10 10 0 1 0-11.6 9.9v-7h-2.3V12h2.3V9.7c0-2.3 1.3-3.6 3.4-3.6.98 0 2 .18 2 .18v2.2h-1.1c-1.1 0-1.5.7-1.5 1.4V12h2.6l-.4 2.9h-2.2v7A10 10 0 0 0 22 12Z" />
           </svg>
         </div>
         <h3 class="contact__label">Facebook</h3>
-        <p class="contact__value">BGSA.OSU.1</p>
+        <p class="contact__value">{{ site.facebook_handle }}</p>
       </a>
 
-      <!-- Instagram -->
-      <a class="contact__card" href="https://www.instagram.com/bgsa.osu/" target="_blank" rel="noopener"
-        aria-label="BGSA on Instagram">
+      <a class="contact__card" href="{{ site.instagram_url }}" aria-label="BGSA on Instagram">
         <div class="contact__icon">
-          <!-- instagram icon -->
           <svg width="36" height="36" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path
-              d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5Zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7Zm5 3.5A5.5 5.5 0 1 1 6.5 13 5.5 5.5 0 0 1 12 7.5Zm0 2A3.5 3.5 0 1 0 15.5 13 3.5 3.5 0 0 0 12 9.5Zm5.75-2.75a1.25 1.25 0 1 1-1.25 1.25 1.25 1.25 0 0 1 1.25-1.25Z" />
+            <path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5Zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7Zm5 3.5A5.5 5.5 0 1 1 6.5 13 5.5 5.5 0 0 1 12 7.5Zm0 2A3.5 3.5 0 1 0 15.5 13 3.5 3.5 0 0 0 12 9.5Zm5.75-2.75a1.25 1.25 0 1 1-1.25 1.25 1.25 1.25 0 0 1 1.25-1.25Z" />
           </svg>
         </div>
         <h3 class="contact__label">Instagram</h3>
-        <p class="contact__value">@bgsa.osu</p>
+        <p class="contact__value">{{ site.instagram_handle }}</p>
       </a>
 
-      <!-- YouTube -->
-      <a class="contact__card" href="https://www.youtube.com/@bgsa-osu" target="_blank" rel="noopener"
-        aria-label="BGSA on YouTube">
+      <a class="contact__card" href="{{ site.youtube_url }}" aria-label="BGSA on YouTube">
         <div class="contact__icon">
-          <!-- youtube icon -->
           <svg width="36" height="36" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path
-              d="M23.5 7.2a3 3 0 0 0-2.1-2.1C19.7 4.5 12 4.5 12 4.5s-7.7 0-9.4.6A3 3 0 0 0 .5 7.2 31.6 31.6 0 0 0 0 12a31.6 31.6 0 0 0 .5 4.8 3 3 0 0 0 2.1 2.1c1.7.6 9.4.6 9.4.6s7.7 0 9.4-.6a3 3 0 0 0 2.1-2.1A31.6 31.6 0 0 0 24 12a31.6 31.6 0 0 0-.5-4.8ZM9.8 15.5v-7l6.2 3.5-6.2 3.5Z" />
+            <path d="M23.5 7.2a3 3 0 0 0-2.1-2.1C19.7 4.5 12 4.5 12 4.5s-7.7 0-9.4.6A3 3 0 0 0 .5 7.2 31.6 31.6 0 0 0 0 12a31.6 31.6 0 0 0 .5 4.8 3 3 0 0 0 2.1 2.1c1.7.6 9.4.6 9.4.6s7.7 0 9.4-.6a3 3 0 0 0 2.1-2.1A31.6 31.6 0 0 0 24 12a31.6 31.6 0 0 0-.5-4.8ZM9.8 15.5v-7l6.2 3.5-6.2 3.5Z" />
           </svg>
         </div>
         <h3 class="contact__label">YouTube</h3>
-        <p class="contact__value">@bgsa-osu</p>
+        <p class="contact__value">{{ site.youtube_handle }}</p>
       </a>
     </div>
   </div>
 </section>
 
-  <!-- FOOTER -->
-  <footer class="main-footer">
-    <div class="main-container">
-      <div class="main-footer__upper">
-        <div class="main-footer__row main-footer__row-1">
-          <h2 class="heading heading-sm main-footer__heading-sm"><span>Connect With Us</span></h2>
-          <div class="main-footer__social-cont">
-            <a href="#" target="_blank"><img class="main-footer__icon" src="./assets/png/facebook-ico.png"
-                alt="Facebook" /></a>
-            <a href="#" target="_blank"><img class="main-footer__icon" src="./assets/png/insta-ico.png"
-                alt="Instagram" /></a>
-            <a href="#" target="_blank"><img class="main-footer__icon" src="./assets/png/yt-ico.png"
-                alt="YouTube" /></a>
-          </div>
-        </div>
-
-        <div class="main-footer__row main-footer__row-2">
-          <h4 class="heading heading-sm text-lt">Bangladesh Graduate Student Association (BGSA)</h4>
-          <p class="main-footer__short-desc">
-            Promoting unity, culture, and collaboration among Bangladeshi graduate students at The Ohio State
-            University.
-          </p>
-        </div>
-      </div>
-
-      <div class="main-footer__lower">
-        &copy; <span id="year"></span> BGSA @ The Ohio State University. All rights reserved.
-      </div>
-    </div>
-  </footer>
-
+<!-- SheetJS (reads the member database spreadsheets) -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
   <!-- ✅ INTERACTIVE DATABASE SCRIPT -->
 <script>
-  document.getElementById("year").textContent = new Date().getFullYear();
 
   // Excel files mapping
   const FILES = {
@@ -1191,19 +488,3 @@
   setupSorting();
   loadSection("grad"); // default load Grad Students
 </script>
-
-<script>
-  document.querySelectorAll(".about-tab").forEach(btn => {
-    btn.addEventListener("click", () => {
-      document.querySelectorAll(".about-tab").forEach(b => b.classList.remove("active"));
-      document.querySelectorAll(".about-content").forEach(c => c.classList.remove("active"));
-
-      btn.classList.add("active");
-      document.getElementById(btn.dataset.target).classList.add("active");
-    });
-  });
-</script>
-
-</body>
-
-</html>

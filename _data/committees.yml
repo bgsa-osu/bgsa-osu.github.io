@@ -1,0 +1,110 @@
+# ============================================================
+#  Executive Committees — NEWEST TERM FIRST
+#
+#  The first term in this list is shown as the current Executive
+#  Committee (with photos). Every term below it appears under
+#  "Previous Executive Committees" (names and roles only).
+#
+#  At handover: copy the block for the current term, paste it at
+#  the top, change the term, and fill in the new members.
+#  Photos go in assets/jpeg/ (e.g. a new "ExCom 26-27" folder).
+#  degree / department / email / photo are only needed for the
+#  current term; older terms can list just role + name.
+# ============================================================
+
+- term: "2025–2026"
+  members:
+    - role: Advisor
+      name: Dr. Sheikh A. Akbar
+      degree: Professor
+      department: Materials Science and Engineering
+      email: akbar.1@osu.edu
+      photo: /assets/jpeg/ExCom 25-26/akbar_advisor.jpeg
+
+    - role: President
+      name: Mujahidul Islam
+      degree: PhD Student
+      department: Agricultural, Environmental, and Development Economics
+      email: islam.209@osu.edu
+      photo: /assets/jpeg/ExCom 25-26/Mujahid.jpeg
+
+    - role: Vice President
+      name: Mashnur Rashid
+      degree: PhD Student
+      department: Industrial Engineering
+      email: rashid.118@osu.edu
+      photo: /assets/jpeg/ExCom 25-26/Mashnur.jpg
+
+    - role: General Secretary
+      name: K M Naimul Hassan
+      degree: PhD Student
+      department: Computer Science and Engineering
+      email: hassan.491@osu.edu
+      photo: /assets/jpeg/ExCom 25-26/Naimul.jpg
+
+    - role: Treasurer
+      name: Abdullah Al Mahmud
+      degree: PhD Student
+      department: Chemical and Biomolecular Engineering
+      email: almahmud.1@osu.edu
+      photo: /assets/jpeg/ExCom 25-26/Mahmud.JPG
+
+    - role: Alumni Liaison Secretary
+      name: Md Shahneoug Shuvo
+      degree: PhD Student
+      department: Mechanical and Aerospace Engineering
+      email: shuvo.2@osu.edu
+      photo: /assets/jpeg/ExCom 25-26/Shuvo.jpg
+
+    - role: Media & Communication Secretary
+      name: Nowshin Sharmila
+      degree: MA Student
+      department: Women’s, Gender, and Sexuality Studies
+      email: sharmila.1@osu.edu
+      photo: /assets/jpeg/ExCom 25-26/Sharmila.jpeg
+
+    - role: Sports & Events Secretary
+      name: Md Mehidi Hassan
+      degree: PhD Student
+      department: Materials Science and Engineering
+      email: hassan.541@osu.edu
+      photo: /assets/jpeg/ExCom 25-26/Mehidi.jpg
+
+    - role: Membership Co-ordinator
+      name: Partha Biswas
+      degree: PhD Student
+      department: Biomedical Sciences Graduate Program (BSGP)
+      email: biswas.177@osu.edu
+      photo: /assets/jpeg/ExCom 25-26/Partha.png
+
+    - role: Cultural Secretary
+      name: Rezwan Zakaria
+      degree: PhD Student
+      department: Electrical and Computer Engineering
+      email: zakaria.37@osu.edu
+      photo: /assets/jpeg/ExCom 25-26/Rezwan.jpg
+
+- term: "2024–2025"
+  members:
+    - { role: President, name: Mostahidul Alam }
+    - { role: Vice President, name: Md Minaruzzaman }
+    - { role: General Secretary, name: Md Faiyaz Jamil }
+    - { role: Treasurer, name: H Rainak Khan Real }
+    - { role: Media & Communication Secretary, name: Afia Mubassira Islam }
+    - { role: Sports & Events Secretary, name: Md Saklain Morshed }
+    - { role: Membership Co-ordinator, name: Abdul Mukit Majumder }
+
+- term: "2023–2024"
+  members:
+    - { role: President, name: Sadikul Alam }
+    - { role: Vice President, name: Milon Mondal }
+    - { role: General Secretary, name: Mohammed Raihan Uddin }
+    - { role: Treasurer, name: Sifat Hossain }
+    - { role: Cultural Secretary, name: Mahzabeen Kamrul Shuha }
+
+- term: "2022–2023"
+  members:
+    - { role: President, name: Md Atif Haider }
+    - { role: Vice President, name: Eshita Akter Eva }
+    - { role: General Secretary, name: Reashed Tasvir Omi }
+    - { role: Treasurer, name: Ahmad Ilderim Tokey }

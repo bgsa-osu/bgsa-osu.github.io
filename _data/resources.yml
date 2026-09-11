@@ -1,0 +1,41 @@
+# ============================================================
+#  Resources section. Each block is one card.
+#  In "text", links are written as [link text](https://...).
+# ============================================================
+
+- title: "📘 New Graduate Student Survival Guide"
+  description: >-
+    A complete guide for incoming students — housing, commute, wellness,
+    orientation, banking, legal & community support.
+  items:
+    - label: Housing (On/Off Campus)
+      text: "Explore verified rentals, safety info, and roommate finder: [OSU Off-Campus Housing Network](https://offcampus.osu.edu/off-campus-housing-network/)."
+    - label: Graduate Student Living Guide (PDF)
+      text: "Moving checklist, budgeting, transportation & utilities: [Download Guide](https://offcampus.osu.edu/posts/documents/graduate-and-professional-student-living-guide-2024-2025.pdf)."
+    - label: Campus Transit – CABS
+      text: "Free OSU shuttle system with live route maps: [CABS Routes](https://ttm.osu.edu/cabs)."
+    - label: City Transit – COTA
+      text: "Access anywhere in Columbus: [COTA Bus](https://cota.com)."
+    - label: Health & Wellness
+      text: "Counseling, nutrition, coaching at [Student Wellness Center](https://swc.osu.edu). Financial help, food pantry, emergency support at [Monda Student Resource Center](https://msrc.osu.edu)."
+    - label: Graduate Student Support
+      text: "Academic resources, funding, milestones, and policies: [OSU Graduate School](https://gradsch.osu.edu)."
+
+- title: "🎓 Academic Resources"
+  description: >-
+    Essential OSU academic tools for coursework, advising, calendars, and student success.
+  items:
+    - label: BuckeyeMail
+      text: "Your official OSU email — required for all university communication. [Access BuckeyeMail](https://buckeyemail.osu.edu)"
+    - label: CarmenCanvas
+      text: "Course materials, deadlines, assignments, quizzes, and grades. [Go to CarmenCanvas](https://carmen.osu.edu)"
+    - label: Advising & Academic Support
+      text: "Connect with your academic advisor and explore tutoring or academic coaching. [Academic Advising](https://advising.osu.edu)"
+    - label: OSU Academic Calendar
+      text: "Semester start/end dates, deadlines, payment schedules, breaks. [Academic Calendar](https://registrar.osu.edu/staff/bigcal.asp)"
+    - label: Library System
+      text: "Access millions of digital/physical resources, study spaces, printing, and workshops. [University Libraries](https://library.osu.edu)"
+    - label: Research Tools
+      text: "Grant writing help, research funding, workshops, and mentoring. [OSU Research Support](https://research.osu.edu)"
+    - label: Graduate School Resources
+      text: "Registration, exams, forms, thesis guidelines, funding opportunities. [Graduate Student Resources](https://gradsch.osu.edu/current-students)"
