@@ -1,0 +1,23 @@
+{%- comment -%} One news card. Used on the homepage and on /news/. Expects `post`. {%- endcomment -%}
+<article class="news__item">
+  {%- if post.image %}
+  <div class="news__image">
+    <a href="{{ post.url | relative_url }}">
+      <img src="{{ post.image | relative_url }}" alt="{{ post.image_alt | default: post.title | escape }}" loading="lazy" />
+    </a>
+  </div>
+  {%- endif %}
+  <div class="news__text">
+    <h3 class="news__title"><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
+    <p class="news__date">📅 {{ post.date | date: "%B %d, %Y" }}</p>
+    <div class="news__desc">
+      {%- assign words = post.content | number_of_words %}
+      {%- if words > site.news_card_max_words %}
+      {{ post.excerpt }}
+      <a class="news__more" href="{{ post.url | relative_url }}">Read more →</a>
+      {%- else %}
+      {{ post.content }}
+      {%- endif %}
+    </div>
+  </div>
+</article>

@@ -1,0 +1,7 @@
+{%- comment -%} One blog story preview. Used on the homepage and on /blog/. Expects `post`. {%- endcomment -%}
+<article class="blog-card"{% if post.lang %} lang="{{ post.lang }}"{% endif %}>
+  <h3 class="blog-title"><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
+  <p class="blog-author">By: <strong>{{ post.author }}</strong></p>
+  <p class="blog-excerpt">{{ post.excerpt | strip_html | normalize_whitespace | truncatewords: 60 }}</p>
+  <a class="blog-more" href="{{ post.url | relative_url }}">Read the full story →</a>
+</article>
