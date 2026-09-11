@@ -21,6 +21,7 @@ the site automatically, and your change is live in 1–2 minutes.
 | Resources links                   | `_data/resources.yml`         |
 | Goals                             | `_data/goals.yml`             |
 | Email, phone, social links, homepage counts | `_config.yml`       |
+| Top menu (nav links)              | `_includes/header.html`       |
 | About text, page layout           | `index.html`                  |
 | Styles                            | `css/style.css`               |
 | Member database spreadsheets      | `assets/csv/`                 |

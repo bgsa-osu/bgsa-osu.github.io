@@ -52,3 +52,34 @@ if (slides.length > 1 && !window.matchMedia("(prefers-reduced-motion: reduce)").
     loadSlide(slides[(current + 1) % slides.length]);
   }, SLIDE_SECONDS * 1000);
 }
+
+// Nav jumps (/#events, /#gallery, …): photos loading above a section can push
+// it down after the jump. For a few seconds, nudge the page back so the section
+// heading stays just below the header. Stops as soon as the visitor scrolls.
+let userScrolled = false;
+["wheel", "touchstart", "keydown"].forEach(evt =>
+  window.addEventListener(evt, () => { userScrolled = true; }, { passive: true })
+);
+
+function keepOnTarget(id) {
+  const target = document.getElementById(id);
+  if (!target) return;
+  userScrolled = false;
+  let checks = 0;
+  const timer = setInterval(() => {
+    checks++;
+    if (userScrolled || checks > 20) return clearInterval(timer);
+    const offset = parseFloat(getComputedStyle(target).scrollMarginTop) || 0;
+    if (Math.abs(target.getBoundingClientRect().top - offset) > 20) target.scrollIntoView();
+  }, 250);
+}
+
+if (location.hash) {
+  window.addEventListener("load", () => keepOnTarget(location.hash.slice(1)));
+}
+document.addEventListener("click", e => {
+  const link = e.target.closest('a[href*="#"]');
+  if (link && link.pathname === location.pathname && link.hash.length > 1) {
+    keepOnTarget(link.hash.slice(1));
+  }
+});

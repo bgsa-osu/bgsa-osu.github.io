@@ -147,17 +147,19 @@ layout: default
   </div>
 </section>
 
-<!-- NEWS: events + achievements (add posts in news/_posts/; see README) -->
+<!-- EVENTS + ACHIEVEMENTS (add posts in news/_posts/; see README) -->
 {%- assign events = site.categories.news | where: "section", "events" %}
 {%- assign achievements = site.categories.news | where: "section", "achievements" %}
-<section id="news" class="projects sec-pad">
+
+<!-- EVENTS -->
+<section id="events" class="projects sec-pad">
+  <span id="news"></span><!-- keeps old /#news links working -->
   <div class="main-container">
     <h2 class="heading heading-sec heading-sec__mb-bg">
-      <span class="heading-sec__main">News & Announcements</span>
-      <span class="heading-sec__sub">Stay updated with the latest BGSA events and our community’s achievements.</span>
+      <span class="heading-sec__main">Events</span>
+      <span class="heading-sec__sub">Tournaments, festivals, and gatherings from the BGSA community.</span>
     </h2>
 
-    <h3 class="news__group-title">Events</h3>
     <div class="news__content">
       {%- for post in events limit: site.events_on_homepage %}
         {% include news-card.html %}
@@ -166,8 +168,17 @@ layout: default
     <div class="section-more">
       <a href="{{ '/news/events/' | relative_url }}" class="btn btn--theme section-more__btn">See all events</a>
     </div>
+  </div>
+</section>
 
-    <h3 class="news__group-title news__group-title--spaced">Achievements</h3>
+<!-- ACHIEVEMENTS -->
+<section id="achievements" class="about sec-pad">
+  <div class="main-container">
+    <h2 class="heading heading-sec heading-sec__mb-bg">
+      <span class="heading-sec__main">Achievements</span>
+      <span class="heading-sec__sub">Defenses, awards, and fellowships from our community.</span>
+    </h2>
+
     <div class="achievements__grid">
       {%- for post in achievements limit: site.achievements_on_homepage %}
         {% include achievement-card.html %}
@@ -180,7 +191,7 @@ layout: default
 </section>
 
 <!-- GALLERY (edit in _data/gallery.yml) -->
-<section id="gallery" class="sec-pad about">
+<section id="gallery" class="sec-pad">
   <div class="main-container">
     <h2 class="heading heading-sec heading-sec__mb-med">
       <span class="heading-sec__main">Gallery</span>

@@ -2264,3 +2264,71 @@ body {
     font-size: 1.7rem;
   }
 }
+
+/* Nav jumps (/#events, /#gallery, …): land headings just below the fixed header.
+   On phones the header is taller than the section padding. */
+section[id] {
+  scroll-margin-top: calc(var(--header-h, 9rem) - 5rem);
+}
+
+/* =====================================================
+   HEADER: keep every nav link on screen at every width
+   (the page hides sideways overflow, so links that don't
+   fit would silently disappear)
+   ===================================================== */
+.header__logo-container {
+  flex-shrink: 0;
+}
+
+.header__logo-sub {
+  white-space: nowrap;
+}
+
+@media (min-width: 769px) {
+  .header__content {
+    padding: 1rem 3rem;
+    gap: 2rem;
+  }
+
+  .header__link {
+    padding: 2.2rem 1.4rem;
+    font-size: 1.5rem;
+  }
+}
+
+/* Laptops/tablets without room for one row: logo on top, links wrapped below */
+@media (min-width: 769px) and (max-width: 1180px) {
+  .header__content {
+    flex-direction: column;
+    gap: 0.2rem;
+    padding: 0.8rem 2rem;
+  }
+
+  .header__links {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .header__link {
+    padding: 0.9rem 1.4rem;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1000px) {
+  .header__link {
+    padding: 0.9rem 0.9rem;
+    font-size: 1.4rem;
+  }
+}
+
+/* Very small phones (320–360px): keep the nav to three rows */
+@media (max-width: 360px) {
+  .header__links {
+    gap: 0.6rem;
+  }
+
+  .header__link {
+    padding: 0.5rem 0.8rem;
+    font-size: 1.3rem;
+  }
+}
