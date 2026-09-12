@@ -133,23 +133,6 @@ jekyll serve
 # then open http://localhost:4000
 ```
 
-## Post not showing up? Check these first
-
-- **The filename must end in `.md`.** `2026-05-01-minhaz-defense` is ignored;
-  `2026-05-01-minhaz-defense.md` works.
-- **The filename must start with the date**: `YYYY-MM-DD-title.md`.
-- **Dates in the future don't appear** until that day arrives.
-- **Image names are case-sensitive.** If the file is `photo.jpg`, writing
-  `photo.JPG` in the post gives a broken image (it may look fine on your
-  laptop but breaks on the live site).
-- **Keep the two `---` lines** at the top of the post, around `title` and `image`.
-- **Don't paste Facebook's fancy bold text** (𝐥𝐢𝐤𝐞 𝐭𝐡𝐢𝐬). It's made of special
-  symbols, not letters. Type normal text and use `**double asterisks**` instead.
-- **When copying an old post as a template, update the title.**
-- **Achievement showing under Events?** Add `section: achievements` to its top block.
-- **Posts go in `news/_posts/` or `blog/_posts/`**, not in `news/` or a
-  top-level `_posts/` folder.
-
 ## If the site doesn't update
 
 Check the repository's **Actions** tab. A red ✗ means the build failed. Click
