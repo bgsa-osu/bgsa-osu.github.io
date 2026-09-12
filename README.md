@@ -1,4 +1,4 @@
-# BGSA @ The Ohio State University — Website
+# BGSA @ The Ohio State University - Official Website
 
 Live site: https://bgsa-osu.github.io
 
