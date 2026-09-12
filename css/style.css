@@ -2682,6 +2682,18 @@ body {
    The accent rule carries meaning: scarlet marks an event, green marks a
    community achievement. Same shape, different edge. */
 
+/* Event card images are lazy-loaded and had no reserved height, so the
+   Events section was short until they arrived. An anchor jump to a later
+   section would land correctly, then the images would load above it and
+   push it down — which is why clicking Database stopped short of it.
+   The aspect ratio reserves the space up front, and also keeps portrait
+   photos from making one card three times taller than the next. */
+.news__image img {
+  aspect-ratio: 4 / 3;
+  height: auto;
+  object-fit: cover;
+}
+
 .news__item {
   border: 1px solid var(--color-line);
   border-left: 5px solid var(--color-primary);
