@@ -2420,6 +2420,12 @@ body {
   letter-spacing: -0.03em;
 }
 
+/* The subtitle has to hold its own against a 7rem headline. */
+.home-hero__info .text-primary {
+  font-size: 2.6rem;
+  font-weight: 600;
+}
+
 .heading-sec__main {
   font-size: 4.4rem;
   color: var(--color-dark);
@@ -2616,7 +2622,17 @@ body {
   transform: translateY(-2px);
 }
 
-.section-more__btn,
+/* "See all events" and friends carry .btn .btn--theme as well, so they are
+   solid scarlet buttons, not text links. Setting a colour here would land
+   after .btn--theme and paint scarlet text on a scarlet button. */
+.section-more__btn {
+  font-family: var(--font-body);
+  font-weight: 700;
+  text-transform: none;
+  letter-spacing: 0;
+  padding: 1.4rem 4rem;
+}
+
 .blog-more,
 .post__back {
   font-family: var(--font-body);
@@ -2626,7 +2642,6 @@ body {
   letter-spacing: 0;
 }
 
-.section-more__btn:hover,
 .blog-more:hover,
 .post__back:hover {
   color: var(--color-secondary);
@@ -2838,6 +2853,16 @@ body {
 /* ---- Member database table ------------------------------------------
    The table header colour is set inline in index.html, so it needs the
    override flag here. */
+
+/* The table sits on the paper-coloured section, so give it its own white
+   surface — otherwise the zebra rows disappear into the background. */
+.database__table-container {
+  background: var(--color-light);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
 
 #members-table thead tr {
   background: var(--color-primary) !important;
