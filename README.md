@@ -2,7 +2,7 @@
 
 Live site: https://bgsa-osu.github.io
 
-Originally built by K M Naimul Hassan (2026). Maintained by the BGSA
+Originally built by K M Naimul Hassan (2025). Maintained by the BGSA
 Executive Committee.
 
 This guide is for whoever maintains the site. You can do everything below
