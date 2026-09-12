@@ -42,8 +42,8 @@ on mobile data and breaks Facebook/WhatsApp link previews.
 
 ```markdown
 ---
-title: "Durga Puja 2026"
-image: /assets/jpeg/durga_puja_2026.jpg
+title: "New Event 2026"
+image: /assets/jpeg/new_event_2026.jpg
 ---
 Write the announcement here.
 
