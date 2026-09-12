@@ -277,32 +277,6 @@ layout: default
   </div>
 </section>
 
-<!-- RESOURCES (edit in _data/resources.yml) -->
-<section id="resources" class="sec-pad">
-  <div class="main-container">
-    <h2 class="heading heading-sec heading-sec__mb-med">
-      <span class="heading-sec__main">Resources</span>
-      <span class="heading-sec__sub">Helpful guides, links, and tools for BGSA members</span>
-    </h2>
-
-    <div class="projects__content">
-      {%- for card in site.data.resources %}
-      <div class="projects__row resource-card">
-        <div class="projects__row-content">
-          <h3 class="resources-title">{{ card.title }}</h3>
-          <p class="resources-desc">{{ card.description }}</p>
-          <ul class="resources-list">
-            {%- for item in card.items %}
-            <li><strong>{{ item.label }}:</strong> {{ item.text | markdownify | remove: "<p>" | remove: "</p>" | strip }}</li>
-            {%- endfor %}
-          </ul>
-        </div>
-      </div>
-      {%- endfor %}
-    </div>
-  </div>
-</section>
-
 <!-- BLOG (latest stories; add posts in blog/_posts/) -->
 <section id="blog" class="sec-pad about">
   <div class="main-container">
@@ -497,9 +471,34 @@ layout: default
       renderTable("");
     }
 
+  // Each tab gets its own address, so a link can point straight at one.
+  // The tab name goes in a query parameter rather than the hash, because the
+  // hash is already spoken for: it is what scrolls the page to #database.
+  const DB_TABS = ["grad", "postdoc", "alumni", "faculty", "addinfo"];
+
+  function dbTabFromUrl() {
+    const asked = new URLSearchParams(location.search).get("db");
+    return DB_TABS.includes(asked) ? asked : "grad";
+  }
+
+  function rememberDbTab(section) {
+    try {
+      const url = new URL(location.href);
+      if (section === "grad") url.searchParams.delete("db");
+      else url.searchParams.set("db", section);
+      url.hash = "database";
+      history.replaceState(null, "", url);
+    } catch (err) {
+      /* Some local file:// setups reject replaceState. The tab still works. */
+    }
+  }
+
   // Tab click listener
   document.querySelectorAll(".db-tab").forEach(btn => {
-    btn.addEventListener("click", () => loadSection(btn.dataset.target));
+    btn.addEventListener("click", () => {
+      rememberDbTab(btn.dataset.target);
+      loadSection(btn.dataset.target);
+    });
   });
 
   // Search listener
@@ -509,5 +508,5 @@ layout: default
 
   // Initialize
   setupSorting();
-  loadSection("grad"); // default load Grad Students
+  loadSection(dbTabFromUrl()); // honours ?db=... , otherwise Grad Students
 </script>

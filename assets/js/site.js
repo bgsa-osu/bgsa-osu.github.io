@@ -27,15 +27,43 @@ window.addEventListener("load", setHeaderHeight);
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(setHeaderHeight);
 if (header && "ResizeObserver" in window) new ResizeObserver(setHeaderHeight).observe(header);
 
-// About section tabs
-document.querySelectorAll(".about-tab").forEach(btn => {
+// About section tabs. Each one is addressable -- ?about=ec#about -- so a link
+// can point at a particular tab instead of just the section. The tab name goes
+// in a query parameter because the hash is already used to scroll to #about.
+const aboutTabs = document.querySelectorAll(".about-tab");
+
+function aboutTabKey(btn) {
+  return btn.dataset.target.replace(/^about-/, "");
+}
+
+function showAboutTab(btn) {
+  aboutTabs.forEach(b => b.classList.remove("active"));
+  document.querySelectorAll(".about-content").forEach(c => c.classList.remove("active"));
+  btn.classList.add("active");
+  const panel = document.getElementById(btn.dataset.target);
+  if (panel) panel.classList.add("active");
+}
+
+aboutTabs.forEach(btn => {
   btn.addEventListener("click", () => {
-    document.querySelectorAll(".about-tab").forEach(b => b.classList.remove("active"));
-    document.querySelectorAll(".about-content").forEach(c => c.classList.remove("active"));
-    btn.classList.add("active");
-    document.getElementById(btn.dataset.target).classList.add("active");
+    showAboutTab(btn);
+    try {
+      const url = new URL(location.href);
+      if (btn === aboutTabs[0]) url.searchParams.delete("about");
+      else url.searchParams.set("about", aboutTabKey(btn));
+      url.hash = "about";
+      history.replaceState(null, "", url);
+    } catch (err) {
+      /* Some local file:// setups reject replaceState. The tab still works. */
+    }
   });
 });
+
+if (aboutTabs.length) {
+  const asked = new URLSearchParams(location.search).get("about");
+  const match = Array.from(aboutTabs).find(b => aboutTabKey(b) === asked);
+  if (match) showAboutTab(match);
+}
 
 // Homepage slideshow: works with any number of photos from _data/hero.yml.
 // Only the first photo loads with the page; each next photo loads one step ahead.

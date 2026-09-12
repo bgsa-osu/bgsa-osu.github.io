@@ -1,6 +1,9 @@
-# BGSA @ The Ohio State University - Official Website
+# BGSA @ The Ohio State University — Website
 
 Live site: https://bgsa-osu.github.io
+
+Originally built by K M Naimul Hassan (2026). Maintained by the BGSA
+Executive Committee.
 
 This guide is for whoever maintains the site. You can do everything below
 directly on GitHub in the browser: open a file, click the pencil icon to edit
@@ -18,7 +21,6 @@ the site automatically, and your change is live in 1–2 minutes.
 | Executive Committee (current + past) | `_data/committees.yml`     |
 | Gallery                           | `_data/gallery.yml`           |
 | Homepage slideshow photos         | `_data/hero.yml`              |
-| Resources links                   | `_data/resources.yml`         |
 | Goals                             | `_data/goals.yml`             |
 | Email, phone, social links, homepage counts | `_config.yml`       |
 | Top menu (nav links)              | `_includes/header.html`       |
@@ -42,8 +44,8 @@ on mobile data and breaks Facebook/WhatsApp link previews.
 
 ```markdown
 ---
-title: "New Event 2026"
-image: /assets/jpeg/new_event_2026.jpg
+title: "Durga Puja 2026"
+image: /assets/jpeg/durga_puja_2026.jpg
 ---
 Write the announcement here.
 
@@ -114,7 +116,7 @@ Committees".
 
 That's it. The previous committee moves to the "Previous" tab automatically.
 
-## Gallery, slideshow, resources, goals
+## Gallery, slideshow, goals
 
 Each is a simple list in `_data/`. Add, remove, or reorder entries; the
 comments at the top of each file show the format. Keep the indentation
@@ -141,5 +143,5 @@ in a `_data` file or a missing `---` line in a post.
 
 ---
 
-Built with [Jekyll](https://jekyllrb.com) on GitHub Pages. Originally based on
-the Dopefolio template (GPL-3.0, see `LICENSE`).
+Built with [Jekyll](https://jekyllrb.com) on GitHub Pages, originally based
+on the Dopefolio template (GPL-3.0, see `LICENSE`).
