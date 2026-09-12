@@ -12,13 +12,20 @@ document.querySelectorAll('a[href^="http"]').forEach(link => {
   }
 });
 
-// Keep sub-page content below the fixed header, whatever its height
+// Keep content below the fixed header, whatever its height.
+// The header used to be measured once at startup, but its height changes
+// later: the nav rewraps when the web fonts arrive, and again when a phone is
+// rotated. A stale measurement here is what makes an anchor jump land under
+// the header, so watch the element instead of measuring it a single time.
 const header = document.querySelector(".header");
 function setHeaderHeight() {
   if (header) document.documentElement.style.setProperty("--header-h", header.offsetHeight + "px");
 }
 setHeaderHeight();
 window.addEventListener("resize", setHeaderHeight);
+window.addEventListener("load", setHeaderHeight);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(setHeaderHeight);
+if (header && "ResizeObserver" in window) new ResizeObserver(setHeaderHeight).observe(header);
 
 // About section tabs
 document.querySelectorAll(".about-tab").forEach(btn => {
@@ -54,7 +61,41 @@ if (slides.length > 1 && !window.matchMedia("(prefers-reduced-motion: reduce)").
 }
 
 // Anchor jumps (/#events, /#gallery, ...) are handled natively by the browser:
-// `scroll-behavior: smooth` in CSS does the animation, and the `scroll-margin-top`
-// on `section[id]` lands each heading just below the fixed header. Nothing to do
-// in JS -- the old watchdog that re-scrolled every 250ms fought the browser and
-// made the page bounce.
+// `scroll-behavior: smooth` in CSS animates them, and the `scroll-margin-top`
+// on `section[id]` lands each heading below the fixed header.
+//
+// One safety net, mainly for phones: if something above the target still
+// changes size while the jump is in flight, the target drifts down and the
+// page stops short of it. This checks ONCE, half a second later, and only
+// corrects a drift bigger than 40px. Deliberately not a loop, and never
+// smooth -- the earlier version re-scrolled every 250ms and fought the
+// browser's own animation, which is what made the page bounce.
+
+function realignOnce(id) {
+  const target = document.getElementById(id);
+  if (!target) return;
+
+  let moved = false;
+  const noteScroll = () => { moved = true; };
+  const events = ["wheel", "touchmove", "keydown"];
+  events.forEach(e => window.addEventListener(e, noteScroll, { passive: true }));
+
+  setTimeout(() => {
+    events.forEach(e => window.removeEventListener(e, noteScroll));
+    if (moved) return;
+    const offset = parseFloat(getComputedStyle(target).scrollMarginTop) || 0;
+    const drift = target.getBoundingClientRect().top - offset;
+    if (Math.abs(drift) > 40) window.scrollBy({ top: drift, behavior: "auto" });
+  }, 500);
+}
+
+if (location.hash.length > 1) {
+  window.addEventListener("load", () => realignOnce(location.hash.slice(1)));
+}
+
+document.addEventListener("click", e => {
+  const link = e.target.closest('a[href*="#"]');
+  if (link && link.pathname === location.pathname && link.hash.length > 1) {
+    realignOnce(link.hash.slice(1));
+  }
+});

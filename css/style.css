@@ -1914,7 +1914,11 @@ body {
 @media (max-width: 600px) {
 
   .hero-slider {
-    height: 100dvh !important;
+    /* Not 100dvh: on phones the dynamic viewport grows when the browser
+       toolbar retracts during a scroll, so the hero would get taller
+       mid-jump and push every section below it further down. svh is the
+       small-viewport height and does not move. */
+    height: 100svh !important;
     margin-top: 10rem !important;
     /* below header */
   }
@@ -2999,5 +3003,15 @@ input:focus-visible {
 
   .heading-sec__main {
     font-size: 3.4rem;
+  }
+}
+
+/* The -5rem in the section scroll offset above assumes the 12rem of section
+   padding that desktop has to spare. Phones only have 8rem, so eating 5rem of
+   it leaves the heading almost touching the header. Give small screens back
+   most of that room. */
+@media only screen and (max-width: 56.25em) {
+  section[id] {
+    scroll-margin-top: calc(var(--header-h, 9rem) - 2rem);
   }
 }
