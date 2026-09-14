@@ -237,12 +237,12 @@ layout: default
     <div class="database__table-container" style="overflow-x:auto;">
       <table id="members-table" style="width:100%; border-collapse:collapse; text-align:left; font-size:1.8rem;">
         <thead>
-          <tr style="background-color:#BA0C2F; color:#fff; cursor:pointer;">
-            <th>First Name ⬍</th>
-            <th>Last Name ⬍</th>
-            <th>Degree / Position ⬍</th>
-            <th>Program / Department ⬍</th>
-            <th>Name.# ⬍</th>
+          <tr style="background-color:var(--color-primary); color:#fff; cursor:pointer;">
+            <th data-col="First Name">First Name ⬍</th>
+            <th data-col="Last Name">Last Name ⬍</th>
+            <th data-col="role">Degree / Position ⬍</th>
+            <th data-col="Program">Program / Department ⬍</th>
+            <th data-col="Name.#">Name.# ⬍</th>
           </tr>
         </thead>
         <tbody id="members-body"></tbody>
@@ -275,40 +275,31 @@ layout: default
         <div class="member-form__pair">
           <div class="member-form__row">
             <label for="mf-first">First name</label>
-            <input id="mf-first" name="First Name" type="text" maxlength="60" required />
+            <input id="mf-first" name="firstName" type="text" maxlength="60" required />
           </div>
           <div class="member-form__row">
             <label for="mf-last">Last name</label>
-            <input id="mf-last" name="Last Name" type="text" maxlength="60" required />
+            <input id="mf-last" name="lastName" type="text" maxlength="60" required />
           </div>
         </div>
 
         <div class="member-form__pair">
-          <div class="member-form__row">
+          <div class="member-form__row" id="mf-name-row">
             <label for="mf-name">tOSU Name.#</label>
-            <input id="mf-name" name="Name.#" type="text" maxlength="40" required
-              placeholder="hassan.491" />
+            <input id="mf-name" name="nameNumber" type="text" maxlength="40" required />
           </div>
           <div class="member-form__row">
-            <label for="mf-degree">Degree / Position</label>
-            <input id="mf-degree" name="Degree" type="text" maxlength="40" required
-              list="mf-degrees" placeholder="PhD" />
-            <datalist id="mf-degrees">
-              <option value="PhD"></option>
-              <option value="MS"></option>
-              <option value="Post-Doc"></option>
-              <option value="Faculty"></option>
-            </datalist>
+            <label for="mf-role" id="mf-role-label">Degree / Position</label>
+            <input id="mf-role" name="role" type="text" maxlength="60" required />
           </div>
         </div>
 
         <div class="member-form__row">
           <label for="mf-program">Program / Department</label>
-          <input id="mf-program" name="Program" type="text" maxlength="120" required
-            placeholder="Computer Science and Engineering" />
+          <input id="mf-program" name="program" type="text" maxlength="120" required />
         </div>
 
-        <p class="member-form__note">
+        <p class="member-form__note" id="mf-note">
           This information is shown publicly on this page. Your Name.# is the
           same identifier as your OSU email address.
         </p>
@@ -428,12 +419,24 @@ layout: default
   // The first row of each tab must be the column headers, spelled exactly:
   //   First Name | Last Name | Degree | Program | Name.#
   // An optional `Approved` column hides a row while it is FALSE.
+  // Where each list lives. The column names are deliberately NOT written
+  // here: they differ per sheet (Degree, Position, Degree/Position,
+  // Designation) and have been renamed more than once. The code reads the
+  // header row and works out which column holds the role, so renaming a
+  // heading in the spreadsheet never breaks the page.
+  //
+  // roleLabel is only what the submission form calls the field before any
+  // sheet has loaded. The table always uses the sheet's own heading.
   const SHEET_SOURCES = {
-    grad:    { id: "1LnrYB-TD9XNjFKd9oY-fffAEDiKpwRkFCMYVl4gu2Uw", tab: "Sheet1" },
-    postdoc: { id: "1aeETkS8jK3aPhW8Yoes31ChwBuN31ZVRSa_y-u5-avE", tab: "Sheet1" },
-    alumni:  { id: "1dzhW9jUcOR8s0-fUBeQ25D_f79WnbHeXd8FdIgI_FWE", tab: "Sheet1" },
-    faculty: { id: "1FvuCJku9x_ElIMMKmCGc1VOdu6Mfa8qcGtFC3kgiVcw", tab: "Sheet1" }
+    grad:    { id: "1LnrYB-TD9XNjFKd9oY-fffAEDiKpwRkFCMYVl4gu2Uw", tab: "Sheet1", roleLabel: "Degree" },
+    postdoc: { id: "1aeETkS8jK3aPhW8Yoes31ChwBuN31ZVRSa_y-u5-avE", tab: "Sheet1", roleLabel: "Position" },
+    alumni:  { id: "1dzhW9jUcOR8s0-fUBeQ25D_f79WnbHeXd8FdIgI_FWE", tab: "Sheet1", roleLabel: "Degree/Position" },
+    faculty: { id: "1FvuCJku9x_ElIMMKmCGc1VOdu6Mfa8qcGtFC3kgiVcw", tab: "Sheet1", roleLabel: "Designation" }
   };
+
+  // Headers that are something other than the role column, so the detector
+  // does not mistake one for it.
+  const FIXED_COLUMNS = ["sl.", "first name", "last name", "name.#", "program", "approved", "submitted"];
 
   const SHEETS = {};
   Object.keys(SHEET_SOURCES).forEach(function (key) {
@@ -444,7 +447,7 @@ layout: default
 
   // Where submissions are sent. Paste the /exec URL from the Apps Script
   // deployment here; until then the form tells people to email instead.
-  const SUBMIT_ENDPOINT = "https://script.google.com/macros/s/AKfycbx0hOTrWhQDfvoyUB9lFBpYEgCZW3wvIsiamdmQpzKCdtHie4tkaDLr93CEIYoX_sSt9w/exec";
+  const SUBMIT_ENDPOINT = "";
 
   // Committed spreadsheets, used when no sheet URL is set and as the fallback.
   const FILES = {
@@ -454,17 +457,58 @@ layout: default
     faculty: "./assets/csv/faculty.xlsx"
   };
 
-  let activeData = [];   // Stores currently loaded dataset
-  let sortState = {};    // Sorting state
+  let activeData = [];      // Stores currently loaded dataset
+  let activeSection = "grad";
+  let sortState = {};       // Sorting state
+
+  // Whatever the current sheet turned out to contain.
+  let shape = { roleColumn: "Degree", roleLabel: "Degree / Position", hasNameNumber: true };
+
+  // Work out which heading holds the role. Anything that is not one of the
+  // known fixed columns is a candidate; among those, prefer the one that
+  // reads like a role. Falls back to the first spare column.
+  function detectShape(headers) {
+    const clean = headers.map(h => String(h === undefined ? "" : h).trim()).filter(Boolean);
+    const spare = clean.filter(h => !FIXED_COLUMNS.includes(h.toLowerCase()));
+    const roleColumn =
+      spare.find(h => /designation|position|degree|title|rank/i.test(h)) ||
+      spare[0] ||
+      "Degree";
+
+    return {
+      roleColumn: roleColumn,
+      roleLabel: roleColumn,
+      hasNameNumber: clean.some(h => h.toLowerCase() === "name.#")
+    };
+  }
+
+  // The column keys behind the table headings, for the list on screen.
+  function columnKeys() {
+    return ["First Name", "Last Name", shape.roleColumn, "Program", "Name.#"];
+  }
+
+  // Relabel the role heading from the sheet, and drop the Name.# heading
+  // where the sheet has no such column, so Alumni shows no empty strip.
+  function applyColumnShape() {
+    const roleHeader = document.querySelector('#members-table th[data-col="role"]');
+    const nameHeader = document.querySelector('#members-table th[data-col="Name.#"]');
+    if (roleHeader) roleHeader.textContent = shape.roleLabel + " \u2b0d";
+    if (nameHeader) nameHeader.style.display = shape.hasNameNumber ? "" : "none";
+  }
+
+  // Both loaders return the header row as well as the data, because the
+  // headers are what tell us the shape of the sheet.
+  function readWorkbook(workbook) {
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+    const headers = (XLSX.utils.sheet_to_json(sheet, { header: 1 })[0] || []);
+    return { headers: headers, rows: XLSX.utils.sheet_to_json(sheet) };
+  }
 
   // Load XLSX file
   async function loadExcel(filePath) {
     const response = await fetch(filePath);
     const arrayBuffer = await response.arrayBuffer();
-
-    const workbook = XLSX.read(arrayBuffer, { type: "array" });
-    const sheet = workbook.Sheets[workbook.SheetNames[0]];
-    return XLSX.utils.sheet_to_json(sheet);
+    return readWorkbook(XLSX.read(arrayBuffer, { type: "array" }));
   }
 
   // Load a published Google Sheet. SheetJS parses CSV as happily as XLSX.
@@ -474,8 +518,7 @@ layout: default
     if (!response.ok) throw new Error("Sheet responded " + response.status);
 
     const text = await response.text();
-    const workbook = XLSX.read(text, { type: "string" });
-    return XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
+    return readWorkbook(XLSX.read(text, { type: "string" }));
   }
 
   // Sheets carry blank spacer rows, and a row awaiting approval should not
@@ -493,14 +536,18 @@ layout: default
 
   // Live sheet first, committed file second.
   async function loadMembers(section) {
+    let loaded;
     if (SHEETS[section]) {
       try {
-        return (await loadSheet(SHEETS[section])).filter(isPublishable);
+        loaded = await loadSheet(SHEETS[section]);
       } catch (err) {
         console.warn("Live sheet unavailable for " + section + ", using the committed file.", err);
       }
     }
-    return (await loadExcel(FILES[section])).filter(isPublishable);
+    if (!loaded) loaded = await loadExcel(FILES[section]);
+
+    shape = detectShape(loaded.headers);
+    return loaded.rows.filter(isPublishable);
   }
 
   // A single-cell row for "loading" and "nothing here" states, so the table
@@ -516,23 +563,22 @@ layout: default
   // Render table
   function renderTable(filter = "") {
     const tbody = document.getElementById("members-body");
+    const keys = columnKeys();
+    const needle = filter.toLowerCase();
     tbody.innerHTML = "";
 
     activeData
       .filter(m =>
-        Object.values(m).some(v =>
-          String(v).toLowerCase().includes(filter.toLowerCase())
-        )
+        Object.values(m).some(v => String(v).toLowerCase().includes(needle))
       )
       .forEach(member => {
         const row = document.createElement("tr");
-        row.innerHTML = `
-        <td>${member["First Name"] || ""}</td>
-        <td>${member["Last Name"] || ""}</td>
-        <td>${member["Degree"] || ""}</td>
-        <td>${member["Program"] || ""}</td>
-        <td>${member["Name.#"] || ""}</td>
-      `;
+        keys.forEach(key => {
+          if (key === "Name.#" && !shape.hasNameNumber) return;
+          const cell = document.createElement("td");
+          cell.textContent = member[key] === undefined ? "" : member[key];
+          row.appendChild(cell);
+        });
         tbody.appendChild(row);
       });
   }
@@ -541,11 +587,9 @@ layout: default
   function setupSorting() {
     const headers = document.querySelectorAll("#members-table th");
 
-    const keys = ["First Name", "Last Name", "Degree", "Program", "Name.#"];
-
     headers.forEach((header, i) => {
       header.addEventListener("click", () => {
-        const key = keys[i];
+        const key = columnKeys()[i];
         sortState[key] = !sortState[key];
 
         activeData.sort((a, b) =>
@@ -593,9 +637,12 @@ layout: default
       tableContainer.style.display = "block";
       searchInput.style.display = "block";
 
+      activeSection = section;
+
       renderMessage("Loading\u2026");
       try {
         activeData = await loadMembers(section);
+        applyColumnShape();
       } catch (err) {
         activeData = [];
         console.error("Could not load the member list.", err);
@@ -655,6 +702,33 @@ layout: default
   const memberForm = document.getElementById("member-form");
 
   if (memberForm) {
+    // The form follows the same per-list shape as the table: faculty are
+    // asked for a Designation, and alumni are not asked for a Name.# at all
+    // because their sheet has no such column to put it in.
+    const categoryField = document.getElementById("mf-category");
+    const roleLabel = document.getElementById("mf-role-label");
+    const nameRow = document.getElementById("mf-name-row");
+    const nameField = document.getElementById("mf-name");
+    const formNote = document.getElementById("mf-note");
+
+    function applyFormShape() {
+      const source = SHEET_SOURCES[categoryField.value];
+      if (!source) return;
+      const wantsNameNumber = categoryField.value !== "alumni";
+
+      roleLabel.textContent = source.roleLabel;
+      nameRow.style.display = wantsNameNumber ? "" : "none";
+      nameField.required = wantsNameNumber;
+      if (!wantsNameNumber) nameField.value = "";
+
+      formNote.textContent = wantsNameNumber
+        ? "This information is shown publicly on this page. Your Name.# is the same identifier as your OSU email address."
+        : "This information is shown publicly on this page.";
+    }
+
+    categoryField.addEventListener("change", applyFormShape);
+    applyFormShape();
+
     const formStatus = memberForm.querySelector(".member-form__status");
     const formButton = memberForm.querySelector("button[type=submit]");
 
