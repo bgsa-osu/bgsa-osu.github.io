@@ -256,20 +256,72 @@ layout: default
         <span class="heading-sec__main">Add Your Information</span>
       </h3>
     
-      <p style="font-size:1.8rem; margin-bottom:2rem;">
-        Select the appropriate category below to submit your information to the BGSA database.
+      <p style="font-size:1.8rem; margin-bottom:2.5rem;">
+        Add yourself to the BGSA directory. Entries appear once an officer has
+        reviewed them, usually within a few days.
       </p>
-    
-      <div class="addinfo-grid">
-    
-        <a class="addinfo-card" href="https://forms.gle/uMfjqBhZtubrjgKA6" target="_blank">
-          <div class="addinfo-title">Graduate Students, Post-docs & Staffs</div>
-        </a>
-    
-        <a class="addinfo-card" href="https://forms.gle/r5ZRP6CDQKErogDbA" target="_blank">
-          <div class="addinfo-title">Alumni</div>
-        </a>
-    
+
+      <form id="member-form" class="member-form" novalidate>
+        <div class="member-form__row">
+          <label for="mf-category">Category</label>
+          <select id="mf-category" name="category" required>
+            <option value="grad">Graduate Student</option>
+            <option value="postdoc">Post-doc or Staff</option>
+            <option value="alumni">Alumnus / Alumna</option>
+            <option value="faculty">Faculty</option>
+          </select>
+        </div>
+
+        <div class="member-form__pair">
+          <div class="member-form__row">
+            <label for="mf-first">First name</label>
+            <input id="mf-first" name="First Name" type="text" maxlength="60" required />
+          </div>
+          <div class="member-form__row">
+            <label for="mf-last">Last name</label>
+            <input id="mf-last" name="Last Name" type="text" maxlength="60" required />
+          </div>
+        </div>
+
+        <div class="member-form__pair">
+          <div class="member-form__row">
+            <label for="mf-name">tOSU Name.#</label>
+            <input id="mf-name" name="Name.#" type="text" maxlength="40" required
+              placeholder="hassan.491" />
+          </div>
+          <div class="member-form__row">
+            <label for="mf-degree">Degree / Position</label>
+            <input id="mf-degree" name="Degree" type="text" maxlength="40" required
+              list="mf-degrees" placeholder="PhD" />
+            <datalist id="mf-degrees">
+              <option value="PhD"></option>
+              <option value="MS"></option>
+              <option value="Post-Doc"></option>
+              <option value="Faculty"></option>
+            </datalist>
+          </div>
+        </div>
+
+        <div class="member-form__row">
+          <label for="mf-program">Program / Department</label>
+          <input id="mf-program" name="Program" type="text" maxlength="120" required
+            placeholder="Computer Science and Engineering" />
+        </div>
+
+        <p class="member-form__note">
+          This information is shown publicly on this page. Your Name.# is the
+          same identifier as your OSU email address.
+        </p>
+
+        <!-- Honeypot: hidden from people, filled in by automated spam. -->
+        <div class="member-form__hp" aria-hidden="true">
+          <label for="mf-website">Website</label>
+          <input id="mf-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+        </div>
+
+        <button type="submit" class="btn btn--theme">Submit</button>
+        <p class="member-form__status" role="status" aria-live="polite"></p>
+      </form>
       </div>
     </div>
 
@@ -366,7 +418,35 @@ layout: default
   <!-- ✅ INTERACTIVE DATABASE SCRIPT -->
 <script>
 
-  // Excel files mapping
+  // ---- Where the member lists come from -------------------------------
+  //
+  // Each list is a Google Sheet shared as "Anyone with the link - Viewer".
+  // The gviz endpoint below returns that sheet as CSV and works without the
+  // "Publish to web" step. If a sheet is ever renamed, only the `tab` value
+  // here changes.
+  //
+  // The first row of each tab must be the column headers, spelled exactly:
+  //   First Name | Last Name | Degree | Program | Name.#
+  // An optional `Approved` column hides a row while it is FALSE.
+  const SHEET_SOURCES = {
+    grad:    { id: "1LnrYB-TD9XNjFKd9oY-fffAEDiKpwRkFCMYVl4gu2Uw", tab: "Sheet1" },
+    postdoc: { id: "1aeETkS8jK3aPhW8Yoes31ChwBuN31ZVRSa_y-u5-avE", tab: "Sheet1" },
+    alumni:  { id: "1dzhW9jUcOR8s0-fUBeQ25D_f79WnbHeXd8FdIgI_FWE", tab: "Sheet1" },
+    faculty: { id: "1FvuCJku9x_ElIMMKmCGc1VOdu6Mfa8qcGtFC3kgiVcw", tab: "Sheet1" }
+  };
+
+  const SHEETS = {};
+  Object.keys(SHEET_SOURCES).forEach(function (key) {
+    const source = SHEET_SOURCES[key];
+    SHEETS[key] = "https://docs.google.com/spreadsheets/d/" + source.id +
+      "/gviz/tq?tqx=out:csv&sheet=" + encodeURIComponent(source.tab);
+  });
+
+  // Where submissions are sent. Paste the /exec URL from the Apps Script
+  // deployment here; until then the form tells people to email instead.
+  const SUBMIT_ENDPOINT = "";
+
+  // Committed spreadsheets, used when no sheet URL is set and as the fallback.
   const FILES = {
     grad: "./assets/csv/grad.xlsx",
     postdoc: "./assets/csv/staff.xlsx",
@@ -385,6 +465,52 @@ layout: default
     const workbook = XLSX.read(arrayBuffer, { type: "array" });
     const sheet = workbook.Sheets[workbook.SheetNames[0]];
     return XLSX.utils.sheet_to_json(sheet);
+  }
+
+  // Load a published Google Sheet. SheetJS parses CSV as happily as XLSX.
+  async function loadSheet(url) {
+    const bust = (url.includes("?") ? "&" : "?") + "t=" + Date.now();
+    const response = await fetch(url + bust);
+    if (!response.ok) throw new Error("Sheet responded " + response.status);
+
+    const text = await response.text();
+    const workbook = XLSX.read(text, { type: "string" });
+    return XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
+  }
+
+  // Sheets carry blank spacer rows, and a row awaiting approval should not
+  // be public yet. Absent or empty Approved is treated as visible, so adding
+  // the column later does not make the whole directory disappear.
+  function isPublishable(member) {
+    const named = String(member["First Name"] || "").trim() ||
+                  String(member["Last Name"] || "").trim();
+    if (!named) return false;
+
+    const approved = String(member["Approved"] === undefined ? "" : member["Approved"])
+      .trim().toLowerCase();
+    return !["false", "no", "0", "pending"].includes(approved);
+  }
+
+  // Live sheet first, committed file second.
+  async function loadMembers(section) {
+    if (SHEETS[section]) {
+      try {
+        return (await loadSheet(SHEETS[section])).filter(isPublishable);
+      } catch (err) {
+        console.warn("Live sheet unavailable for " + section + ", using the committed file.", err);
+      }
+    }
+    return (await loadExcel(FILES[section])).filter(isPublishable);
+  }
+
+  // A single-cell row for "loading" and "nothing here" states, so the table
+  // is never just silently blank.
+  function renderMessage(text) {
+    const tbody = document.getElementById("members-body");
+    const columns = document.querySelectorAll("#members-table th").length || 5;
+    tbody.innerHTML =
+      '<tr><td colspan="' + columns + '" style="text-align:center;padding:3rem;color:var(--color-grey)">' +
+      text + "</td></tr>";
   }
 
   // Render table
@@ -467,7 +593,20 @@ layout: default
       tableContainer.style.display = "block";
       searchInput.style.display = "block";
 
-      activeData = await loadExcel(FILES[section]);
+      renderMessage("Loading\u2026");
+      try {
+        activeData = await loadMembers(section);
+      } catch (err) {
+        activeData = [];
+        console.error("Could not load the member list.", err);
+        renderMessage("The member list could not be loaded. Please try again shortly.");
+        return;
+      }
+
+      if (!activeData.length) {
+        renderMessage("No members listed yet.");
+        return;
+      }
       renderTable("");
     }
 
@@ -505,6 +644,57 @@ layout: default
   document.getElementById("searchInput").addEventListener("input", e => {
     renderTable(e.target.value);
   });
+
+  // ---- Submitting a new entry ------------------------------------------
+  //
+  // Content-Type is text/plain on purpose. With application/json the browser
+  // sends a preflight OPTIONS request first, and Apps Script web apps do not
+  // answer those, so the request would fail on CORS before it was ever sent.
+  // text/plain counts as a "simple" request and goes straight through; the
+  // script still parses it with JSON.parse.
+  const memberForm = document.getElementById("member-form");
+
+  if (memberForm) {
+    const formStatus = memberForm.querySelector(".member-form__status");
+    const formButton = memberForm.querySelector("button[type=submit]");
+
+    memberForm.addEventListener("submit", async e => {
+      e.preventDefault();
+
+      if (!memberForm.checkValidity()) {
+        memberForm.reportValidity();
+        return;
+      }
+
+      if (!SUBMIT_ENDPOINT) {
+        formStatus.textContent =
+          "Online submissions are not switched on yet. Please email {{ site.email }}.";
+        return;
+      }
+
+      formButton.disabled = true;
+      formStatus.textContent = "Sending\u2026";
+
+      const payload = Object.fromEntries(new FormData(memberForm).entries());
+
+      try {
+        const response = await fetch(SUBMIT_ENDPOINT, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(payload)
+        });
+        const result = await response.json();
+        formStatus.textContent = result.message;
+        if (result.ok) memberForm.reset();
+      } catch (err) {
+        console.error("Submission failed.", err);
+        formStatus.textContent =
+          "Could not reach the server. Please try again, or email {{ site.email }}.";
+      } finally {
+        formButton.disabled = false;
+      }
+    });
+  }
 
   // Initialize
   setupSorting();
