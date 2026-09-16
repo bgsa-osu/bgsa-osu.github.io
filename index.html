@@ -64,20 +64,28 @@ layout: default
           </div>
           <div class="about__text-side">
             <p class="about__description">
-              The Bangladesh Graduate Student Association (BGSA) was established with the motivation to foster a stronger sense of
-              community and enhance connectivity among members. One of the association’s primary goals has been to support graduate
+              The Bangladesh Graduate Student Association (BGSA) was established with the motivation to foster a
+              stronger sense of
+              community and enhance connectivity among members. One of the association’s primary goals has been to
+              support graduate
               students and their families as they settle in and navigate their academic journey abroad.
             </p>
             <p class="about__description">
-              In 2022, a small group of four students stepped forward, with support from the broader community, to form the first
-              leadership committee. They organized several meet-and-greet events featuring cultural activities and Bengali cuisine.
-              From this modest beginning, subsequent committees have grown in size and expanded BGSA’s functions, activities, and
+              In 2022, a small group of four students stepped forward, with support from the broader community, to form
+              the first
+              leadership committee. They organized several meet-and-greet events featuring cultural activities and
+              Bengali cuisine.
+              From this modest beginning, subsequent committees have grown in size and expanded BGSA’s functions,
+              activities, and
               impact both within the organization and across the community.
             </p>
             <p class="about__description">
-              Today, BGSA serves as a strong anchor connecting graduate students, post-doctoral researchers, Bengali faculty members,
-              and even student groups from other universities. With increasingly effective leadership and continued community support,
-              BGSA aims to remain at the forefront of improving the experience of every graduate student and their family as they
+              Today, BGSA serves as a strong anchor connecting graduate students, post-doctoral researchers, Bengali
+              faculty members,
+              and even student groups from other universities. With increasingly effective leadership and continued
+              community support,
+              BGSA aims to remain at the forefront of improving the experience of every graduate student and their
+              family as they
               navigate their journey at OSU.
             </p>
           </div>
@@ -110,7 +118,8 @@ layout: default
           {%- for member in current.members %}
           <div class="projects__row">
             <div class="projects__row-img-cont">
-              <img src="{{ member.photo | relative_url }}" alt="{{ member.name }}, {{ member.role }}" class="projects__row-img" loading="lazy" />
+              <img src="{{ member.photo | relative_url }}" alt="{{ member.name }}, {{ member.role }}"
+                class="projects__row-img" loading="lazy" />
             </div>
             <div class="projects__row-content">
               <h3 class="projects__row-content-title">{{ member.name }}</h3>
@@ -169,7 +178,7 @@ layout: default
 
     <div class="news__content">
       {%- for post in events limit: site.events_on_homepage %}
-        {% include news-card.html %}
+      {% include news-card.html %}
       {%- endfor %}
     </div>
     <div class="section-more">
@@ -188,11 +197,12 @@ layout: default
 
     <div class="achievements__grid">
       {%- for post in achievements limit: site.achievements_on_homepage %}
-        {% include achievement-card.html %}
+      {% include achievement-card.html %}
       {%- endfor %}
     </div>
     <div class="section-more">
-      <a href="{{ '/news/achievements/' | relative_url }}" class="btn btn--theme section-more__btn">See all achievements</a>
+      <a href="{{ '/news/achievements/' | relative_url }}" class="btn btn--theme section-more__btn">See all
+        achievements</a>
     </div>
   </div>
 </section>
@@ -202,7 +212,8 @@ layout: default
   <div class="main-container">
     <h2 class="heading heading-sec heading-sec__mb-med">
       <span class="heading-sec__main">Gallery</span>
-      <span class="heading-sec__sub">Snapshots from our events and community moments. Send your photos to {{ site.email }}.</span>
+      <span class="heading-sec__sub">Snapshots from our events and community moments. Send your photos to {{ site.email
+        }}.</span>
     </h2>
 
     <div class="gallery__grid">
@@ -258,11 +269,11 @@ layout: default
 
     <!-- ADD YOUR INFORMATION TAB -->
     <div id="addinfo" class="db-content" style="display:none; margin-top:3rem;">
-    
+
       <h3 class="heading heading-sec heading-sec__mb-med">
         <span class="heading-sec__main">Add Your Information</span>
       </h3>
-    
+
       <p style="font-size:1.8rem; margin-bottom:2.5rem;">
         Add yourself to the BGSA directory. Entries appear once an officer has
         reviewed them, usually within a few days.
@@ -320,10 +331,10 @@ layout: default
         <button type="submit" class="btn btn--theme">Submit</button>
         <p class="member-form__status" role="status" aria-live="polite"></p>
       </form>
-      </div>
     </div>
+  </div>
 
-    
+
   </div>
 </section>
 
@@ -332,12 +343,13 @@ layout: default
   <div class="main-container">
     <h2 class="heading heading-sec heading-sec__mb-med">
       <span class="heading-sec__main">Blog</span>
-      <span class="heading-sec__sub">Articles, reflections, and creative writing from our BGSA community. Send your stories to {{ site.email }}.</span>
+      <span class="heading-sec__sub">Articles, reflections, and creative writing from our BGSA community. Send your
+        stories to {{ site.email }}.</span>
     </h2>
 
     <div class="blog-list">
       {%- for post in site.categories.blog limit: site.blog_on_homepage %}
-        {% include blog-card.html %}
+      {% include blog-card.html %}
       {%- endfor %}
     </div>
 
@@ -376,9 +388,13 @@ layout: default
 
       <div id="officer-tools" hidden>
         <div class="officer__bar">
-          <h4 class="officer__subheading">Events</h4>
+          <h4 class="officer__subheading">Directory approvals</h4>
           <button type="button" id="ev-sign-out" class="officer__add">Sign out</button>
         </div>
+        <div id="officer-pending" class="officer__events"></div>
+        <p id="ev-pending-status" class="member-form__status" role="status" aria-live="polite"></p>
+
+        <h4 class="officer__subheading">Events</h4>
         <div id="officer-events" class="officer__events"></div>
 
         <h4 class="officer__subheading" id="ev-form-heading">Create an event</h4>
@@ -419,6 +435,55 @@ layout: default
           <button type="button" id="ev-cancel" class="officer__add" hidden>Cancel edit</button>
           <p id="ev-status" class="member-form__status" role="status" aria-live="polite"></p>
         </form>
+
+        <h4 class="officer__subheading">Posts</h4>
+        <div class="member-form__row">
+          <label for="po-type">Which list</label>
+          <select id="po-type">
+            <option value="achievement">Achievements</option>
+            <option value="eventPost">Event write-ups</option>
+            <option value="blog">Blog</option>
+          </select>
+        </div>
+        <div id="officer-posts" class="officer__events"></div>
+
+        <form id="post-form" class="member-form" novalidate>
+          <h5 class="officer__subheading" id="po-form-heading">Write a new post</h5>
+
+          <div class="member-form__row">
+            <label for="po-title">Title</label>
+            <input id="po-title" type="text" maxlength="200" required />
+          </div>
+          <div class="member-form__pair">
+            <div class="member-form__row">
+              <label for="po-date">Date</label>
+              <input id="po-date" type="date" required />
+            </div>
+            <div class="member-form__row" id="po-author-row">
+              <label for="po-author">Author</label>
+              <input id="po-author" type="text" maxlength="120" />
+            </div>
+          </div>
+          <div class="member-form__row" id="po-photo-row">
+            <label for="po-photo">Photo</label>
+            <input id="po-photo" type="file" accept="image/*" />
+            <p class="member-form__note" id="po-photo-note">
+              Resized before upload. Leave empty to keep the current one.
+            </p>
+          </div>
+          <div class="member-form__row">
+            <label for="po-body">Text</label>
+            <textarea id="po-body" rows="10" required></textarea>
+            <p class="member-form__note">
+              Markdown: **bold**, *italic*, [link](https://…), blank line between
+              paragraphs.
+            </p>
+          </div>
+
+          <button type="submit" class="btn btn--theme" id="po-submit">Publish</button>
+          <button type="button" id="po-cancel" class="officer__add" hidden>Cancel edit</button>
+          <p id="po-status" class="member-form__status" role="status" aria-live="polite"></p>
+        </form>
       </div>
     </div>
   </div>
@@ -447,7 +512,8 @@ layout: default
       <a class="contact__card" href="tel:{{ site.phone }}" aria-label="Call BGSA">
         <div class="contact__icon">
           <svg width="36" height="36" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1.1-.24c1.2.48 2.6.74 4 .74a1 1 0 0 1 1 1v3.5a1 1 0 0 1-1 1A18.5 18.5 0 0 1 3.5 5a1 1 0 0 1 1-1H8a1 1 0 0 1 1 1c0 1.4.26 2.8.74 4a1 1 0 0 1-.24 1.1L6.6 10.8Z" />
+            <path
+              d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1.1-.24c1.2.48 2.6.74 4 .74a1 1 0 0 1 1 1v3.5a1 1 0 0 1-1 1A18.5 18.5 0 0 1 3.5 5a1 1 0 0 1 1-1H8a1 1 0 0 1 1 1c0 1.4.26 2.8.74 4a1 1 0 0 1-.24 1.1L6.6 10.8Z" />
           </svg>
         </div>
         <h3 class="contact__label">Phone</h3>
@@ -457,7 +523,8 @@ layout: default
       <a class="contact__card" href="{{ site.facebook_url }}" aria-label="BGSA on Facebook">
         <div class="contact__icon">
           <svg width="36" height="36" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M22 12a10 10 0 1 0-11.6 9.9v-7h-2.3V12h2.3V9.7c0-2.3 1.3-3.6 3.4-3.6.98 0 2 .18 2 .18v2.2h-1.1c-1.1 0-1.5.7-1.5 1.4V12h2.6l-.4 2.9h-2.2v7A10 10 0 0 0 22 12Z" />
+            <path
+              d="M22 12a10 10 0 1 0-11.6 9.9v-7h-2.3V12h2.3V9.7c0-2.3 1.3-3.6 3.4-3.6.98 0 2 .18 2 .18v2.2h-1.1c-1.1 0-1.5.7-1.5 1.4V12h2.6l-.4 2.9h-2.2v7A10 10 0 0 0 22 12Z" />
           </svg>
         </div>
         <h3 class="contact__label">Facebook</h3>
@@ -467,7 +534,8 @@ layout: default
       <a class="contact__card" href="{{ site.instagram_url }}" aria-label="BGSA on Instagram">
         <div class="contact__icon">
           <svg width="36" height="36" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5Zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7Zm5 3.5A5.5 5.5 0 1 1 6.5 13 5.5 5.5 0 0 1 12 7.5Zm0 2A3.5 3.5 0 1 0 15.5 13 3.5 3.5 0 0 0 12 9.5Zm5.75-2.75a1.25 1.25 0 1 1-1.25 1.25 1.25 1.25 0 0 1 1.25-1.25Z" />
+            <path
+              d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5Zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7Zm5 3.5A5.5 5.5 0 1 1 6.5 13 5.5 5.5 0 0 1 12 7.5Zm0 2A3.5 3.5 0 1 0 15.5 13 3.5 3.5 0 0 0 12 9.5Zm5.75-2.75a1.25 1.25 0 1 1-1.25 1.25 1.25 1.25 0 0 1 1.25-1.25Z" />
           </svg>
         </div>
         <h3 class="contact__label">Instagram</h3>
@@ -477,7 +545,8 @@ layout: default
       <a class="contact__card" href="{{ site.youtube_url }}" aria-label="BGSA on YouTube">
         <div class="contact__icon">
           <svg width="36" height="36" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M23.5 7.2a3 3 0 0 0-2.1-2.1C19.7 4.5 12 4.5 12 4.5s-7.7 0-9.4.6A3 3 0 0 0 .5 7.2 31.6 31.6 0 0 0 0 12a31.6 31.6 0 0 0 .5 4.8 3 3 0 0 0 2.1 2.1c1.7.6 9.4.6 9.4.6s7.7 0 9.4-.6a3 3 0 0 0 2.1-2.1A31.6 31.6 0 0 0 24 12a31.6 31.6 0 0 0-.5-4.8ZM9.8 15.5v-7l6.2 3.5-6.2 3.5Z" />
+            <path
+              d="M23.5 7.2a3 3 0 0 0-2.1-2.1C19.7 4.5 12 4.5 12 4.5s-7.7 0-9.4.6A3 3 0 0 0 .5 7.2 31.6 31.6 0 0 0 0 12a31.6 31.6 0 0 0 .5 4.8 3 3 0 0 0 2.1 2.1c1.7.6 9.4.6 9.4.6s7.7 0 9.4-.6a3 3 0 0 0 2.1-2.1A31.6 31.6 0 0 0 24 12a31.6 31.6 0 0 0-.5-4.8ZM9.8 15.5v-7l6.2 3.5-6.2 3.5Z" />
           </svg>
         </div>
         <h3 class="contact__label">YouTube</h3>
@@ -942,7 +1011,12 @@ layout: default
       function signedIn(yes) {
         loginBox.hidden = yes;
         toolsBox.hidden = !yes;
-        if (yes) loadOfficerEvents();
+        if (yes) {
+          loadPending();
+          loadOfficerEvents();
+          applyPostShape();
+          loadPosts();
+        }
       }
 
       // ---- signing in ------------------------------------------------------
@@ -988,6 +1062,94 @@ layout: default
         signedIn(false);
       });
 
+      // ---- directory approvals ---------------------------------------------
+
+      const pendingBox = document.getElementById("officer-pending");
+      const pendingStatus = document.getElementById("ev-pending-status");
+
+      async function loadPending() {
+        pendingBox.textContent = "Loading\u2026";
+        let result;
+        try {
+          result = await post({ action: "listPending", token: token() });
+        } catch (err) {
+          console.error("Could not load pending entries.", err);
+          pendingBox.textContent = "Could not reach the server.";
+          return;
+        }
+
+        if (!result.ok) {
+          pendingBox.textContent = result.message;
+          return;
+        }
+
+        pendingBox.innerHTML = "";
+        if (!result.pending.length) {
+          pendingBox.textContent = "Nothing waiting for review.";
+          return;
+        }
+
+        result.pending.forEach(entry => pendingBox.appendChild(pendingRow(entry)));
+      }
+
+      const CATEGORY_NAMES = {
+        grad: "Graduate Students",
+        postdoc: "Post-docs & Staff",
+        alumni: "Alumni",
+        faculty: "Faculty"
+      };
+
+      function pendingRow(entry) {
+        const name = (entry.firstName + " " + entry.lastName).trim();
+
+        const row = document.createElement("div");
+        row.className = "officer__event";
+
+        const label = document.createElement("div");
+        label.className = "officer__event-name";
+        label.textContent = name;
+
+        const meta = document.createElement("div");
+        meta.className = "officer__event-meta";
+        meta.textContent = [
+          CATEGORY_NAMES[entry.category] || entry.category,
+          entry.nameNumber,
+          entry.role,
+          entry.program
+        ].filter(Boolean).join(" \u00b7 ");
+
+        const actions = document.createElement("div");
+        actions.className = "officer__event-actions";
+        actions.appendChild(action("Approve", () => decide(entry, name, true)));
+        actions.appendChild(action("Reject", () => {
+          if (!confirm("Remove " + name + " from the list? This deletes the row.")) return;
+          decide(entry, name, false);
+        }));
+
+        row.append(label, meta, actions);
+        return row;
+      }
+
+      async function decide(entry, name, approved) {
+        pendingStatus.textContent = "Working\u2026";
+        try {
+          const result = await post({
+            action: "setApproval",
+            token: token(),
+            category: entry.category,
+            rowNumber: entry.rowNumber,
+            name: name,
+            approved: approved
+          });
+          pendingStatus.textContent = result.message;
+          // Always reload: a row number that was right a moment ago may not be
+          // after an approval, since rejecting deletes a row and shifts the rest.
+          loadPending();
+        } catch (err) {
+          pendingStatus.textContent = "Could not reach the server.";
+        }
+      }
+
       // ---- the list of events ---------------------------------------------
 
       async function loadOfficerEvents() {
@@ -996,14 +1158,23 @@ layout: default
         try {
           result = await post({ action: "listEvents", token: token() });
         } catch (err) {
-          eventsBox.textContent = "Could not reach the server.";
+          console.error("Could not load events.", err);
+          eventsBox.textContent =
+            "Could not reach the server. Check the browser console for details.";
           return;
         }
 
         if (!result.ok) {
+          // Only an expired session should throw the officer back to the
+          // login screen. Any other failure -- a missing spreadsheet ID, a
+          // permissions problem -- means staying put and saying so, rather
+          // than bouncing back with the reason written somewhere hidden.
           eventsBox.textContent = result.message;
-          sessionStorage.removeItem(TOKEN_KEY);
-          signedIn(false);
+          if (/session/i.test(result.message)) {
+            sessionStorage.removeItem(TOKEN_KEY);
+            loginStatus.textContent = result.message;
+            signedIn(false);
+          }
           return;
         }
 
@@ -1206,6 +1377,167 @@ layout: default
         }
       });
 
+      // ---- posts in the repository -----------------------------------------
+
+      const postType = document.getElementById("po-type");
+      const postsBox = document.getElementById("officer-posts");
+      const postForm = document.getElementById("post-form");
+      const poHeading = document.getElementById("po-form-heading");
+      const poSubmit = document.getElementById("po-submit");
+      const poCancel = document.getElementById("po-cancel");
+      const poStatus = document.getElementById("po-status");
+      const poPhoto = document.getElementById("po-photo");
+      const poAuthorRow = document.getElementById("po-author-row");
+      const poPhotoRow = document.getElementById("po-photo-row");
+
+      let editingPost = null;   // { path, image }
+
+      function applyPostShape() {
+        const blog = postType.value === "blog";
+        poAuthorRow.style.display = blog ? "" : "none";
+        poPhotoRow.style.display = blog ? "none" : "";
+      }
+
+      postType.addEventListener("change", () => {
+        applyPostShape();
+        stopEditingPost();
+        loadPosts();
+      });
+
+      async function loadPosts() {
+        postsBox.textContent = "Loading\u2026";
+        let result;
+        try {
+          result = await post({ action: "listPosts", token: token(), type: postType.value });
+        } catch (err) {
+          console.error("Could not load posts.", err);
+          postsBox.textContent = "Could not reach the server.";
+          return;
+        }
+
+        if (!result.ok) {
+          postsBox.textContent = result.message;
+          return;
+        }
+
+        postsBox.innerHTML = "";
+        if (!result.posts.length) {
+          postsBox.textContent = "Nothing here yet.";
+          return;
+        }
+
+        result.posts.slice(0, 25).forEach(item => {
+          const row = document.createElement("div");
+          row.className = "officer__event";
+
+          const label = document.createElement("div");
+          label.className = "officer__event-name";
+          label.textContent = item.slug.replace(/-/g, " ");
+
+          const meta = document.createElement("div");
+          meta.className = "officer__event-meta";
+          meta.textContent = item.date;
+
+          const actions = document.createElement("div");
+          actions.className = "officer__event-actions";
+          actions.appendChild(action("Edit", () => startEditingPost(item)));
+          actions.appendChild(action("Delete", () => {
+            if (!confirm("Delete this post? It is removed from the site and from the repository.")) return;
+            runPost({ action: "deletePost", path: item.path });
+          }));
+
+          row.append(label, meta, actions);
+          postsBox.appendChild(row);
+        });
+      }
+
+      async function runPost(body) {
+        poStatus.textContent = "Working\u2026";
+        try {
+          const result = await post(Object.assign({ token: token(), type: postType.value }, body));
+          poStatus.textContent = result.message;
+          if (result.ok) {
+            stopEditingPost();
+            loadPosts();
+          }
+        } catch (err) {
+          poStatus.textContent = "Could not reach the server.";
+        }
+      }
+
+      async function startEditingPost(item) {
+        poStatus.textContent = "Opening\u2026";
+        let result;
+        try {
+          result = await post({ action: "getPost", token: token(), path: item.path });
+        } catch (err) {
+          poStatus.textContent = "Could not reach the server.";
+          return;
+        }
+        if (!result.ok) { poStatus.textContent = result.message; return; }
+
+        const front = result.post.front || {};
+        editingPost = { path: result.post.path, image: front.image || "" };
+
+        poHeading.textContent = "Editing: " + (front.title || item.slug);
+        poSubmit.textContent = "Save changes";
+        poCancel.hidden = false;
+        poStatus.textContent = "";
+
+        document.getElementById("po-title").value = front.title || "";
+        document.getElementById("po-date").value = item.date || "";
+        document.getElementById("po-author").value = front.author || "";
+        document.getElementById("po-body").value = result.post.body || "";
+        poPhoto.value = "";
+
+        postForm.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      function stopEditingPost() {
+        editingPost = null;
+        poHeading.textContent = "Write a new post";
+        poSubmit.textContent = "Publish";
+        poCancel.hidden = true;
+        postForm.reset();
+      }
+
+      poCancel.addEventListener("click", stopEditingPost);
+
+      postForm.addEventListener("submit", async e => {
+        e.preventDefault();
+        if (!postForm.checkValidity()) return postForm.reportValidity();
+
+        poSubmit.disabled = true;
+        poStatus.textContent = "Saving\u2026";
+
+        try {
+          const photo = await readPhoto(poPhoto.files[0]);
+          const result = await post({
+            action: "savePost",
+            token: token(),
+            type: postType.value,
+            originalPath: editingPost ? editingPost.path : "",
+            image: editingPost ? editingPost.image : "",
+            title: document.getElementById("po-title").value,
+            date: document.getElementById("po-date").value,
+            author: document.getElementById("po-author").value,
+            body: document.getElementById("po-body").value,
+            photo: photo
+          });
+
+          poStatus.textContent = result.message;
+          if (result.ok) {
+            stopEditingPost();
+            loadPosts();
+          }
+        } catch (err) {
+          console.error("Could not save the post.", err);
+          poStatus.textContent = "Could not reach the server. Please try again.";
+        } finally {
+          poSubmit.disabled = false;
+        }
+      });
+
       // ---- go --------------------------------------------------------------
 
       if (!ENDPOINT) {
@@ -1218,7 +1550,7 @@ layout: default
   })();
 </script>
 
-  <!-- ✅ INTERACTIVE DATABASE SCRIPT -->
+<!-- ✅ INTERACTIVE DATABASE SCRIPT -->
 <script>
 
   // ---- Where the member lists come from -------------------------------
@@ -1240,9 +1572,9 @@ layout: default
   // roleLabel is only what the submission form calls the field before any
   // sheet has loaded. The table always uses the sheet's own heading.
   const SHEET_SOURCES = {
-    grad:    { id: "1LnrYB-TD9XNjFKd9oY-fffAEDiKpwRkFCMYVl4gu2Uw", tab: "Sheet1", roleLabel: "Degree" },
+    grad: { id: "1LnrYB-TD9XNjFKd9oY-fffAEDiKpwRkFCMYVl4gu2Uw", tab: "Sheet1", roleLabel: "Degree" },
     postdoc: { id: "1aeETkS8jK3aPhW8Yoes31ChwBuN31ZVRSa_y-u5-avE", tab: "Sheet1", roleLabel: "Position" },
-    alumni:  { id: "1dzhW9jUcOR8s0-fUBeQ25D_f79WnbHeXd8FdIgI_FWE", tab: "Sheet1", roleLabel: "Degree/Position" },
+    alumni: { id: "1dzhW9jUcOR8s0-fUBeQ25D_f79WnbHeXd8FdIgI_FWE", tab: "Sheet1", roleLabel: "Degree/Position" },
     faculty: { id: "1FvuCJku9x_ElIMMKmCGc1VOdu6Mfa8qcGtFC3kgiVcw", tab: "Sheet1", roleLabel: "Designation" }
   };
 
@@ -1338,7 +1670,7 @@ layout: default
   // the column later does not make the whole directory disappear.
   function isPublishable(member) {
     const named = String(member["First Name"] || "").trim() ||
-                  String(member["Last Name"] || "").trim();
+      String(member["Last Name"] || "").trim();
     if (!named) return false;
 
     const approved = String(member["Approved"] === undefined ? "" : member["Approved"])
@@ -1424,50 +1756,50 @@ layout: default
   // Load section on tab click
   async function loadSection(section) {
 
-      // Remove active class from all tabs
-      document.querySelectorAll(".db-tab").forEach(btn =>
-        btn.classList.remove("active")
-      );
-      document.querySelector(`.db-tab[data-target="${section}"]`).classList.add("active");
+    // Remove active class from all tabs
+    document.querySelectorAll(".db-tab").forEach(btn =>
+      btn.classList.remove("active")
+    );
+    document.querySelector(`.db-tab[data-target="${section}"]`).classList.add("active");
 
-      const tableContainer = document.querySelector(".database__table-container");
-      const searchInput = document.getElementById("searchInput");
-      const addInfoSection = document.getElementById("addinfo");
+    const tableContainer = document.querySelector(".database__table-container");
+    const searchInput = document.getElementById("searchInput");
+    const addInfoSection = document.getElementById("addinfo");
 
-      // Hide AddInfo section by default
-      addInfoSection.style.display = "none";
+    // Hide AddInfo section by default
+    addInfoSection.style.display = "none";
 
-      // If user clicks "Add Your Information" tab
-      if (section === "addinfo") {
-        tableContainer.style.display = "none";
-        searchInput.style.display = "none";
-        addInfoSection.style.display = "block";
-        return; // 🔥 Do NOT load Excel
-      }
-
-      // For all other tabs
-      tableContainer.style.display = "block";
-      searchInput.style.display = "block";
-
-      activeSection = section;
-
-      renderMessage("Loading\u2026");
-      try {
-        activeData = await loadMembers(section);
-        applyColumnShape();
-      } catch (err) {
-        activeData = [];
-        console.error("Could not load the member list.", err);
-        renderMessage("The member list could not be loaded. Please try again shortly.");
-        return;
-      }
-
-      if (!activeData.length) {
-        renderMessage("No members listed yet.");
-        return;
-      }
-      renderTable("");
+    // If user clicks "Add Your Information" tab
+    if (section === "addinfo") {
+      tableContainer.style.display = "none";
+      searchInput.style.display = "none";
+      addInfoSection.style.display = "block";
+      return; // 🔥 Do NOT load Excel
     }
+
+    // For all other tabs
+    tableContainer.style.display = "block";
+    searchInput.style.display = "block";
+
+    activeSection = section;
+
+    renderMessage("Loading\u2026");
+    try {
+      activeData = await loadMembers(section);
+      applyColumnShape();
+    } catch (err) {
+      activeData = [];
+      console.error("Could not load the member list.", err);
+      renderMessage("The member list could not be loaded. Please try again shortly.");
+      return;
+    }
+
+    if (!activeData.length) {
+      renderMessage("No members listed yet.");
+      return;
+    }
+    renderTable("");
+  }
 
   // Each tab gets its own address, so a link can point straight at one.
   // The tab name goes in a query parameter rather than the hash, because the
