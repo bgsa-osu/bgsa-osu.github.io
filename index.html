@@ -160,6 +160,81 @@ layout: default
       <span class="heading-sec__sub">Tournaments, festivals, and gatherings from the BGSA community.</span>
     </h2>
 
+    <!-- UPCOMING EVENTS + RSVP (rows come from the Events sheet) -->
+    <div id="upcoming" class="upcoming" hidden>
+      <h3 class="upcoming__heading">Upcoming</h3>
+      <div id="upcoming-list" class="upcoming__list"></div>
+    </div>
+
+    <!-- Officers only. Hidden unless the page is opened with ?officer=1, and
+         everything below is checked by the Apps Script, not here. -->
+    <div id="officer" class="officer" hidden>
+      <h3 class="officer__heading">Officer tools</h3>
+
+      <div id="officer-login">
+        <p class="member-form__note">
+          Ask for a code, read it in the BGSA inbox, and sign in. A session
+          lasts two hours, so you only do this once per sitting.
+        </p>
+        <div class="member-form__row">
+          <label for="ev-pass">One-time code</label>
+          <div class="officer__code">
+            <input id="ev-pass" type="text" inputmode="numeric" autocomplete="off" maxlength="6" />
+            <button type="button" id="ev-send-code" class="officer__add">Email a code</button>
+          </div>
+        </div>
+        <button type="button" id="ev-sign-in" class="btn btn--theme">Sign in</button>
+        <p id="ev-login-status" class="member-form__status" role="status" aria-live="polite"></p>
+      </div>
+
+      <div id="officer-tools" hidden>
+        <div class="officer__bar">
+          <h4 class="officer__subheading">Events</h4>
+          <button type="button" id="ev-sign-out" class="officer__add">Sign out</button>
+        </div>
+        <div id="officer-events" class="officer__events"></div>
+
+        <h4 class="officer__subheading" id="ev-form-heading">Create an event</h4>
+        <form id="officer-form" class="member-form" novalidate>
+          <div class="member-form__row">
+            <label for="ev-name">Event name</label>
+            <input id="ev-name" type="text" maxlength="120" required />
+          </div>
+          <div class="member-form__pair">
+            <div class="member-form__row">
+              <label for="ev-date">Date</label>
+              <input id="ev-date" type="date" required />
+            </div>
+            <div class="member-form__row">
+              <label for="ev-location">Location</label>
+              <input id="ev-location" type="text" maxlength="200" />
+            </div>
+          </div>
+          <div class="member-form__row">
+            <label for="ev-desc">Description</label>
+            <textarea id="ev-desc" rows="4" maxlength="2000"></textarea>
+          </div>
+          <div class="member-form__row">
+            <label for="ev-photo">Photo</label>
+            <input id="ev-photo" type="file" accept="image/*" />
+            <p class="member-form__note" id="ev-photo-note">
+              Resized before upload, so a photo straight off a phone is fine.
+            </p>
+          </div>
+
+          <div class="member-form__row">
+            <label>Extra questions <em>(optional)</em></label>
+            <div id="ev-questions" class="officer__questions"></div>
+            <button type="button" id="ev-add-question" class="officer__add">+ Add a question</button>
+          </div>
+
+          <button type="submit" class="btn btn--theme" id="ev-submit">Create event</button>
+          <button type="button" id="ev-cancel" class="officer__add" hidden>Cancel edit</button>
+          <p id="ev-status" class="member-form__status" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </div>
+
     <div class="news__content">
       {%- for post in events limit: site.events_on_homepage %}
         {% include news-card.html %}
@@ -406,6 +481,710 @@ layout: default
 
 <!-- SheetJS (reads the member database spreadsheets) -->
 <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<!-- ✅ UPCOMING EVENTS + RSVP -->
+<script>
+  (function () {
+    // ---- Where events come from ------------------------------------------
+    //
+    // The Apps Script feed, not a published sheet. Officers create events
+    // through the form on this page (see ?officer=1), and the script keeps
+    // them in a spreadsheet that is never link-shared -- RSVP rows hold
+    // names and payment status, so nothing but the event details and a
+    // headcount is ever served to the public.
+    //
+    // Same deployment as the member directory.
+    const ENDPOINT = "";
+
+    const section = document.getElementById("upcoming");
+    const list = document.getElementById("upcoming-list");
+    if (!section || !list) return;
+
+
+    // ---- Helpers ----------------------------------------------------------
+
+    function text(value) {
+      return value === undefined || value === null ? "" : String(value).trim();
+    }
+
+    function truthy(value) {
+      const v = text(value).toLowerCase();
+      return v === "" || !["false", "no", "0"].includes(v);
+    }
+
+    // "Carpool:select(Yes,No)" -> { label, type, options }
+    function parseQuestion(spec) {
+      const raw = text(spec);
+      if (!raw) return null;
+
+      const match = raw.match(/^(.*?):select\((.*)\)$/i);
+      if (match) {
+        return {
+          label: match[1].trim(),
+          type: "select",
+          options: match[2].split(",").map(o => o.trim()).filter(Boolean)
+        };
+      }
+      return { label: raw.replace(/:text$/i, "").trim(), type: "text", options: [] };
+    }
+
+    // Splits on commas, but not on commas inside select(...) -- otherwise
+    // "Carpool:select(Yes,No)" becomes two nonsense questions.
+    function splitList(value) {
+      const out = [];
+      let current = "";
+      let depth = 0;
+
+      text(value).split("").forEach(ch => {
+        if (ch === "(") depth += 1;
+        if (ch === ")") depth -= 1;
+        if (ch === "," && depth <= 0) {
+          out.push(current.trim());
+          current = "";
+        } else {
+          current += ch;
+        }
+      });
+      out.push(current.trim());
+      return out.filter(Boolean);
+    }
+
+    // A date in the past means the event has been and gone. Anything we can't
+    // parse is treated as upcoming, so a typo hides nothing.
+    function isUpcoming(event) {
+      if (/^\d+$/.test(event.date)) return true; // a bare number is not a date
+      const when = Date.parse(event.date);
+      if (isNaN(when)) return true;
+      const endOfDay = new Date(when);
+      endOfDay.setHours(23, 59, 59, 999);
+      return endOfDay.getTime() >= Date.now();
+    }
+
+    function rsvpClosed(event) {
+      const closes = Date.parse(event.closes);
+      if (isNaN(closes)) return false;
+      const endOfDay = new Date(closes);
+      endOfDay.setHours(23, 59, 59, 999);
+      return Date.now() > endOfDay.getTime();
+    }
+
+    function countLine(event) {
+      if (!event.rsvps) return "No one has replied yet.";
+      const people = event.attendees || 0;
+      return event.rsvps + (event.rsvps === 1 ? " reply" : " replies") +
+        ", " + people + (people === 1 ? " person" : " people") + " coming so far.";
+    }
+
+    // ---- Loading ----------------------------------------------------------
+
+    async function loadEvents() {
+      const response = await fetch(ENDPOINT, { cache: "no-store" });
+      if (!response.ok) throw new Error("Events feed responded " + response.status);
+
+      const result = await response.json();
+      if (!result.ok) throw new Error(result.message || "Events feed failed.");
+
+      return (result.events || [])
+        .map(event => ({
+          id: text(event.id),
+          title: text(event.name),
+          date: text(event.date),
+          time: "",
+          location: text(event.location),
+          description: text(event.description),
+          photo: text(event.photo),
+          payments: event.payments || [],
+          // The script calls a multiple-choice question "choice"; the form
+          // builder below has always called it "select".
+          extras: (event.questions || []).map(q => ({
+            label: q.label,
+            type: q.type === "choice" ? "select" : "text",
+            options: q.options || []
+          })),
+          capacity: NaN,
+          closes: "",
+          rsvps: Number(event.rsvps) || 0,
+          attendees: Number(event.attendees) || 0
+        }))
+        .filter(event => event.id && event.title && isUpcoming(event));
+    }
+
+    // ---- Rendering --------------------------------------------------------
+
+    function field(labelText, control) {
+      const wrap = document.createElement("div");
+      wrap.className = "member-form__row";
+      const label = document.createElement("label");
+      label.textContent = labelText;
+      wrap.appendChild(label);
+      wrap.appendChild(control);
+      label.htmlFor = control.id;
+      return wrap;
+    }
+
+    function input(id, type, required, extra) {
+      const el = document.createElement("input");
+      el.id = id;
+      el.type = type;
+      el.required = !!required;
+      Object.assign(el, extra || {});
+      return el;
+    }
+
+    function buildForm(event) {
+      const form = document.createElement("form");
+      form.className = "member-form rsvp__form";
+      form.hidden = true;
+
+      const key = event.id.replace(/[^A-Za-z0-9_-]/g, "");
+
+      const first = input("rsvp-first-" + key, "text", true, { maxLength: 60 });
+      const last = input("rsvp-last-" + key, "text", true, { maxLength: 60 });
+      const nameNumber = input("rsvp-namenum-" + key, "text", true, { maxLength: 40 });
+      const adults = input("rsvp-adults-" + key, "number", true, { min: 1, max: 20, value: 1 });
+      const kids = input("rsvp-kids-" + key, "number", false, { min: 0, max: 20, value: 0 });
+
+      const names = document.createElement("div");
+      names.className = "member-form__pair";
+      names.appendChild(field("First name", first));
+      names.appendChild(field("Last name", last));
+      form.appendChild(names);
+
+      // The confirmation goes to name.#@osu.edu, so this is the only address
+      // the form needs to ask for.
+      form.appendChild(field("tOSU Name.#", nameNumber));
+
+      const pair = document.createElement("div");
+      pair.className = "member-form__pair";
+      pair.appendChild(field("Adults attending (including you)", adults));
+      pair.appendChild(field("Children attending with you", kids));
+      form.appendChild(pair);
+
+      let payment = null;
+      if (event.payments.length) {
+        payment = document.createElement("select");
+        payment.id = "rsvp-payment-" + key;
+        payment.required = true;
+        const blank = document.createElement("option");
+        blank.value = "";
+        blank.textContent = "Choose one";
+        payment.appendChild(blank);
+        event.payments.forEach(option => {
+          const el = document.createElement("option");
+          el.value = option;
+          el.textContent = option;
+          payment.appendChild(el);
+        });
+        form.appendChild(field("Payment status", payment));
+      }
+
+      const extras = event.extras.map((question, index) => {
+        let control;
+        if (question.type === "select") {
+          control = document.createElement("select");
+          const blank = document.createElement("option");
+          blank.value = "";
+          blank.textContent = "Choose one";
+          control.appendChild(blank);
+          question.options.forEach(option => {
+            const el = document.createElement("option");
+            el.value = option;
+            el.textContent = option;
+            control.appendChild(el);
+          });
+        } else {
+          control = document.createElement("input");
+          control.type = "text";
+          control.maxLength = 200;
+        }
+        control.id = "rsvp-extra-" + key + "-" + index;
+        form.appendChild(field(question.label, control));
+        return { label: question.label, control: control };
+      });
+
+      // Honeypot, as on the directory form.
+      const trap = document.createElement("div");
+      trap.className = "member-form__hp";
+      trap.setAttribute("aria-hidden", "true");
+      const trapInput = input("rsvp-website-" + key, "text", false, { tabIndex: -1, autocomplete: "off" });
+      trap.appendChild(trapInput);
+      form.appendChild(trap);
+
+      const submit = document.createElement("button");
+      submit.type = "submit";
+      submit.className = "btn btn--theme";
+      submit.textContent = "Send RSVP";
+      form.appendChild(submit);
+
+      const status = document.createElement("p");
+      status.className = "member-form__status";
+      status.setAttribute("role", "status");
+      status.setAttribute("aria-live", "polite");
+      form.appendChild(status);
+
+      form.addEventListener("submit", async e => {
+        e.preventDefault();
+        if (!form.checkValidity()) return form.reportValidity();
+
+        if (!ENDPOINT) {
+          status.textContent = "RSVPs are not switched on yet. Please email {{ site.email }}.";
+          return;
+        }
+
+        submit.disabled = true;
+        status.textContent = "Sending\u2026";
+
+        const answers = {};
+        extras.forEach(extra => { answers[extra.label] = extra.control.value; });
+
+        try {
+          const response = await fetch(ENDPOINT, {
+            method: "POST",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify({
+              action: "rsvp",
+              eventId: event.id,
+              firstName: first.value,
+              lastName: last.value,
+              nameNumber: nameNumber.value,
+              adults: adults.value,
+              children: kids.value,
+              payment: payment ? payment.value : "",
+              answers: answers,
+              website: trapInput.value
+            })
+          });
+          const result = await response.json();
+          status.textContent = result.message;
+          if (result.ok) {
+            form.reset();
+            refresh();
+          }
+        } catch (err) {
+          console.error("RSVP failed.", err);
+          status.textContent = "Could not reach the server. Please try again, or email {{ site.email }}.";
+        } finally {
+          submit.disabled = false;
+        }
+      });
+
+      return form;
+    }
+
+    function buildCard(event) {
+      const card = document.createElement("article");
+      card.className = "rsvp-card";
+
+      if (event.photo) {
+        const figure = document.createElement("div");
+        figure.className = "rsvp-card__photo";
+        const img = document.createElement("img");
+        img.src = event.photo;
+        img.alt = "";
+        img.loading = "lazy";
+        // Drive image links break often enough to be worth handling: drop the
+        // picture rather than leaving a broken frame on the card.
+        img.addEventListener("error", () => figure.remove());
+        figure.appendChild(img);
+        card.appendChild(figure);
+      }
+
+      const title = document.createElement("h4");
+      title.className = "rsvp-card__title";
+      title.textContent = event.title;
+      card.appendChild(title);
+
+      const meta = [event.date, event.time, event.location].filter(Boolean).join(" \u00b7 ");
+      if (meta) {
+        const metaEl = document.createElement("p");
+        metaEl.className = "rsvp-card__meta";
+        metaEl.textContent = meta;
+        card.appendChild(metaEl);
+      }
+
+      if (event.description) {
+        const desc = document.createElement("p");
+        desc.className = "rsvp-card__desc";
+        desc.textContent = event.description;
+        card.appendChild(desc);
+      }
+
+      const tally = document.createElement("p");
+      tally.className = "rsvp-card__count";
+      tally.textContent = countLine(event);
+      card.appendChild(tally);
+
+      const closed = rsvpClosed(event);
+      const full = !isNaN(event.capacity) && event.attendees >= event.capacity;
+
+      if (closed || full) {
+        const note = document.createElement("p");
+        note.className = "rsvp-card__closed";
+        note.textContent = closed ? "RSVPs have closed for this event." : "This event is full.";
+        card.appendChild(note);
+        return card;
+      }
+
+      const toggle = document.createElement("button");
+      toggle.type = "button";
+      toggle.className = "btn btn--theme rsvp-card__toggle";
+      toggle.textContent = "RSVP";
+      card.appendChild(toggle);
+
+      const form = buildForm(event);
+      card.appendChild(form);
+
+      toggle.addEventListener("click", () => {
+        form.hidden = !form.hidden;
+        toggle.textContent = form.hidden ? "RSVP" : "Close";
+      });
+
+      return card;
+    }
+
+    let currentEvents = [];
+
+    function render(events) {
+      currentEvents = events;
+      list.innerHTML = "";
+      events.forEach(event => list.appendChild(buildCard(event)));
+      section.hidden = events.length === 0;
+    }
+
+    // ---- Go ---------------------------------------------------------------
+
+    async function refresh() {
+      if (!ENDPOINT) return;
+      try {
+        render(await loadEvents());
+      } catch (err) {
+        console.warn("Could not load upcoming events.", err);
+        section.hidden = true; // the page simply shows no Upcoming block
+      }
+    }
+
+    refresh();
+
+    // ---- Officers: creating an event ---------------------------------------
+
+    const officer = document.getElementById("officer");
+
+    if (officer && new URLSearchParams(location.search).get("officer") === "1") {
+      officer.hidden = false;
+      setupOfficerTools();
+    }
+
+    function setupOfficerTools() {
+      const TOKEN_KEY = "bgsaOfficerToken";
+
+      const loginBox = document.getElementById("officer-login");
+      const toolsBox = document.getElementById("officer-tools");
+      const loginStatus = document.getElementById("ev-login-status");
+      const codeField = document.getElementById("ev-pass");
+      const eventsBox = document.getElementById("officer-events");
+
+      const officerForm = document.getElementById("officer-form");
+      const formHeading = document.getElementById("ev-form-heading");
+      const submitButton = document.getElementById("ev-submit");
+      const cancelButton = document.getElementById("ev-cancel");
+      const questionList = document.getElementById("ev-questions");
+      const evStatus = document.getElementById("ev-status");
+      const evPhoto = document.getElementById("ev-photo");
+      const photoNote = document.getElementById("ev-photo-note");
+
+      let editingId = null;
+
+      // The token lives in sessionStorage, not localStorage: closing the tab
+      // signs the officer out, which is the right default on a shared laptop.
+      function token() { return sessionStorage.getItem(TOKEN_KEY); }
+
+      async function post(body) {
+        const response = await fetch(ENDPOINT, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(body)
+        });
+        return response.json();
+      }
+
+      function signedIn(yes) {
+        loginBox.hidden = yes;
+        toolsBox.hidden = !yes;
+        if (yes) loadOfficerEvents();
+      }
+
+      // ---- signing in ------------------------------------------------------
+
+      document.getElementById("ev-send-code").addEventListener("click", async e => {
+        e.target.disabled = true;
+        loginStatus.textContent = "Sending a code\u2026";
+        try {
+          const result = await post({ action: "requestEventCode" });
+          loginStatus.textContent = result.message;
+        } catch (err) {
+          loginStatus.textContent = "Could not reach the server.";
+        } finally {
+          e.target.disabled = false;
+        }
+      });
+
+      document.getElementById("ev-sign-in").addEventListener("click", async e => {
+        if (!codeField.value.trim()) {
+          loginStatus.textContent = "Enter the code from the BGSA inbox.";
+          return;
+        }
+        e.target.disabled = true;
+        loginStatus.textContent = "Checking\u2026";
+        try {
+          const result = await post({ action: "startSession", code: codeField.value });
+          loginStatus.textContent = result.message;
+          if (result.ok) {
+            sessionStorage.setItem(TOKEN_KEY, result.token);
+            codeField.value = "";
+            signedIn(true);
+          }
+        } catch (err) {
+          loginStatus.textContent = "Could not reach the server.";
+        } finally {
+          e.target.disabled = false;
+        }
+      });
+
+      document.getElementById("ev-sign-out").addEventListener("click", () => {
+        sessionStorage.removeItem(TOKEN_KEY);
+        loginStatus.textContent = "Signed out.";
+        signedIn(false);
+      });
+
+      // ---- the list of events ---------------------------------------------
+
+      async function loadOfficerEvents() {
+        eventsBox.textContent = "Loading\u2026";
+        let result;
+        try {
+          result = await post({ action: "listEvents", token: token() });
+        } catch (err) {
+          eventsBox.textContent = "Could not reach the server.";
+          return;
+        }
+
+        if (!result.ok) {
+          eventsBox.textContent = result.message;
+          sessionStorage.removeItem(TOKEN_KEY);
+          signedIn(false);
+          return;
+        }
+
+        eventsBox.innerHTML = "";
+        if (!result.events.length) {
+          eventsBox.textContent = "No events yet.";
+          return;
+        }
+
+        result.events.forEach(event => eventsBox.appendChild(eventRow(event)));
+      }
+
+      function eventRow(event) {
+        const row = document.createElement("div");
+        row.className = "officer__event" + (event.open ? "" : " is-closed");
+
+        const label = document.createElement("div");
+        label.className = "officer__event-name";
+        label.textContent = event.name;
+
+        const meta = document.createElement("div");
+        meta.className = "officer__event-meta";
+        meta.textContent = [
+          event.date,
+          event.rsvps + (event.rsvps === 1 ? " reply" : " replies"),
+          event.attendees + " coming",
+          event.open ? "" : "closed"
+        ].filter(Boolean).join(" \u00b7 ");
+
+        const actions = document.createElement("div");
+        actions.className = "officer__event-actions";
+        actions.appendChild(action("Edit", () => startEditing(event)));
+        actions.appendChild(action(event.open ? "Close" : "Reopen", () =>
+          run({ action: "setEventOpen", id: event.id, open: !event.open })));
+        actions.appendChild(action("Delete", () => {
+          if (!confirm("Delete \"" + event.name + "\"? Its RSVPs stay in the spreadsheet.")) return;
+          run({ action: "deleteEvent", id: event.id });
+        }));
+
+        row.append(label, meta, actions);
+        return row;
+      }
+
+      function action(text, handler) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "officer__remove";
+        button.textContent = text;
+        button.addEventListener("click", handler);
+        return button;
+      }
+
+      async function run(body) {
+        evStatus.textContent = "Working\u2026";
+        try {
+          const result = await post(Object.assign({ token: token() }, body));
+          evStatus.textContent = result.message;
+          if (result.ok) {
+            loadOfficerEvents();
+            refresh();
+          }
+        } catch (err) {
+          evStatus.textContent = "Could not reach the server.";
+        }
+      }
+
+      // ---- creating and editing -------------------------------------------
+
+      function addQuestionRow(question) {
+        const row = document.createElement("div");
+        row.className = "officer__question";
+
+        const label = document.createElement("input");
+        label.type = "text";
+        label.maxLength = 80;
+        label.placeholder = "Question";
+        label.value = question ? question.label : "";
+
+        const options = document.createElement("input");
+        options.type = "text";
+        options.maxLength = 200;
+        options.placeholder = "Choices, comma separated (blank for free text)";
+        options.value = question && question.options ? question.options.join(", ") : "";
+
+        const remove = action("Remove", () => row.remove());
+        row.append(label, options, remove);
+        questionList.appendChild(row);
+      }
+
+      document.getElementById("ev-add-question")
+        .addEventListener("click", () => addQuestionRow());
+
+      function collectQuestions() {
+        return Array.from(questionList.querySelectorAll(".officer__question"))
+          .map(row => {
+            const inputs = row.querySelectorAll("input");
+            const label = inputs[0].value.trim();
+            if (!label) return null;
+            return {
+              label: label,
+              options: inputs[1].value.split(",").map(o => o.trim()).filter(Boolean)
+            };
+          })
+          .filter(Boolean);
+      }
+
+      function startEditing(event) {
+        editingId = event.id;
+        formHeading.textContent = "Edit: " + event.name;
+        submitButton.textContent = "Save changes";
+        cancelButton.hidden = false;
+        photoNote.textContent = "Leave empty to keep the current photo.";
+
+        document.getElementById("ev-name").value = event.name || "";
+        document.getElementById("ev-date").value = event.date || "";
+        document.getElementById("ev-location").value = event.location || "";
+        document.getElementById("ev-desc").value = event.description || "";
+        evPhoto.value = "";
+
+        questionList.innerHTML = "";
+        (event.questions || []).forEach(addQuestionRow);
+
+        officer.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      function stopEditing() {
+        editingId = null;
+        formHeading.textContent = "Create an event";
+        submitButton.textContent = "Create event";
+        cancelButton.hidden = true;
+        photoNote.textContent = "Resized before upload, so a photo straight off a phone is fine.";
+        officerForm.reset();
+        questionList.innerHTML = "";
+      }
+
+      cancelButton.addEventListener("click", stopEditing);
+
+      // Phone photos run to several megabytes, and the whole thing travels
+      // base64-encoded inside the POST body. Downscaling in a canvas first
+      // keeps the request small and the aspect ratio intact.
+      function readPhoto(file) {
+        return new Promise((resolve, reject) => {
+          if (!file) return resolve(null);
+          const reader = new FileReader();
+          reader.onerror = () => reject(new Error("Could not read that file."));
+          reader.onload = () => {
+            const img = new Image();
+            img.onerror = () => reject(new Error("That file is not an image."));
+            img.onload = () => {
+              const scale = Math.min(1, 1600 / img.width);
+              const canvas = document.createElement("canvas");
+              canvas.width = Math.round(img.width * scale);
+              canvas.height = Math.round(img.height * scale);
+              canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
+              const dataUrl = canvas.toDataURL("image/jpeg", 0.85);
+              resolve({
+                name: file.name,
+                type: "image/jpeg",
+                data: dataUrl.slice(dataUrl.indexOf(",") + 1)
+              });
+            };
+            img.src = reader.result;
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+
+      officerForm.addEventListener("submit", async e => {
+        e.preventDefault();
+        if (!officerForm.checkValidity()) return officerForm.reportValidity();
+
+        submitButton.disabled = true;
+        evStatus.textContent = editingId ? "Saving\u2026" : "Creating\u2026";
+
+        try {
+          const photo = await readPhoto(evPhoto.files[0]);
+          const result = await post({
+            action: editingId ? "updateEvent" : "createEvent",
+            token: token(),
+            id: editingId,
+            name: document.getElementById("ev-name").value,
+            date: document.getElementById("ev-date").value,
+            location: document.getElementById("ev-location").value,
+            description: document.getElementById("ev-desc").value,
+            questions: collectQuestions(),
+            photo: photo
+          });
+
+          evStatus.textContent = result.message;
+          if (result.ok) {
+            stopEditing();
+            loadOfficerEvents();
+            refresh();
+          }
+        } catch (err) {
+          console.error("Could not save the event.", err);
+          evStatus.textContent = "Could not reach the server. Please try again.";
+        } finally {
+          submitButton.disabled = false;
+        }
+      });
+
+      // ---- go --------------------------------------------------------------
+
+      if (!ENDPOINT) {
+        loginStatus.textContent = "Officer tools are not switched on yet.";
+        return;
+      }
+
+      signedIn(!!token());
+    }
+  })();
+</script>
+
   <!-- ✅ INTERACTIVE DATABASE SCRIPT -->
 <script>
 
@@ -447,7 +1226,7 @@ layout: default
 
   // Where submissions are sent. Paste the /exec URL from the Apps Script
   // deployment here; until then the form tells people to email instead.
-  const SUBMIT_ENDPOINT = "https://script.google.com/macros/s/AKfycbyERJU9MoHdDvPEHaGwW1L1sYfdE255YAQKqhyjljtUiifbQi7T-7oBAm3U4ZNA97tjlw/exec";
+  const SUBMIT_ENDPOINT = "";
 
   // Committed spreadsheets, used when no sheet URL is set and as the fallback.
   const FILES = {
