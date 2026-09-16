@@ -903,6 +903,12 @@ layout: default
       const card = document.createElement("article");
       card.className = "rsvp-card";
 
+      // Same shape as the Events page cards: image to one side, words to the
+      // other, rather than a banner across the top that crops the picture to
+      // a letterbox.
+      const text = document.createElement("div");
+      text.className = "rsvp-card__text";
+
       if (event.photo) {
         const figure = document.createElement("div");
         figure.className = "rsvp-card__photo";
@@ -915,40 +921,43 @@ layout: default
         img.addEventListener("error", () => figure.remove());
         figure.appendChild(img);
         card.appendChild(figure);
+        card.classList.add("has-photo");
       }
+
+      card.appendChild(text);
 
       const title = document.createElement("h4");
       title.className = "rsvp-card__title";
       title.textContent = "Upcoming Event: " + event.title;
-      card.appendChild(title);
+      text.appendChild(title);
 
       if (event.date || event.time) {
         const when = [event.date, event.time].filter(Boolean).join("  \u00b7  ");
-        card.appendChild(detail(event.time ? "Date & time" : "Date", when));
+        text.appendChild(detail(event.time ? "Date & time" : "Date", when));
       }
-      if (event.location) card.appendChild(detail("Place", event.location));
-      if (event.deadline) card.appendChild(detail("RSVP deadline", event.deadline));
+      if (event.location) text.appendChild(detail("Place", event.location));
+      if (event.deadline) text.appendChild(detail("RSVP deadline", event.deadline));
 
       if (event.description) {
         const desc = document.createElement("p");
         desc.className = "rsvp-card__desc";
         desc.textContent = event.description;
-        card.appendChild(desc);
+        text.appendChild(desc);
       }
 
       const tally = document.createElement("p");
       tally.className = "rsvp-card__count";
       tally.textContent = countLine(event);
-      card.appendChild(tally);
+      text.appendChild(tally);
 
       const toggle = document.createElement("button");
       toggle.type = "button";
       toggle.className = "btn btn--theme rsvp-card__toggle";
       toggle.textContent = "Please click here for RSVP";
-      card.appendChild(toggle);
+      text.appendChild(toggle);
 
       const form = buildForm(event);
-      card.appendChild(form);
+      text.appendChild(form);
 
       toggle.addEventListener("click", () => {
         form.hidden = !form.hidden;
@@ -1259,6 +1268,7 @@ layout: default
 
         const actions = document.createElement("div");
         actions.className = "officer__event-actions";
+        actions.appendChild(action("RSVPs (" + event.rsvps + ")", () => toggleRsvps(event, row)));
         actions.appendChild(action("Edit", () => startEditing(event)));
         actions.appendChild(action(event.open ? "Deactivate" : "Activate", () =>
           run({ action: "setEventOpen", id: event.id, open: !event.open })));
@@ -1278,6 +1288,131 @@ layout: default
         button.textContent = text;
         button.addEventListener("click", handler);
         return button;
+      }
+
+      // ---- the replies for one event --------------------------------------
+
+      async function toggleRsvps(event, row) {
+        const open = row.querySelector(".officer__rsvps");
+        if (open) { open.remove(); return; }
+
+        const panel = document.createElement("div");
+        panel.className = "officer__rsvps";
+        panel.textContent = "Loading\u2026";
+        row.appendChild(panel);
+
+        let result;
+        try {
+          result = await post({ action: "listRsvps", token: token(), eventId: event.id });
+        } catch (err) {
+          panel.textContent = "Could not reach the server.";
+          return;
+        }
+
+        if (!result.ok) { panel.textContent = result.message; return; }
+
+        panel.innerHTML = "";
+        if (!result.rsvps.length) {
+          panel.textContent = "No replies yet.";
+          return;
+        }
+
+        result.rsvps.forEach(entry => {
+          panel.appendChild(rsvpRow(event, entry, result.payments, result.extras, row));
+        });
+      }
+
+      function rsvpRow(event, entry, payments, extras, eventRowEl) {
+        const line = document.createElement("div");
+        line.className = "officer__rsvp";
+
+        const who = document.createElement("div");
+        who.className = "officer__rsvp-who";
+        who.textContent = entry.firstName + " " + entry.lastName +
+          (entry.nameNumber ? " (" + entry.nameNumber + ")" : "");
+        line.appendChild(who);
+
+        const fields = document.createElement("div");
+        fields.className = "officer__rsvp-fields";
+
+        const adults = document.createElement("input");
+        adults.type = "number"; adults.min = 1; adults.max = 20;
+        adults.value = entry.adults; adults.title = "Adults";
+
+        const children = document.createElement("input");
+        children.type = "number"; children.min = 0; children.max = 20;
+        children.value = entry.children; children.title = "Children";
+
+        const payment = document.createElement("select");
+        payment.title = "Payment";
+        const blank = document.createElement("option");
+        blank.value = ""; blank.textContent = "\u2014";
+        payment.appendChild(blank);
+        (payments || []).forEach(option => {
+          const el = document.createElement("option");
+          el.value = option; el.textContent = option;
+          if (option === entry.payment) el.selected = true;
+          payment.appendChild(el);
+        });
+
+        fields.append(adults, children, payment);
+        line.appendChild(fields);
+
+        // Answers to the officer's own questions, editable like the rest.
+        const answerFields = {};
+        if ((extras || []).length) {
+          const extra = document.createElement("div");
+          extra.className = "officer__rsvp-extra";
+
+          extras.forEach(label => {
+            const wrap = document.createElement("label");
+            wrap.className = "officer__rsvp-answer";
+            wrap.textContent = label + " ";
+
+            const input = document.createElement("input");
+            input.type = "text";
+            input.maxLength = 500;
+            input.value = entry.answers[label] || "";
+            wrap.appendChild(input);
+
+            answerFields[label] = input;
+            extra.appendChild(wrap);
+          });
+
+          line.appendChild(extra);
+        }
+
+        const actions = document.createElement("div");
+        actions.className = "officer__rsvp-actions";
+
+        actions.appendChild(action("Save", async () => {
+          const result = await post({
+            action: "updateRsvp", token: token(), eventId: event.id,
+            rowNumber: entry.rowNumber, nameNumber: entry.nameNumber,
+            firstName: entry.firstName, lastName: entry.lastName,
+            adults: adults.value, children: children.value, payment: payment.value,
+            answers: Object.keys(answerFields).reduce((all, label) => {
+              all[label] = answerFields[label].value;
+              return all;
+            }, {})
+          });
+          evStatus.textContent = result.message;
+          if (result.ok) { loadOfficerEvents(); refresh(); }
+        }));
+
+        actions.appendChild(action("Remove", async () => {
+          if (!confirm("Remove the RSVP from " + entry.firstName + " " + entry.lastName +
+            "? They will be able to reply again.")) return;
+          const result = await post({
+            action: "deleteRsvp", token: token(), eventId: event.id,
+            rowNumber: entry.rowNumber, nameNumber: entry.nameNumber
+          });
+          evStatus.textContent = result.message;
+          if (result.ok) { loadOfficerEvents(); refresh(); }
+        }));
+
+        line.appendChild(actions);
+        return line;
       }
 
       async function run(body) {

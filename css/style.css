@@ -3084,17 +3084,41 @@ body {
 
 /* ---- Event photos and the officer form -------------------------------- */
 
+/* Laid out like the Events page cards: picture beside the words. */
+.rsvp-card.has-photo {
+  display: flex;
+  align-items: center;
+  gap: 4rem;
+}
+
 .rsvp-card__photo {
-  margin: -2.4rem -2.4rem 2rem;
-  overflow: hidden;
-  border-radius: var(--radius) var(--radius) 0 0;
+  flex: 1;
+  max-width: 40%;
 }
 
 .rsvp-card__photo img {
   display: block;
   width: 100%;
-  height: 22rem;
-  object-fit: cover;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+.rsvp-card__text {
+  flex: 1;
+  min-width: 0;
+}
+
+@media only screen and (max-width: 56.25em) {
+  .rsvp-card.has-photo {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 2.4rem;
+  }
+
+  .rsvp-card__photo {
+    max-width: 100%;
+  }
 }
 
 .officer {
@@ -3246,6 +3270,80 @@ body {
   display: flex;
   align-items: center;
   gap: 1.4rem;
+}
+
+.officer__rsvps {
+  grid-column: 1 / -1;
+  margin: 1rem 0 0.5rem;
+  padding-left: 1.6rem;
+  border-left: 3px solid var(--color-secondary-soft);
+}
+
+.officer__rsvp {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 0.6rem 1.6rem;
+  padding: 0.9rem 0;
+  border-bottom: 1px solid var(--color-line);
+  font-size: 1.5rem;
+}
+
+.officer__rsvp-who {
+  font-weight: 600;
+  color: var(--color-dark);
+}
+
+.officer__rsvp-fields {
+  display: flex;
+  gap: 0.8rem;
+}
+
+.officer__rsvp-fields input {
+  width: 6rem;
+}
+
+.officer__rsvp-fields input,
+.officer__rsvp-fields select {
+  padding: 0.5rem 0.8rem;
+  font-family: var(--font-body);
+  font-size: 1.4rem;
+  border: 1.5px solid var(--color-line);
+  border-radius: var(--radius-sm);
+}
+
+.officer__rsvp-extra {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.6rem;
+  font-size: 1.4rem;
+  color: var(--color-grey);
+}
+
+.officer__rsvp-answer {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.officer__rsvp-answer input {
+  padding: 0.4rem 0.8rem;
+  font-family: var(--font-body);
+  font-size: 1.4rem;
+  border: 1.5px solid var(--color-line);
+  border-radius: var(--radius-sm);
+}
+
+.officer__rsvp-actions {
+  display: flex;
+  gap: 1.2rem;
+}
+
+@media only screen and (max-width: 56.25em) {
+  .officer__rsvp {
+    grid-template-columns: 1fr;
+  }
 }
 
 .officer__question {
