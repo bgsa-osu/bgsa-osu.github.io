@@ -166,74 +166,6 @@ layout: default
       <div id="upcoming-list" class="upcoming__list"></div>
     </div>
 
-    <!-- Officers only. Hidden unless the page is opened with ?officer=1, and
-         everything below is checked by the Apps Script, not here. -->
-    <div id="officer" class="officer" hidden>
-      <h3 class="officer__heading">Officer tools</h3>
-
-      <div id="officer-login">
-        <p class="member-form__note">
-          Ask for a code, read it in the BGSA inbox, and sign in. A session
-          lasts two hours, so you only do this once per sitting.
-        </p>
-        <div class="member-form__row">
-          <label for="ev-pass">One-time code</label>
-          <div class="officer__code">
-            <input id="ev-pass" type="text" inputmode="numeric" autocomplete="off" maxlength="6" />
-            <button type="button" id="ev-send-code" class="officer__add">Email a code</button>
-          </div>
-        </div>
-        <button type="button" id="ev-sign-in" class="btn btn--theme">Sign in</button>
-        <p id="ev-login-status" class="member-form__status" role="status" aria-live="polite"></p>
-      </div>
-
-      <div id="officer-tools" hidden>
-        <div class="officer__bar">
-          <h4 class="officer__subheading">Events</h4>
-          <button type="button" id="ev-sign-out" class="officer__add">Sign out</button>
-        </div>
-        <div id="officer-events" class="officer__events"></div>
-
-        <h4 class="officer__subheading" id="ev-form-heading">Create an event</h4>
-        <form id="officer-form" class="member-form" novalidate>
-          <div class="member-form__row">
-            <label for="ev-name">Event name</label>
-            <input id="ev-name" type="text" maxlength="120" required />
-          </div>
-          <div class="member-form__pair">
-            <div class="member-form__row">
-              <label for="ev-date">Date</label>
-              <input id="ev-date" type="date" required />
-            </div>
-            <div class="member-form__row">
-              <label for="ev-location">Location</label>
-              <input id="ev-location" type="text" maxlength="200" />
-            </div>
-          </div>
-          <div class="member-form__row">
-            <label for="ev-desc">Description</label>
-            <textarea id="ev-desc" rows="4" maxlength="2000"></textarea>
-          </div>
-          <div class="member-form__row">
-            <label for="ev-photo">Photo</label>
-            <input id="ev-photo" type="file" accept="image/*" />
-            <p class="member-form__note" id="ev-photo-note">
-              Resized before upload, so a photo straight off a phone is fine.
-            </p>
-          </div>
-
-          <div class="member-form__row">
-            <label>Extra questions <em>(optional)</em></label>
-            <div id="ev-questions" class="officer__questions"></div>
-            <button type="button" id="ev-add-question" class="officer__add">+ Add a question</button>
-          </div>
-
-          <button type="submit" class="btn btn--theme" id="ev-submit">Create event</button>
-          <button type="button" id="ev-cancel" class="officer__add" hidden>Cancel edit</button>
-          <p id="ev-status" class="member-form__status" role="status" aria-live="polite"></p>
-        </form>
-      </div>
-    </div>
 
     <div class="news__content">
       {%- for post in events limit: site.events_on_homepage %}
@@ -416,6 +348,82 @@ layout: default
 </section>
 
 <!-- CONTACT (edit details in _config.yml) -->
+<!-- ADMIN (hidden until the nav link is used; the Apps Script does the
+     real checking, this only keeps the page tidy for everyone else) -->
+<section id="admin" class="sec-pad" hidden>
+  <div class="main-container">
+    <h2 class="heading heading-sec heading-sec__mb-med">
+      <span class="heading-sec__main">Admin</span>
+      <span class="heading-sec__sub">For ExCom members: manage events, and more to come.</span>
+    </h2>
+    <div id="officer" class="officer">
+
+      <div id="officer-login">
+        <p class="member-form__note">
+          Ask for a code, read it in the BGSA inbox, and sign in. A session
+          lasts two hours, so you only do this once per sitting.
+        </p>
+        <div class="member-form__row">
+          <label for="ev-pass">One-time code</label>
+          <div class="officer__code">
+            <input id="ev-pass" type="text" inputmode="numeric" autocomplete="off" maxlength="6" />
+            <button type="button" id="ev-send-code" class="officer__add">Email a code</button>
+          </div>
+        </div>
+        <button type="button" id="ev-sign-in" class="btn btn--theme">Sign in</button>
+        <p id="ev-login-status" class="member-form__status" role="status" aria-live="polite"></p>
+      </div>
+
+      <div id="officer-tools" hidden>
+        <div class="officer__bar">
+          <h4 class="officer__subheading">Events</h4>
+          <button type="button" id="ev-sign-out" class="officer__add">Sign out</button>
+        </div>
+        <div id="officer-events" class="officer__events"></div>
+
+        <h4 class="officer__subheading" id="ev-form-heading">Create an event</h4>
+        <form id="officer-form" class="member-form" novalidate>
+          <div class="member-form__row">
+            <label for="ev-name">Event name</label>
+            <input id="ev-name" type="text" maxlength="120" required />
+          </div>
+          <div class="member-form__pair">
+            <div class="member-form__row">
+              <label for="ev-date">Date</label>
+              <input id="ev-date" type="date" required />
+            </div>
+            <div class="member-form__row">
+              <label for="ev-location">Location</label>
+              <input id="ev-location" type="text" maxlength="200" />
+            </div>
+          </div>
+          <div class="member-form__row">
+            <label for="ev-desc">Description</label>
+            <textarea id="ev-desc" rows="4" maxlength="2000"></textarea>
+          </div>
+          <div class="member-form__row">
+            <label for="ev-photo">Photo</label>
+            <input id="ev-photo" type="file" accept="image/*" />
+            <p class="member-form__note" id="ev-photo-note">
+              Resized before upload, so a photo straight off a phone is fine.
+            </p>
+          </div>
+
+          <div class="member-form__row">
+            <label>Extra questions <em>(optional)</em></label>
+            <div id="ev-questions" class="officer__questions"></div>
+            <button type="button" id="ev-add-question" class="officer__add">+ Add a question</button>
+          </div>
+
+          <button type="submit" class="btn btn--theme" id="ev-submit">Create event</button>
+          <button type="button" id="ev-cancel" class="officer__add" hidden>Cancel edit</button>
+          <p id="ev-status" class="member-form__status" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section id="contact" class="contact sec-pad dynamicBg">
   <div class="main-container">
     <h2 class="heading heading-sec heading-sec__mb-med">
@@ -866,11 +874,36 @@ layout: default
 
     // ---- Officers: creating an event ---------------------------------------
 
+    // The Admin section is in the page but out of the way until someone asks
+    // for it -- by the nav link, by /#admin, or by the older ?officer=1.
+    const adminSection = document.getElementById("admin");
     const officer = document.getElementById("officer");
+    let officerReady = false;
 
-    if (officer && new URLSearchParams(location.search).get("officer") === "1") {
-      officer.hidden = false;
-      setupOfficerTools();
+    function revealAdmin(scroll) {
+      if (!adminSection) return;
+      adminSection.hidden = false;
+
+      if (!officerReady) {
+        officerReady = true;
+        setupOfficerTools();
+      }
+      if (scroll) {
+        // Wait a frame: the section has only just stopped being hidden, so
+        // its position is not known yet.
+        requestAnimationFrame(() => adminSection.scrollIntoView({ behavior: "smooth" }));
+      }
+    }
+
+    if (adminSection) {
+      const asked = location.hash === "#admin" ||
+        new URLSearchParams(location.search).get("officer") === "1";
+      if (asked) revealAdmin(location.hash !== "#admin");
+
+      document.addEventListener("click", e => {
+        const link = e.target.closest('a[href*="#admin"]');
+        if (link) revealAdmin(true);
+      });
     }
 
     function setupOfficerTools() {
@@ -1226,7 +1259,7 @@ layout: default
 
   // Where submissions are sent. Paste the /exec URL from the Apps Script
   // deployment here; until then the form tells people to email instead.
-  const SUBMIT_ENDPOINT = "";
+  const SUBMIT_ENDPOINT = "https://script.google.com/macros/s/AKfycbyERJU9MoHdDvPEHaGwW1L1sYfdE255YAQKqhyjljtUiifbQi7T-7oBAm3U4ZNA97tjlw/exec";
 
   // Committed spreadsheets, used when no sheet URL is set and as the fallback.
   const FILES = {

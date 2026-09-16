@@ -3047,6 +3047,24 @@ body {
   }
 }
 
+/* The admin link is for a handful of people, so it sits back from the rest
+   of the nav rather than competing with it. */
+.header__link--admin {
+  color: var(--color-grey);
+}
+
+.header__link--admin::after {
+  background: var(--color-secondary);
+}
+
+.header__link--admin:hover {
+  color: var(--color-secondary);
+}
+
+#admin {
+  background: var(--color-paper);
+}
+
 /* ---- Event photos and the officer form -------------------------------- */
 
 .rsvp-card__photo {
