@@ -39,6 +39,18 @@ layout: default
 </section>
 
 <!-- ABOUT (WITH TABS) -->
+<!-- UPCOMING EVENTS — sits directly under the hero, because that is where
+     people land. Rows come from the Events sheet via the Apps Script. -->
+<section id="upcoming" class="upcoming sec-pad" hidden>
+  <div class="main-container">
+    <h2 class="heading heading-sec heading-sec__mb-med">
+      <span class="heading-sec__main">Upcoming</span>
+      <span class="heading-sec__sub">What is coming up, and how to say you are joining.</span>
+    </h2>
+    <div id="upcoming-list" class="upcoming__list"></div>
+  </div>
+</section>
+
 <section id="about" class="about sec-pad">
   <div class="main-container">
 
@@ -168,12 +180,6 @@ layout: default
       <span class="heading-sec__main">Events</span>
       <span class="heading-sec__sub">Tournaments, festivals, and gatherings from the BGSA community.</span>
     </h2>
-
-    <!-- UPCOMING EVENTS + RSVP (rows come from the Events sheet) -->
-    <div id="upcoming" class="upcoming" hidden>
-      <h3 class="upcoming__heading">Upcoming</h3>
-      <div id="upcoming-list" class="upcoming__list"></div>
-    </div>
 
 
     <div class="news__content">
@@ -388,103 +394,128 @@ layout: default
 
       <div id="officer-tools" hidden>
         <div class="officer__bar">
-          <h4 class="officer__subheading">Directory approvals</h4>
+          <div class="officer__tabs">
+            <button type="button" class="officer__tab active" data-pane="pane-events">Events</button>
+            <button type="button" class="officer__tab" data-pane="pane-posts">Posts</button>
+            <button type="button" class="officer__tab" data-pane="pane-approvals">Approvals</button>
+          </div>
           <button type="button" id="ev-sign-out" class="officer__add">Sign out</button>
         </div>
-        <div id="officer-pending" class="officer__events"></div>
-        <p id="ev-pending-status" class="member-form__status" role="status" aria-live="polite"></p>
 
-        <h4 class="officer__subheading">Events</h4>
-        <div id="officer-events" class="officer__events"></div>
-
-        <h4 class="officer__subheading" id="ev-form-heading">Create an event</h4>
-        <form id="officer-form" class="member-form" novalidate>
-          <div class="member-form__row">
-            <label for="ev-name">Event name</label>
-            <input id="ev-name" type="text" maxlength="120" required />
-          </div>
-          <div class="member-form__pair">
-            <div class="member-form__row">
-              <label for="ev-date">Date</label>
-              <input id="ev-date" type="date" required />
-            </div>
-            <div class="member-form__row">
-              <label for="ev-location">Location</label>
-              <input id="ev-location" type="text" maxlength="200" />
-            </div>
-          </div>
-          <div class="member-form__row">
-            <label for="ev-desc">Description</label>
-            <textarea id="ev-desc" rows="4" maxlength="2000"></textarea>
-          </div>
-          <div class="member-form__row">
-            <label for="ev-photo">Photo</label>
-            <input id="ev-photo" type="file" accept="image/*" />
-            <p class="member-form__note" id="ev-photo-note">
-              Resized before upload, so a photo straight off a phone is fine.
-            </p>
-          </div>
-
-          <div class="member-form__row">
-            <label>Extra questions <em>(optional)</em></label>
-            <div id="ev-questions" class="officer__questions"></div>
-            <button type="button" id="ev-add-question" class="officer__add">+ Add a question</button>
-          </div>
-
-          <button type="submit" class="btn btn--theme" id="ev-submit">Create event</button>
-          <button type="button" id="ev-cancel" class="officer__add" hidden>Cancel edit</button>
-          <p id="ev-status" class="member-form__status" role="status" aria-live="polite"></p>
-        </form>
-
-        <h4 class="officer__subheading">Posts</h4>
-        <div class="member-form__row">
-          <label for="po-type">Which part of the website</label>
-          <select id="po-type">
-            <option value="achievement">Achievements &mdash; defenses, awards, fellowships</option>
-            <option value="eventPost">Event write-ups &mdash; what happened at an event</option>
-            <option value="blog">Blog &mdash; articles and reflections</option>
-          </select>
-          <p class="member-form__note" id="po-type-note"></p>
+        <div id="pane-approvals" class="officer__pane" hidden>
+          <h4 class="officer__subheading">Directory approvals</h4>
+          <div id="officer-pending" class="officer__events"></div>
+          <p id="ev-pending-status" class="member-form__status" role="status" aria-live="polite"></p>
         </div>
-        <div id="officer-posts" class="officer__events"></div>
 
-        <form id="post-form" class="member-form" novalidate>
-          <h5 class="officer__subheading" id="po-form-heading">Write a new post</h5>
+        <div id="pane-events" class="officer__pane">
+          <h4 class="officer__subheading">Events</h4>
+          <div id="officer-events" class="officer__events"></div>
 
-          <div class="member-form__row">
-            <label for="po-title">Title</label>
-            <input id="po-title" type="text" maxlength="200" required />
-          </div>
-          <div class="member-form__pair">
+          <h4 class="officer__subheading" id="ev-form-heading">Create an event</h4>
+          <form id="officer-form" class="member-form" novalidate>
             <div class="member-form__row">
-              <label for="po-date">Date</label>
-              <input id="po-date" type="date" required />
+              <label for="ev-name">Event name</label>
+              <input id="ev-name" type="text" maxlength="120" required />
             </div>
-            <div class="member-form__row" id="po-author-row">
-              <label for="po-author">Author</label>
-              <input id="po-author" type="text" maxlength="120" />
+            <div class="member-form__pair">
+              <div class="member-form__row">
+                <label for="ev-date">Date</label>
+                <input id="ev-date" type="date" required />
+              </div>
+              <div class="member-form__row">
+                <label for="ev-time">Time</label>
+                <input id="ev-time" type="text" maxlength="60" placeholder="5:00 PM &ndash; 8:00 PM" />
+              </div>
             </div>
-          </div>
-          <div class="member-form__row" id="po-photo-row">
-            <label for="po-photo">Photo</label>
-            <input id="po-photo" type="file" accept="image/*" />
-            <p class="member-form__note" id="po-photo-note">
-              Resized before upload. Leave empty to keep the current one.
-            </p>
-          </div>
-          <div class="member-form__row">
-            <label for="po-body">Text</label>
-            <textarea id="po-body" rows="10" required></textarea>
-            <p class="member-form__note">
-              Markdown: **bold**, *italic*, [link](https://…), blank line between
-              paragraphs.
-            </p>
-          </div>
+            <div class="member-form__pair">
+              <div class="member-form__row">
+                <label for="ev-location">Place</label>
+                <input id="ev-location" type="text" maxlength="200" />
+              </div>
+              <div class="member-form__row">
+                <label for="ev-deadline">RSVP deadline</label>
+                <input id="ev-deadline" type="date" />
+                <p class="member-form__note">After this date the form closes, but the
+                  event stays on the home page until you deactivate it.</p>
+              </div>
+            </div>
+            <div class="member-form__row">
+              <label for="ev-desc">Description</label>
+              <textarea id="ev-desc" rows="4" maxlength="2000"></textarea>
+            </div>
+            <div class="member-form__row">
+              <label for="ev-photo">Photo</label>
+              <input id="ev-photo" type="file" accept="image/*" />
+              <p class="member-form__note" id="ev-photo-note">
+                Resized before upload, so a photo straight off a phone is fine.
+              </p>
+            </div>
 
-          <button type="submit" class="btn btn--theme" id="po-submit">Publish</button>
-          <button type="button" id="po-cancel" class="officer__add" hidden>Cancel edit</button>
-          <p id="po-status" class="member-form__status" role="status" aria-live="polite"></p>
-        </form>
+            <div class="member-form__row">
+              <label>Extra questions <em>(optional)</em></label>
+              <div id="ev-questions" class="officer__questions"></div>
+              <button type="button" id="ev-add-question" class="officer__add">+ Add a question</button>
+            </div>
+
+            <button type="submit" class="btn btn--theme" id="ev-submit">Create event</button>
+            <button type="button" id="ev-cancel" class="officer__add" hidden>Cancel edit</button>
+            <p id="ev-status" class="member-form__status" role="status" aria-live="polite"></p>
+          </form>
+
+        </div>
+
+        <div id="pane-posts" class="officer__pane" hidden>
+          <h4 class="officer__subheading">Posts</h4>
+          <div class="member-form__row">
+            <label for="po-type">Which part of the website</label>
+            <select id="po-type">
+              <option value="achievement">Achievements &mdash; defenses, awards, fellowships</option>
+              <option value="eventPost">Event write-ups &mdash; what happened at an event</option>
+              <option value="blog">Blog &mdash; articles and reflections</option>
+            </select>
+            <p class="member-form__note" id="po-type-note"></p>
+          </div>
+          <div id="officer-posts" class="officer__events"></div>
+
+          <form id="post-form" class="member-form" novalidate>
+            <h5 class="officer__subheading" id="po-form-heading">Write a new post</h5>
+
+            <div class="member-form__row">
+              <label for="po-title">Title</label>
+              <input id="po-title" type="text" maxlength="200" required />
+            </div>
+            <div class="member-form__pair">
+              <div class="member-form__row">
+                <label for="po-date">Date</label>
+                <input id="po-date" type="date" required />
+              </div>
+              <div class="member-form__row" id="po-author-row">
+                <label for="po-author">Author</label>
+                <input id="po-author" type="text" maxlength="120" />
+              </div>
+            </div>
+            <div class="member-form__row" id="po-photo-row">
+              <label for="po-photo">Photo</label>
+              <input id="po-photo" type="file" accept="image/*" />
+              <p class="member-form__note" id="po-photo-note">
+                Resized before upload. Leave empty to keep the current one.
+              </p>
+            </div>
+            <div class="member-form__row">
+              <label for="po-body">Text</label>
+              <textarea id="po-body" rows="10" required></textarea>
+              <p class="member-form__note">
+                Markdown: **bold**, *italic*, [link](https://…), blank line between
+                paragraphs.
+              </p>
+            </div>
+
+            <button type="submit" class="btn btn--theme" id="po-submit">Publish</button>
+            <button type="button" id="po-cancel" class="officer__add" hidden>Cancel edit</button>
+            <p id="po-status" class="member-form__status" role="status" aria-live="polite"></p>
+          </form>
+        </div>
       </div>
     </div>
   </div>
@@ -672,10 +703,12 @@ layout: default
           id: text(event.id),
           title: text(event.name),
           date: text(event.date),
-          time: "",
+          time: text(event.time),
           location: text(event.location),
           description: text(event.description),
           photo: text(event.photo),
+          deadline: text(event.deadline),
+          closed: !!event.closed,
           payments: event.payments || [],
           // The script calls a multiple-choice question "choice"; the form
           // builder below has always called it "select".
@@ -854,6 +887,19 @@ layout: default
       return form;
     }
 
+    function detail(label, value) {
+      const line = document.createElement("p");
+      line.className = "rsvp-card__line";
+
+      const key = document.createElement("span");
+      key.className = "rsvp-card__key";
+      key.textContent = label + ": ";
+
+      line.appendChild(key);
+      line.appendChild(document.createTextNode(value));
+      return line;
+    }
+
     function buildCard(event) {
       const card = document.createElement("article");
       card.className = "rsvp-card";
@@ -874,16 +920,15 @@ layout: default
 
       const title = document.createElement("h4");
       title.className = "rsvp-card__title";
-      title.textContent = "Upcoming: " + event.title;
+      title.textContent = "Upcoming Event: " + event.title;
       card.appendChild(title);
 
-      const meta = [event.date, event.time, event.location].filter(Boolean).join(" \u00b7 ");
-      if (meta) {
-        const metaEl = document.createElement("p");
-        metaEl.className = "rsvp-card__meta";
-        metaEl.textContent = meta;
-        card.appendChild(metaEl);
+      if (event.date || event.time) {
+        const when = [event.date, event.time].filter(Boolean).join("  \u00b7  ");
+        card.appendChild(detail(event.time ? "Date & time" : "Date", when));
       }
+      if (event.location) card.appendChild(detail("Place", event.location));
+      if (event.deadline) card.appendChild(detail("RSVP deadline", event.deadline));
 
       if (event.description) {
         const desc = document.createElement("p");
@@ -897,13 +942,10 @@ layout: default
       tally.textContent = countLine(event);
       card.appendChild(tally);
 
-      const closed = rsvpClosed(event);
-      const full = !isNaN(event.capacity) && event.attendees >= event.capacity;
-
-      if (closed || full) {
+      if (event.closed) {
         const note = document.createElement("p");
         note.className = "rsvp-card__closed";
-        note.textContent = closed ? "RSVPs have closed for this event." : "This event is full.";
+        note.textContent = "The RSVP deadline has passed.";
         card.appendChild(note);
         return card;
       }
@@ -911,7 +953,7 @@ layout: default
       const toggle = document.createElement("button");
       toggle.type = "button";
       toggle.className = "btn btn--theme rsvp-card__toggle";
-      toggle.textContent = "RSVP";
+      toggle.textContent = "Please click here for RSVP";
       card.appendChild(toggle);
 
       const form = buildForm(event);
@@ -919,7 +961,7 @@ layout: default
 
       toggle.addEventListener("click", () => {
         form.hidden = !form.hidden;
-        toggle.textContent = form.hidden ? "RSVP" : "Close";
+        toggle.textContent = form.hidden ? "Please click here for RSVP" : "Close";
       });
 
       return card;
@@ -1218,15 +1260,17 @@ layout: default
         meta.className = "officer__event-meta";
         meta.textContent = [
           event.date,
+          event.deadline ? "RSVP by " + event.deadline : "",
           event.rsvps + (event.rsvps === 1 ? " reply" : " replies"),
           event.attendees + " coming",
-          event.open ? "" : "closed"
+          event.closed ? "deadline passed" : "",
+          event.open ? "" : "deactivated"
         ].filter(Boolean).join(" \u00b7 ");
 
         const actions = document.createElement("div");
         actions.className = "officer__event-actions";
         actions.appendChild(action("Edit", () => startEditing(event)));
-        actions.appendChild(action(event.open ? "Close" : "Reopen", () =>
+        actions.appendChild(action(event.open ? "Deactivate" : "Activate", () =>
           run({ action: "setEventOpen", id: event.id, open: !event.open })));
         actions.appendChild(action("Delete", () => {
           if (!confirm("Delete \"" + event.name + "\"? Its RSVPs stay in the spreadsheet.")) return;
@@ -1309,7 +1353,9 @@ layout: default
 
         document.getElementById("ev-name").value = event.name || "";
         document.getElementById("ev-date").value = event.date || "";
+        document.getElementById("ev-time").value = event.time || "";
         document.getElementById("ev-location").value = event.location || "";
+        document.getElementById("ev-deadline").value = event.deadline || "";
         document.getElementById("ev-desc").value = event.description || "";
         evPhoto.value = "";
 
@@ -1376,7 +1422,9 @@ layout: default
             id: editingId,
             name: document.getElementById("ev-name").value,
             date: document.getElementById("ev-date").value,
+            time: document.getElementById("ev-time").value,
             location: document.getElementById("ev-location").value,
+            deadline: document.getElementById("ev-deadline").value,
             description: document.getElementById("ev-desc").value,
             questions: collectQuestions(),
             photo: photo
@@ -1572,6 +1620,20 @@ layout: default
         } finally {
           poSubmit.disabled = false;
         }
+      });
+
+      // ---- tabs --------------------------------------------------------------
+
+      const tabs = Array.from(document.querySelectorAll(".officer__tab"));
+      const panes = Array.from(document.querySelectorAll(".officer__pane"));
+
+      tabs.forEach(tab => {
+        tab.addEventListener("click", () => {
+          tabs.forEach(t => t.classList.toggle("active", t === tab));
+          panes.forEach(pane => {
+            pane.hidden = pane.id !== tab.dataset.pane;
+          });
+        });
       });
 
       // ---- go --------------------------------------------------------------

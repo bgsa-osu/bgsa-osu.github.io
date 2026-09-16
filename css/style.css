@@ -1155,6 +1155,7 @@ textarea {
     font-size: 1.3rem;
   }
 }
+
 /* --- LEARN MORE BUTTON FIX --- */
 .home-hero .btn--bg {
   background: #fff;
@@ -1346,6 +1347,7 @@ textarea {
   color: #fff;
   border-color: var(--color-primary);
 }
+
 /* ABOUT TABS */
 .about-tabs {
   display: flex;
@@ -1402,6 +1404,7 @@ textarea {
 #about .projects__row:hover {
   transform: translateY(-5px);
 }
+
 /* Uniform Executive Member Images inside ABOUT tab */
 #about .projects__row-img-cont {
   width: 220px;
@@ -1416,6 +1419,7 @@ textarea {
   height: 100%;
   object-fit: cover;
 }
+
 #about .projects__row-content-title {
   font-size: 2.2rem;
   font-weight: 800;
@@ -1471,6 +1475,7 @@ textarea {
   font-style: italic;
   color: #444;
 }
+
 /* FINAL OVERRIDE FOR EC IMAGES */
 .about-content#about-ec .projects__row-img-cont {
   width: 260px !important;
@@ -1499,6 +1504,7 @@ textarea {
 .about-content#about-ec .projects__row-content-mail {
   font-size: 1.9rem !important;
 }
+
 /* Past Executive Committees - Card Grid */
 .past-ec-grid {
   display: grid;
@@ -1591,6 +1597,7 @@ textarea {
     grid-template-columns: 1fr;
   }
 }
+
 .resources-title {
   font-size: 2.6rem;
   font-weight: 800;
@@ -1654,6 +1661,7 @@ textarea {
 .addinfo-title {
   margin-top: 0.5rem;
 }
+
 /* BLOG SECTION */
 .blog-list {
   display: flex;
@@ -1688,6 +1696,7 @@ textarea {
   color: #222;
   white-space: pre-line;
 }
+
 /* BLOG SECTION */
 .blog-list {
   max-width: 900px;
@@ -1732,6 +1741,7 @@ textarea {
   background: #ddd;
   margin: 3.5rem 0;
 }
+
 @media (max-width: 600px) {
   .header__content {
     padding: 1rem 1.5rem;
@@ -1843,6 +1853,7 @@ body {
     font-size: 1.35rem;
   }
 }
+
 /* ================================
    HOME HERO BACKGROUND SLIDER
 ================================ */
@@ -1898,6 +1909,7 @@ body {
 .home-hero {
   background: transparent !important;
 }
+
 /* MOBILE HERO FIX */
 @media (max-width: 600px) {
 
@@ -1916,6 +1928,7 @@ body {
     /* avoids overlap */
   }
 }
+
 .home-hero__content h1,
 .home-hero__content p,
 .home-hero__content .btn {
@@ -1927,6 +1940,7 @@ body {
   color: var(--color-primary) !important;
   border: 2px solid #fff;
 }
+
 /* HERO TEXT ON TOP OF IMAGES */
 .home-hero__content {
   position: absolute;
@@ -2005,6 +2019,7 @@ body {
 .home-hero__content {
   z-index: 20 !important;
 }
+
 /* ============================
    FIX HERO SOCIAL ICONS + MOUSE
    ============================ */
@@ -2020,6 +2035,7 @@ body {
   left: 50%;
   transform: translateX(-50%);
 }
+
 .news__date {
   font-size: 2.5rem;
   color: var(--color-primary);
@@ -2027,11 +2043,12 @@ body {
   margin-bottom: 1rem;
   letter-spacing: 0.5px;
 }
+
 /* =====================================================
    JEKYLL PAGES — news/blog cards, archive + post pages
    ===================================================== */
 
-.about__description + .about__description {
+.about__description+.about__description {
   margin-top: 1.8rem;
 }
 
@@ -2045,9 +2062,9 @@ body {
   text-decoration: underline;
 }
 
-.news__desc p + p,
-.news__desc p + ul,
-.news__desc ul + p {
+.news__desc p+p,
+.news__desc p+ul,
+.news__desc ul+p {
   margin-top: 1.2rem;
 }
 
@@ -2743,7 +2760,7 @@ body {
   font-size: 3.2rem;
 }
 
-.news__group-title + .achievements__grid,
+.news__group-title+.achievements__grid,
 .news__group-title--spaced {
   border-left-color: var(--color-secondary);
 }
@@ -3127,6 +3144,52 @@ body {
   max-width: 14rem;
   letter-spacing: 0.3em;
   font-weight: 700;
+}
+
+.officer__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+}
+
+.officer__tab {
+  font-family: var(--font-body);
+  font-size: 1.5rem;
+  font-weight: 600;
+  padding: 0.8rem 1.8rem;
+  border: 1.5px solid var(--color-line);
+  border-radius: var(--radius-pill);
+  background: var(--color-light);
+  color: var(--color-grey);
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.officer__tab:hover {
+  border-color: var(--color-secondary);
+  color: var(--color-secondary);
+}
+
+.officer__tab.active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-light);
+}
+
+.officer__pane {
+  padding-top: 1rem;
+}
+
+/* The home-page card: label and value on one line, label in scarlet. */
+.rsvp-card__line {
+  margin: 0.4rem 0;
+  font-size: 1.7rem;
+  color: var(--color-dark);
+}
+
+.rsvp-card__key {
+  font-weight: 700;
+  color: var(--color-primary-deep);
 }
 
 .officer__bar {
