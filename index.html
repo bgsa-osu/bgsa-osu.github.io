@@ -1318,11 +1318,25 @@ layout: default
         }
 
         result.rsvps.forEach(entry => {
-          panel.appendChild(rsvpRow(event, entry, result.payments, result.extras, row));
+          panel.appendChild(rsvpRow(event, entry, result.payments, result.extras));
         });
       }
 
-      function rsvpRow(event, entry, payments, extras, eventRowEl) {
+      // Every control is captioned. A row of bare boxes reading "2  1" tells
+      // an officer nothing about which number is which.
+      function labelled(caption, control) {
+        const wrap = document.createElement("label");
+        wrap.className = "officer__field";
+
+        const text = document.createElement("span");
+        text.className = "officer__field-label";
+        text.textContent = caption;
+
+        wrap.append(text, control);
+        return wrap;
+      }
+
+      function rsvpRow(event, entry, payments, extras) {
         const line = document.createElement("div");
         line.className = "officer__rsvp";
 
@@ -1336,17 +1350,14 @@ layout: default
         fields.className = "officer__rsvp-fields";
 
         const adults = document.createElement("input");
-        adults.type = "number"; adults.min = 1; adults.max = 20;
-        adults.value = entry.adults; adults.title = "Adults";
+        adults.type = "number"; adults.min = 1; adults.max = 20; adults.value = entry.adults;
 
         const children = document.createElement("input");
-        children.type = "number"; children.min = 0; children.max = 20;
-        children.value = entry.children; children.title = "Children";
+        children.type = "number"; children.min = 0; children.max = 20; children.value = entry.children;
 
         const payment = document.createElement("select");
-        payment.title = "Payment";
         const blank = document.createElement("option");
-        blank.value = ""; blank.textContent = "\u2014";
+        blank.value = ""; blank.textContent = "Not set";
         payment.appendChild(blank);
         (payments || []).forEach(option => {
           const el = document.createElement("option");
@@ -1355,52 +1366,57 @@ layout: default
           payment.appendChild(el);
         });
 
-        fields.append(adults, children, payment);
-        line.appendChild(fields);
+        fields.appendChild(labelled("Adults", adults));
+        fields.appendChild(labelled("Children", children));
+        fields.appendChild(labelled("Payment", payment));
 
-        // Answers to the officer's own questions, editable like the rest.
+        // The officer's own questions, editable, each under its own question.
         const answerFields = {};
-        if ((extras || []).length) {
-          const extra = document.createElement("div");
-          extra.className = "officer__rsvp-extra";
+        (extras || []).forEach(label => {
+          const input = document.createElement("input");
+          input.type = "text";
+          input.maxLength = 500;
+          input.value = entry.answers[label] || "";
+          answerFields[label] = input;
+          fields.appendChild(labelled(label, input));
+        });
 
-          extras.forEach(label => {
-            const wrap = document.createElement("label");
-            wrap.className = "officer__rsvp-answer";
-            wrap.textContent = label + " ";
-
-            const input = document.createElement("input");
-            input.type = "text";
-            input.maxLength = 500;
-            input.value = entry.answers[label] || "";
-            wrap.appendChild(input);
-
-            answerFields[label] = input;
-            extra.appendChild(wrap);
-          });
-
-          line.appendChild(extra);
-        }
+        line.appendChild(fields);
 
         const actions = document.createElement("div");
         actions.className = "officer__rsvp-actions";
 
-        actions.appendChild(action("Save", async () => {
-          const result = await post({
-            action: "updateRsvp", token: token(), eventId: event.id,
-            rowNumber: entry.rowNumber, nameNumber: entry.nameNumber,
-            firstName: entry.firstName, lastName: entry.lastName,
-            adults: adults.value, children: children.value, payment: payment.value,
-            answers: Object.keys(answerFields).reduce((all, label) => {
-              all[label] = answerFields[label].value;
-              return all;
-            }, {})
-          });
-          evStatus.textContent = result.message;
-          if (result.ok) { loadOfficerEvents(); refresh(); }
-        }));
+        const save = document.createElement("button");
+        save.type = "button";
+        save.className = "officer__save";
+        save.textContent = "Save";
+        save.addEventListener("click", async () => {
+          save.disabled = true;
+          try {
+            const result = await post({
+              action: "updateRsvp", token: token(), eventId: event.id,
+              rowNumber: entry.rowNumber, nameNumber: entry.nameNumber,
+              firstName: entry.firstName, lastName: entry.lastName,
+              adults: adults.value, children: children.value, payment: payment.value,
+              answers: Object.keys(answerFields).reduce((all, label) => {
+                all[label] = answerFields[label].value;
+                return all;
+              }, {})
+            });
+            evStatus.textContent = result.message;
+            if (result.ok) { loadOfficerEvents(); refresh(); }
+          } catch (err) {
+            evStatus.textContent = "Could not reach the server.";
+          } finally {
+            save.disabled = false;
+          }
+        });
 
-        actions.appendChild(action("Remove", async () => {
+        const remove = document.createElement("button");
+        remove.type = "button";
+        remove.className = "officer__danger";
+        remove.textContent = "Remove";
+        remove.addEventListener("click", async () => {
           if (!confirm("Remove the RSVP from " + entry.firstName + " " + entry.lastName +
             "? They will be able to reply again.")) return;
           const result = await post({
@@ -1409,8 +1425,9 @@ layout: default
           });
           evStatus.textContent = result.message;
           if (result.ok) { loadOfficerEvents(); refresh(); }
-        }));
+        });
 
+        actions.append(save, remove);
         line.appendChild(actions);
         return line;
       }

@@ -3274,76 +3274,108 @@ body {
 
 .officer__rsvps {
   grid-column: 1 / -1;
-  margin: 1rem 0 0.5rem;
+  margin: 1.2rem 0 0.4rem;
   padding-left: 1.6rem;
   border-left: 3px solid var(--color-secondary-soft);
 }
 
 .officer__rsvp {
-  display: grid;
-  grid-template-columns: 1fr auto auto;
-  align-items: center;
-  gap: 0.6rem 1.6rem;
-  padding: 0.9rem 0;
+  padding: 1.4rem 0;
   border-bottom: 1px solid var(--color-line);
   font-size: 1.5rem;
 }
 
 .officer__rsvp-who {
-  font-weight: 600;
+  font-weight: 700;
   color: var(--color-dark);
+  margin-bottom: 1rem;
 }
 
 .officer__rsvp-fields {
   display: flex;
-  gap: 0.8rem;
-}
-
-.officer__rsvp-fields input {
-  width: 6rem;
-}
-
-.officer__rsvp-fields input,
-.officer__rsvp-fields select {
-  padding: 0.5rem 0.8rem;
-  font-family: var(--font-body);
-  font-size: 1.4rem;
-  border: 1.5px solid var(--color-line);
-  border-radius: var(--radius-sm);
-}
-
-.officer__rsvp-extra {
-  grid-column: 1 / -1;
-  display: flex;
   flex-wrap: wrap;
-  gap: 1rem 1.6rem;
-  font-size: 1.4rem;
+  gap: 1.2rem 2rem;
+  margin-bottom: 1.2rem;
+}
+
+/* Caption above each control, so a row of boxes is not a guessing game. */
+.officer__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.officer__field-label {
+  font-size: 1.3rem;
+  font-weight: 600;
   color: var(--color-grey);
 }
 
-.officer__rsvp-answer {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-}
-
-.officer__rsvp-answer input {
-  padding: 0.4rem 0.8rem;
+.officer__field input,
+.officer__field select {
+  padding: 0.6rem 1rem;
   font-family: var(--font-body);
-  font-size: 1.4rem;
+  font-size: 1.5rem;
+  color: var(--color-dark);
+  background: var(--color-light);
   border: 1.5px solid var(--color-line);
   border-radius: var(--radius-sm);
+}
+
+.officer__field input[type="number"] {
+  width: 7rem;
+}
+
+.officer__field input[type="text"] {
+  min-width: 18rem;
+}
+
+.officer__field input:focus,
+.officer__field select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-soft);
 }
 
 .officer__rsvp-actions {
   display: flex;
-  gap: 1.2rem;
+  gap: 1rem;
 }
 
-@media only screen and (max-width: 56.25em) {
-  .officer__rsvp {
-    grid-template-columns: 1fr;
-  }
+.officer__save,
+.officer__danger {
+  font-family: var(--font-body);
+  font-size: 1.4rem;
+  font-weight: 700;
+  padding: 0.7rem 1.8rem;
+  border: 1.5px solid transparent;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+}
+
+.officer__save {
+  background: var(--color-primary);
+  color: var(--color-light);
+}
+
+.officer__save:hover {
+  background: var(--color-primary-deep);
+}
+
+.officer__save:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.officer__danger {
+  background: var(--color-light);
+  border-color: var(--color-line);
+  color: var(--color-grey);
+}
+
+.officer__danger:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
 }
 
 .officer__question {
