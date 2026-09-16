@@ -438,12 +438,13 @@ layout: default
 
         <h4 class="officer__subheading">Posts</h4>
         <div class="member-form__row">
-          <label for="po-type">Which list</label>
+          <label for="po-type">Which part of the website</label>
           <select id="po-type">
-            <option value="achievement">Achievements</option>
-            <option value="eventPost">Event write-ups</option>
-            <option value="blog">Blog</option>
+            <option value="achievement">Achievements &mdash; defenses, awards, fellowships</option>
+            <option value="eventPost">Event write-ups &mdash; what happened at an event</option>
+            <option value="blog">Blog &mdash; articles and reflections</option>
           </select>
+          <p class="member-form__note" id="po-type-note"></p>
         </div>
         <div id="officer-posts" class="officer__events"></div>
 
@@ -628,8 +629,14 @@ layout: default
     // A date in the past means the event has been and gone. Anything we can't
     // parse is treated as upcoming, so a typo hides nothing.
     function isUpcoming(event) {
-      if (/^\d+$/.test(event.date)) return true; // a bare number is not a date
-      const when = Date.parse(event.date);
+      if (!event.date) return true;                 // undated means always show
+      if (/^\d+$/.test(event.date)) return true;    // a bare number is not a date
+      // Parse as local time. new Date("2026-12-20") is treated as UTC, which
+      // in Ohio lands on the evening of the 19th and can hide same-day events.
+      const parts = event.date.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      const when = parts
+        ? new Date(Number(parts[1]), Number(parts[2]) - 1, Number(parts[3])).getTime()
+        : Date.parse(event.date);
       if (isNaN(when)) return true;
       const endOfDay = new Date(when);
       endOfDay.setHours(23, 59, 59, 999);
@@ -867,7 +874,7 @@ layout: default
 
       const title = document.createElement("h4");
       title.className = "rsvp-card__title";
-      title.textContent = event.title;
+      title.textContent = "Upcoming: " + event.title;
       card.appendChild(title);
 
       const meta = [event.date, event.time, event.location].filter(Boolean).join(" \u00b7 ");
@@ -929,13 +936,25 @@ layout: default
 
     // ---- Go ---------------------------------------------------------------
 
+    const officerMode = new URLSearchParams(location.search).get("officer") === "1";
+
     async function refresh() {
       if (!ENDPOINT) return;
       try {
         render(await loadEvents());
       } catch (err) {
         console.warn("Could not load upcoming events.", err);
-        section.hidden = true; // the page simply shows no Upcoming block
+        if (officerMode) {
+          // Only an officer needs to know why. A visitor just sees no events.
+          section.hidden = false;
+          list.innerHTML = "";
+          const note = document.createElement("p");
+          note.className = "rsvp-card__closed";
+          note.textContent = "Upcoming events could not be loaded: " + err.message;
+          list.appendChild(note);
+        } else {
+          section.hidden = true;
+        }
       }
     }
 
@@ -1392,10 +1411,26 @@ layout: default
 
       let editingPost = null;   // { path, image }
 
+      // Which section of the site each kind of post ends up in, and what to
+      // call it. The form heading is a long way down the page from the
+      // dropdown, so it repeats the answer rather than assuming it is
+      // still in mind.
+      const POST_LABELS = {
+        achievement: { name: "Achievements", where: "Shown in the Achievements section." },
+        eventPost: { name: "Event write-ups", where: "Shown in the Events section, under the upcoming ones." },
+        blog: { name: "Blog", where: "Shown in the Blog section." }
+      };
+
+      const postTypeNote = document.getElementById("po-type-note");
+
       function applyPostShape() {
         const blog = postType.value === "blog";
         poAuthorRow.style.display = blog ? "" : "none";
         poPhotoRow.style.display = blog ? "none" : "";
+
+        const label = POST_LABELS[postType.value];
+        postTypeNote.textContent = label.where;
+        if (!editingPost) poHeading.textContent = "Write a new post \u2014 " + label.name;
       }
 
       postType.addEventListener("change", () => {
@@ -1422,7 +1457,7 @@ layout: default
 
         postsBox.innerHTML = "";
         if (!result.posts.length) {
-          postsBox.textContent = "Nothing here yet.";
+          postsBox.textContent = "Nothing in " + POST_LABELS[postType.value].name + " yet.";
           return;
         }
 
@@ -1479,7 +1514,8 @@ layout: default
         const front = result.post.front || {};
         editingPost = { path: result.post.path, image: front.image || "" };
 
-        poHeading.textContent = "Editing: " + (front.title || item.slug);
+        poHeading.textContent = "Editing " + POST_LABELS[postType.value].name.toLowerCase() +
+          " \u2014 " + (front.title || item.slug);
         poSubmit.textContent = "Save changes";
         poCancel.hidden = false;
         poStatus.textContent = "";
@@ -1495,10 +1531,10 @@ layout: default
 
       function stopEditingPost() {
         editingPost = null;
-        poHeading.textContent = "Write a new post";
         poSubmit.textContent = "Publish";
         poCancel.hidden = true;
         postForm.reset();
+        applyPostShape(); // puts the heading back, naming the current list
       }
 
       poCancel.addEventListener("click", stopEditingPost);
