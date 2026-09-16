@@ -436,8 +436,8 @@ layout: default
               <div class="member-form__row">
                 <label for="ev-deadline">RSVP deadline</label>
                 <input id="ev-deadline" type="date" />
-                <p class="member-form__note">After this date the form closes, but the
-                  event stays on the home page until you deactivate it.</p>
+                <p class="member-form__note">Shown on the card. RSVPs keep coming in
+                  until you deactivate the event.</p>
               </div>
             </div>
             <div class="member-form__row">
@@ -708,7 +708,6 @@ layout: default
           description: text(event.description),
           photo: text(event.photo),
           deadline: text(event.deadline),
-          closed: !!event.closed,
           payments: event.payments || [],
           // The script calls a multiple-choice question "choice"; the form
           // builder below has always called it "select".
@@ -941,14 +940,6 @@ layout: default
       tally.className = "rsvp-card__count";
       tally.textContent = countLine(event);
       card.appendChild(tally);
-
-      if (event.closed) {
-        const note = document.createElement("p");
-        note.className = "rsvp-card__closed";
-        note.textContent = "The RSVP deadline has passed.";
-        card.appendChild(note);
-        return card;
-      }
 
       const toggle = document.createElement("button");
       toggle.type = "button";
@@ -1263,7 +1254,6 @@ layout: default
           event.deadline ? "RSVP by " + event.deadline : "",
           event.rsvps + (event.rsvps === 1 ? " reply" : " replies"),
           event.attendees + " coming",
-          event.closed ? "deadline passed" : "",
           event.open ? "" : "deactivated"
         ].filter(Boolean).join(" \u00b7 ");
 
@@ -1393,7 +1383,13 @@ layout: default
               const canvas = document.createElement("canvas");
               canvas.width = Math.round(img.width * scale);
               canvas.height = Math.round(img.height * scale);
-              canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
+
+              const ctx = canvas.getContext("2d");
+              // JPEG has no transparency. Without this, a PNG with a clear
+              // background comes out black behind the subject.
+              ctx.fillStyle = "#ffffff";
+              ctx.fillRect(0, 0, canvas.width, canvas.height);
+              ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
               const dataUrl = canvas.toDataURL("image/jpeg", 0.85);
               resolve({
                 name: file.name,
