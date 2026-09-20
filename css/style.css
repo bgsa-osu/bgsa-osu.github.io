@@ -3378,6 +3378,20 @@ body {
   color: var(--color-primary);
 }
 
+.officer__member {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 1.2rem 1.6rem;
+  padding: 1.6rem 0;
+  border-bottom: 1px solid var(--color-line);
+}
+
+.officer__member .officer__field input[type="text"],
+.officer__member .officer__field input[type="email"] {
+  min-width: 16rem;
+}
+
 .officer__question {
   display: grid;
   grid-template-columns: 1fr 1.4fr auto;

@@ -397,9 +397,34 @@ layout: default
           <div class="officer__tabs">
             <button type="button" class="officer__tab active" data-pane="pane-events">Events</button>
             <button type="button" class="officer__tab" data-pane="pane-posts">Posts</button>
+            <button type="button" class="officer__tab" data-pane="pane-committee">Committee</button>
             <button type="button" class="officer__tab" data-pane="pane-approvals">Approvals</button>
           </div>
           <button type="button" id="ev-sign-out" class="officer__add">Sign out</button>
+        </div>
+
+        <div id="pane-committee" class="officer__pane" hidden>
+          <h4 class="officer__subheading">Executive committee</h4>
+          <div class="member-form__row">
+            <label for="ec-term">Academic year</label>
+            <select id="ec-term"></select>
+            <p class="member-form__note" id="ec-note"></p>
+          </div>
+          <div class="member-form__row" id="ec-new-row" hidden>
+            <label for="ec-new-term">New academic year</label>
+            <input id="ec-new-term" type="text" maxlength="40" placeholder="2026&ndash;2027" />
+            <p class="member-form__note">A new year goes to the top and becomes the current
+              committee. The one before it moves to Previous Executive Committees.</p>
+          </div>
+
+          <div id="ec-members"></div>
+          <button type="button" id="ec-add" class="officer__add">+ Add a member</button>
+
+          <div class="officer__rsvp-actions" style="margin-top:2rem">
+            <button type="button" id="ec-save" class="officer__save">Save committee</button>
+            <button type="button" id="ec-delete" class="officer__danger">Delete this year</button>
+          </div>
+          <p id="ec-status" class="member-form__status" role="status" aria-live="polite"></p>
         </div>
 
         <div id="pane-approvals" class="officer__pane" hidden>
@@ -1107,6 +1132,7 @@ layout: default
           loadOfficerEvents();
           applyPostShape();
           loadPosts();
+          loadCommittees();
         }
       }
 
@@ -1800,6 +1826,170 @@ layout: default
         } finally {
           poSubmit.disabled = false;
         }
+      });
+
+      // ---- the executive committee -----------------------------------------
+
+      const ecTerm = document.getElementById("ec-term");
+      const ecNewRow = document.getElementById("ec-new-row");
+      const ecNewTerm = document.getElementById("ec-new-term");
+      const ecMembers = document.getElementById("ec-members");
+      const ecStatus = document.getElementById("ec-status");
+      const ecNote = document.getElementById("ec-note");
+      const ecDelete = document.getElementById("ec-delete");
+
+      const NEW_TERM = "__new__";
+      let committees = [];
+
+      // `note` survives the reload, so the result of a save is still on
+      // screen after the list refreshes underneath it.
+      async function loadCommittees(keepTerm, note) {
+        ecStatus.textContent = note || "Loading\u2026";
+        let result;
+        try {
+          result = await post({ action: "listCommittees", token: token() });
+        } catch (err) {
+          ecStatus.textContent = "Could not reach the server.";
+          return;
+        }
+        if (!result.ok) { ecStatus.textContent = result.message; return; }
+
+        committees = result.terms || [];
+        ecStatus.textContent = note || "";
+
+        ecTerm.innerHTML = "";
+        committees.forEach((entry, index) => {
+          const option = document.createElement("option");
+          option.value = entry.term;
+          option.textContent = entry.term + (index === 0 ? "  (current)" : "");
+          ecTerm.appendChild(option);
+        });
+
+        const fresh = document.createElement("option");
+        fresh.value = NEW_TERM;
+        fresh.textContent = "New academic year\u2026";
+        ecTerm.appendChild(fresh);
+
+        ecTerm.value = keepTerm && committees.some(e => e.term === keepTerm)
+          ? keepTerm
+          : (committees.length ? committees[0].term : NEW_TERM);
+
+        showTerm();
+      }
+
+      function showTerm() {
+        const isNew = ecTerm.value === NEW_TERM;
+        ecNewRow.hidden = !isNew;
+        ecDelete.hidden = isNew;
+
+        const entry = committees.find(e => e.term === ecTerm.value);
+        const index = committees.indexOf(entry);
+
+        ecNote.textContent = isNew
+          ? "Adding a year that is not listed yet."
+          : (index === 0
+            ? "This is the current committee, shown with photos."
+            : "An archived committee, shown under Previous Executive Committees.");
+
+        ecMembers.innerHTML = "";
+        const members = entry ? entry.members : [];
+        if (members.length) members.forEach(addMemberRow);
+        else addMemberRow();
+      }
+
+      ecTerm.addEventListener("change", showTerm);
+      document.getElementById("ec-add").addEventListener("click", () => addMemberRow());
+
+      function addMemberRow(member) {
+        member = member || {};
+
+        const row = document.createElement("div");
+        row.className = "officer__member";
+
+        const fields = {};
+        [["role", "Role"], ["name", "Name"], ["degree", "Degree"],
+        ["department", "Department"], ["email", "Email"]].forEach(pair => {
+          const control = document.createElement("input");
+          control.type = pair[0] === "email" ? "email" : "text";
+          control.maxLength = 160;
+          control.value = member[pair[0]] || "";
+          fields[pair[0]] = control;
+          row.appendChild(labelled(pair[1], control));
+        });
+
+        // Photos matter for the current committee; archived years are names
+        // and roles only, so this is optional everywhere.
+        const photo = document.createElement("input");
+        photo.type = "file";
+        photo.accept = "image/*";
+        row.appendChild(labelled(member.photo ? "Photo (replace)" : "Photo", photo));
+
+        const remove = document.createElement("button");
+        remove.type = "button";
+        remove.className = "officer__danger";
+        remove.textContent = "Remove";
+        remove.addEventListener("click", () => row.remove());
+        row.appendChild(remove);
+
+        row.dataset.photo = member.photo || "";
+        row.__fields = fields;
+        row.__photo = photo;
+
+        ecMembers.appendChild(row);
+      }
+
+      document.getElementById("ec-save").addEventListener("click", async () => {
+        const term = ecTerm.value === NEW_TERM ? ecNewTerm.value.trim() : ecTerm.value;
+        if (!term) { ecStatus.textContent = "Give the academic year a name."; return; }
+
+        const rows = Array.from(ecMembers.querySelectorAll(".officer__member"));
+        if (!rows.length) { ecStatus.textContent = "Add at least one member."; return; }
+
+        const save = document.getElementById("ec-save");
+        save.disabled = true;
+        ecStatus.textContent = "Saving\u2026";
+
+        try {
+          const members = [];
+          for (const row of rows) {
+            const member = {
+              role: row.__fields.role.value,
+              name: row.__fields.name.value,
+              degree: row.__fields.degree.value,
+              department: row.__fields.department.value,
+              email: row.__fields.email.value,
+              photo: row.dataset.photo
+            };
+            const file = row.__photo.files[0];
+            if (file) member.photo64 = await readPhoto(file);
+            members.push(member);
+          }
+
+          const result = await post({
+            action: "saveCommittee", token: token(), term: term, members: members
+          });
+
+          ecStatus.textContent = result.message;
+          if (result.ok) {
+            ecNewTerm.value = "";
+            loadCommittees(term, result.message);
+          }
+        } catch (err) {
+          console.error("Could not save the committee.", err);
+          ecStatus.textContent = "Could not reach the server. Please try again.";
+        } finally {
+          save.disabled = false;
+        }
+      });
+
+      ecDelete.addEventListener("click", async () => {
+        const term = ecTerm.value;
+        if (term === NEW_TERM) return;
+        if (!confirm("Delete the " + term + " committee entirely?")) return;
+
+        const result = await post({ action: "deleteCommittee", token: token(), term: term });
+        ecStatus.textContent = result.message;
+        if (result.ok) loadCommittees(null, result.message);
       });
 
       // ---- tabs --------------------------------------------------------------
