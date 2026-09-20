@@ -2957,10 +2957,22 @@ body {
   margin-bottom: 1.2rem;
 }
 
+.rsvp-card__desc a {
+  color: var(--color-primary);
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.rsvp-card__desc a:hover {
+  color: var(--color-secondary);
+}
+
 .rsvp-card__desc {
   font-size: 1.7rem;
   color: var(--color-grey);
   margin-bottom: 1.6rem;
+  /* Keeps the line breaks an officer typed into the description. */
+  white-space: pre-line;
 }
 
 .rsvp-card__count {

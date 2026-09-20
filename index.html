@@ -941,6 +941,26 @@ layout: default
       return form;
     }
 
+    // The description is a spreadsheet cell, not a Markdown post, so nothing
+    // renders it. Rather than showing **stars** and running every line
+    // together, handle the three things officers actually use: line breaks,
+    // bold, and links. Everything is escaped first, so no markup an officer
+    // types can inject anything into the page.
+    function richText(value) {
+      const escaped = String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+
+      return escaped
+        .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+        // [label](url) first, so a bare-URL pass cannot break one apart
+        .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,
+          '<a href="$2" target="_blank" rel="noopener">$1</a>')
+        .replace(/(^|[\s(])((https?:\/\/)[^\s<]+)/g,
+          '$1<a href="$2" target="_blank" rel="noopener">$2</a>');
+    }
+
     function detail(label, value) {
       const line = document.createElement("p");
       line.className = "rsvp-card__line";
@@ -994,9 +1014,9 @@ layout: default
       if (event.deadline) text.appendChild(detail("RSVP deadline", event.deadline));
 
       if (event.description) {
-        const desc = document.createElement("p");
+        const desc = document.createElement("div");
         desc.className = "rsvp-card__desc";
-        desc.textContent = event.description;
+        desc.innerHTML = richText(event.description);
         text.appendChild(desc);
       }
 
