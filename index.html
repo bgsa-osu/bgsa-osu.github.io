@@ -756,6 +756,19 @@ layout: default
       const first = input("rsvp-first-" + key, "text", true, { maxLength: 60 });
       const last = input("rsvp-last-" + key, "text", true, { maxLength: 60 });
       const nameNumber = input("rsvp-namenum-" + key, "text", true, { maxLength: 40 });
+      const email = input("rsvp-email-" + key, "email", false, { maxLength: 120 });
+
+      // Not everyone coming is at Ohio State. Someone from the university is
+      // identified by their Name.#; a guest gives an email instead, which is
+      // what stops them replying twice.
+      const affiliation = document.createElement("select");
+      affiliation.id = "rsvp-aff-" + key;
+      [["osu", "I am at Ohio State"], ["guest", "I am a guest"]].forEach(pair => {
+        const option = document.createElement("option");
+        option.value = pair[0];
+        option.textContent = pair[1];
+        affiliation.appendChild(option);
+      });
       const adults = input("rsvp-adults-" + key, "number", true, { min: 1, max: 20, value: 1 });
       const kids = input("rsvp-kids-" + key, "number", false, { min: 0, max: 20, value: 0 });
 
@@ -765,9 +778,24 @@ layout: default
       names.appendChild(field("Last name", last));
       form.appendChild(names);
 
-      // The confirmation goes to name.#@osu.edu, so this is the only address
-      // the form needs to ask for.
-      form.appendChild(field("tOSU Name.#", nameNumber));
+      form.appendChild(field("Are you at Ohio State?", affiliation));
+
+      const nameNumberRow = field("tOSU Name.#", nameNumber);
+      const emailRow = field("Email", email);
+      form.appendChild(nameNumberRow);
+      form.appendChild(emailRow);
+
+      function applyAffiliation() {
+        const guest = affiliation.value === "guest";
+        nameNumberRow.style.display = guest ? "none" : "";
+        emailRow.style.display = guest ? "" : "none";
+        nameNumber.required = !guest;
+        email.required = guest;
+        if (guest) nameNumber.value = ""; else email.value = "";
+      }
+
+      affiliation.addEventListener("change", applyAffiliation);
+      applyAffiliation();
 
       const pair = document.createElement("div");
       pair.className = "member-form__pair";
@@ -861,7 +889,9 @@ layout: default
               eventId: event.id,
               firstName: first.value,
               lastName: last.value,
+              affiliation: affiliation.value,
               nameNumber: nameNumber.value,
+              email: email.value,
               adults: adults.value,
               children: kids.value,
               payment: payment ? payment.value : "",
@@ -1342,8 +1372,10 @@ layout: default
 
         const who = document.createElement("div");
         who.className = "officer__rsvp-who";
+        const identifier = entry.nameNumber || entry.email;
         who.textContent = entry.firstName + " " + entry.lastName +
-          (entry.nameNumber ? " (" + entry.nameNumber + ")" : "");
+          (identifier ? " (" + identifier + ")" : "") +
+          (entry.affiliation ? " \u00b7 " + entry.affiliation : "");
         line.appendChild(who);
 
         const fields = document.createElement("div");
@@ -1395,7 +1427,7 @@ layout: default
           try {
             const result = await post({
               action: "updateRsvp", token: token(), eventId: event.id,
-              rowNumber: entry.rowNumber, nameNumber: entry.nameNumber,
+              rowNumber: entry.rowNumber, identifier: identifier,
               firstName: entry.firstName, lastName: entry.lastName,
               adults: adults.value, children: children.value, payment: payment.value,
               answers: Object.keys(answerFields).reduce((all, label) => {
@@ -1421,7 +1453,7 @@ layout: default
             "? They will be able to reply again.")) return;
           const result = await post({
             action: "deleteRsvp", token: token(), eventId: event.id,
-            rowNumber: entry.rowNumber, nameNumber: entry.nameNumber
+            rowNumber: entry.rowNumber, identifier: identifier
           });
           evStatus.textContent = result.message;
           if (result.ok) { loadOfficerEvents(); refresh(); }
