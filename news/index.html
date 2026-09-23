@@ -41,13 +41,21 @@ layout: default
 <!-- ABOUT (WITH TABS) -->
 <!-- UPCOMING EVENTS — sits directly under the hero, because that is where
      people land. Rows come from the Events sheet via the Apps Script. -->
-<section id="upcoming" class="upcoming sec-pad" hidden>
+<section id="upcoming" class="upcoming sec-pad">
   <div class="main-container">
     <h2 class="heading heading-sec heading-sec__mb-med">
       <span class="heading-sec__main">Upcoming</span>
       <span class="heading-sec__sub">What is coming up, and how to say you are joining.</span>
     </h2>
-    <div id="upcoming-list" class="upcoming__list"></div>
+    <!-- Present in the page from the start, not revealed by script. The
+         events arrive by fetch and replace what is here; if that never
+         happens -- slow feed, blocked script, anything -- the section is
+         still on the page and the nav link still leads somewhere. -->
+    <div id="upcoming-list" class="upcoming__list">
+      <p class="upcoming__empty">
+        Nothing scheduled just now. Follow BGSA on Facebook and Instagram for upcoming events.
+      </p>
+    </div>
   </div>
 </section>
 
@@ -1179,8 +1187,6 @@ layout: default
         events.forEach(event => list.appendChild(buildCard(event)));
       }
 
-      section.hidden = false;
-
       // Someone arriving on a shared link lands on that event. The events
       // load after the page, so the browser has already given up on the
       // hash by now and it has to be done here.
@@ -1215,20 +1221,13 @@ layout: default
         render(await loadEvents());
       } catch (err) {
         console.warn("Could not load upcoming events.", err);
+        // Leave the message that is already in the page; only an officer
+        // needs the reason behind the failure.
         if (officerMode) {
-          // Only an officer needs to know why. A visitor just sees no events.
-          section.hidden = false;
           list.innerHTML = "";
           const note = document.createElement("p");
           note.className = "rsvp-card__closed";
           note.textContent = "Upcoming events could not be loaded: " + err.message;
-          list.appendChild(note);
-        } else {
-          section.hidden = false;
-          list.innerHTML = "";
-          const note = document.createElement("p");
-          note.className = "upcoming__empty";
-          note.textContent = "Upcoming events could not be loaded just now. Please try again shortly.";
           list.appendChild(note);
         }
       }
@@ -1257,16 +1256,7 @@ layout: default
         html.style.scrollBehavior = previous;
       }
 
-      // Go there straight away, whatever the feed is doing. If the events
-      // have not arrived yet the section says so, rather than the click
-      // appearing to do nothing at all.
-      section.hidden = false;
-      if (!list.children.length) {
-        const waiting = document.createElement("p");
-        waiting.className = "upcoming__empty";
-        waiting.textContent = "Loading\u2026";
-        list.appendChild(waiting);
-      }
+      // The section is always in the page, so this always goes somewhere.
       jump();
 
       // Then land on it properly once the list has filled in.
