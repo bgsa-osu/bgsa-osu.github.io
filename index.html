@@ -41,13 +41,21 @@ layout: default
 <!-- ABOUT (WITH TABS) -->
 <!-- UPCOMING EVENTS — sits directly under the hero, because that is where
      people land. Rows come from the Events sheet via the Apps Script. -->
-<section id="upcoming" class="upcoming sec-pad" hidden>
+<section id="upcoming" class="upcoming sec-pad">
   <div class="main-container">
     <h2 class="heading heading-sec heading-sec__mb-med">
       <span class="heading-sec__main">Upcoming</span>
       <span class="heading-sec__sub">What is coming up, and how to say you are joining.</span>
     </h2>
-    <div id="upcoming-list" class="upcoming__list"></div>
+    <!-- Written into the page by Jekyll, not created by script. The events
+         arrive by fetch and replace this; if that never happens -- slow
+         feed, blocked script, stale file -- the section is still here and
+         the nav link still leads somewhere. -->
+    <div id="upcoming-list" class="upcoming__list">
+      <p class="upcoming__empty">
+        Nothing scheduled just now. Follow BGSA on Facebook and Instagram for upcoming events.
+      </p>
+    </div>
   </div>
 </section>
 
@@ -1165,14 +1173,18 @@ layout: default
     function render(events) {
       currentEvents = events;
       list.innerHTML = "";
-      events.forEach(event => list.appendChild(buildCard(event)));
-      section.hidden = events.length === 0;
 
-      // No point offering "What's next?" when nothing is scheduled.
-      document.querySelectorAll(".header__link--next").forEach(link => {
-        const item = link.closest("li") || link;
-        item.hidden = events.length === 0;
-      });
+      // The tab is always in the nav, so the section always answers --
+      // an empty answer is still an answer.
+      if (!events.length) {
+        const empty = document.createElement("p");
+        empty.className = "upcoming__empty";
+        empty.textContent =
+          "Nothing scheduled just now. Follow BGSA on Facebook and Instagram for upcoming events.";
+        list.appendChild(empty);
+      } else {
+        events.forEach(event => list.appendChild(buildCard(event)));
+      }
 
       // Someone arriving on a shared link lands on that event. The events
       // load after the page, so the browser has already given up on the
@@ -1208,21 +1220,46 @@ layout: default
         render(await loadEvents());
       } catch (err) {
         console.warn("Could not load upcoming events.", err);
+        // Only an officer needs the reason; a visitor keeps the message
+        // already in the page.
         if (officerMode) {
-          // Only an officer needs to know why. A visitor just sees no events.
-          section.hidden = false;
           list.innerHTML = "";
           const note = document.createElement("p");
           note.className = "rsvp-card__closed";
           note.textContent = "Upcoming events could not be loaded: " + err.message;
           list.appendChild(note);
-        } else {
-          section.hidden = true;
         }
       }
     }
 
-    refresh();
+    const feedReady = refresh();
+
+    // "What's next?" behaves like every other tab: it goes straight there.
+    // The section is already in the page, so nothing has to load first.
+    document.addEventListener("click", e => {
+      const link = e.target.closest('a[href*="#upcoming"]');
+      if (!link) return;
+
+      e.preventDefault();
+      if (location.hash !== "#upcoming") {
+        history.replaceState(null, "", location.pathname + "#upcoming");
+      }
+
+      function jump() {
+        const html = document.documentElement;
+        const previous = html.style.scrollBehavior;
+        html.style.scrollBehavior = "auto";
+        section.scrollIntoView({ block: "start" });
+        html.style.scrollBehavior = previous;
+      }
+
+      jump();                            // now
+      feedReady.then(jump).catch(jump);  // and again once the list has filled
+    });
+
+    if (location.hash === "#upcoming") {
+      feedReady.then(() => section.scrollIntoView({ block: "start" }));
+    }
 
     // ---- Officers: creating an event ---------------------------------------
 
