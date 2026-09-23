@@ -3432,6 +3432,29 @@ body {
   color: var(--color-primary);
 }
 
+#pane-about textarea {
+  display: block;
+  width: 100%;
+  padding: 1.2rem 1.6rem;
+  font-family: var(--font-body);
+  font-size: 1.6rem;
+  line-height: 1.6;
+  color: var(--color-dark);
+  border: 1.5px solid var(--color-line);
+  border-radius: var(--radius-sm);
+}
+
+#pane-about textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px var(--color-primary-soft);
+}
+
+.officer__field input[readonly] {
+  background: var(--color-paper);
+  color: var(--color-grey);
+}
+
 .officer__member {
   display: flex;
   flex-wrap: wrap;

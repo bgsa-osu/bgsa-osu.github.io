@@ -75,32 +75,9 @@ layout: default
             <img src="{{ '/assets/png/tOSU_BGSA_logo.png' | relative_url }}" alt="BGSA logo" class="about__logo-img" />
           </div>
           <div class="about__text-side">
-            <p class="about__description">
-              The Bangladesh Graduate Student Association (BGSA) was established with the motivation to foster a
-              stronger sense of
-              community and enhance connectivity among members. One of the association’s primary goals has been to
-              support graduate
-              students and their families as they settle in and navigate their academic journey abroad.
-            </p>
-            <p class="about__description">
-              In 2022, a small group of four students stepped forward, with support from the broader community, to form
-              the first
-              leadership committee. They organized several meet-and-greet events featuring cultural activities and
-              Bengali cuisine.
-              From this modest beginning, subsequent committees have grown in size and expanded BGSA’s functions,
-              activities, and
-              impact both within the organization and across the community.
-            </p>
-            <p class="about__description">
-              Today, BGSA serves as a strong anchor connecting graduate students, post-doctoral researchers, Bengali
-              faculty members,
-              and even student groups from other universities. With increasingly effective leadership and continued
-              community support,
-              BGSA aims to remain at the forefront of improving the experience of every graduate student and their
-              family as they
-              navigate their journey at OSU.
-            <p class="about__description">- Written by Dr. Ahmad Ilderim Tokey, Treasurer of the founding BGSA committee (2022-2023).</p>
-            </p>
+            {%- for paragraph in site.data.about %}
+            <p class="about__description">{{ paragraph }}</p>
+            {%- endfor %}
           </div>
         </div>
       </div>
@@ -398,10 +375,38 @@ layout: default
           <div class="officer__tabs">
             <button type="button" class="officer__tab active" data-pane="pane-events">Events</button>
             <button type="button" class="officer__tab" data-pane="pane-posts">Posts</button>
+            <button type="button" class="officer__tab" data-pane="pane-gallery">Gallery</button>
+            <button type="button" class="officer__tab" data-pane="pane-about">About</button>
             <button type="button" class="officer__tab" data-pane="pane-committee">Committee</button>
             <button type="button" class="officer__tab" data-pane="pane-approvals">Approvals</button>
           </div>
           <button type="button" id="ev-sign-out" class="officer__add">Sign out</button>
+        </div>
+
+        <div id="pane-gallery" class="officer__pane" hidden>
+          <h4 class="officer__subheading">Gallery</h4>
+          <p class="member-form__note">Shown in the order listed. Remove a row to take a
+            photo off the site; the file stays in the repository.</p>
+          <div id="ga-items"></div>
+          <button type="button" id="ga-add" class="officer__add">+ Add a photo</button>
+          <div class="officer__rsvp-actions" style="margin-top:2rem">
+            <button type="button" id="ga-save" class="officer__save">Save gallery</button>
+          </div>
+          <p id="ga-status" class="member-form__status" role="status" aria-live="polite"></p>
+        </div>
+
+        <div id="pane-about" class="officer__pane" hidden>
+          <h4 class="officer__subheading">About BGSA</h4>
+          <div class="member-form__row">
+            <label for="ab-text">The text under the About tab</label>
+            <textarea id="ab-text" rows="16"></textarea>
+            <p class="member-form__note">Leave a blank line between paragraphs. Each block
+              becomes its own paragraph on the page.</p>
+          </div>
+          <div class="officer__rsvp-actions">
+            <button type="button" id="ab-save" class="officer__save">Save About text</button>
+          </div>
+          <p id="ab-status" class="member-form__status" role="status" aria-live="polite"></p>
         </div>
 
         <div id="pane-committee" class="officer__pane" hidden>
@@ -1216,6 +1221,8 @@ layout: default
           applyPostShape();
           loadPosts();
           loadCommittees();
+          loadGallery();
+          loadAbout();
         }
       }
 
@@ -2073,6 +2080,140 @@ layout: default
         const result = await post({ action: "deleteCommittee", token: token(), term: term });
         ecStatus.textContent = result.message;
         if (result.ok) loadCommittees(null, result.message);
+      });
+
+      // ---- the gallery ------------------------------------------------------
+
+      const gaItems = document.getElementById("ga-items");
+      const gaStatus = document.getElementById("ga-status");
+
+      async function loadGallery() {
+        gaStatus.textContent = "Loading\u2026";
+        let result;
+        try {
+          result = await post({ action: "listGallery", token: token() });
+        } catch (err) {
+          gaStatus.textContent = "Could not reach the server.";
+          return;
+        }
+        if (!result.ok) { gaStatus.textContent = result.message; return; }
+
+        gaStatus.textContent = "";
+        gaItems.innerHTML = "";
+        (result.items || []).forEach(addGalleryRow);
+        if (!result.items || !result.items.length) addGalleryRow();
+      }
+
+      function addGalleryRow(item) {
+        item = item || {};
+
+        const row = document.createElement("div");
+        row.className = "officer__member";
+
+        const caption = document.createElement("input");
+        caption.type = "text";
+        caption.maxLength = 400;
+        caption.value = item.caption || "";
+        row.appendChild(labelled("Caption", caption));
+
+        // The existing file path, shown so an officer can see which photo a
+        // row refers to without guessing from the caption.
+        const current = document.createElement("input");
+        current.type = "text";
+        current.value = item.image || "";
+        current.readOnly = true;
+        row.appendChild(labelled("Current file", current));
+
+        const photo = document.createElement("input");
+        photo.type = "file";
+        photo.accept = "image/*";
+        row.appendChild(labelled(item.image ? "Replace photo" : "Photo", photo));
+
+        const remove = document.createElement("button");
+        remove.type = "button";
+        remove.className = "officer__danger";
+        remove.textContent = "Remove";
+        remove.addEventListener("click", () => row.remove());
+        row.appendChild(remove);
+
+        row.__caption = caption;
+        row.__image = current;
+        row.__photo = photo;
+        gaItems.appendChild(row);
+      }
+
+      document.getElementById("ga-add").addEventListener("click", () => addGalleryRow());
+
+      document.getElementById("ga-save").addEventListener("click", async () => {
+        const button = document.getElementById("ga-save");
+        button.disabled = true;
+        gaStatus.textContent = "Saving\u2026";
+
+        try {
+          const items = [];
+          for (const row of Array.from(gaItems.querySelectorAll(".officer__member"))) {
+            const item = { caption: row.__caption.value, image: row.__image.value };
+            const file = row.__photo.files[0];
+            if (file) item.photo64 = await readPhoto(file);
+            // A row with neither an existing file nor a new one is an empty
+            // row the officer added and never filled in; skip it quietly.
+            if (item.image || item.photo64) items.push(item);
+          }
+
+          const result = await post({ action: "saveGallery", token: token(), items: items });
+          gaStatus.textContent = result.message;
+          if (result.ok) loadGallery();
+        } catch (err) {
+          console.error("Could not save the gallery.", err);
+          gaStatus.textContent = "Could not reach the server. Please try again.";
+        } finally {
+          button.disabled = false;
+        }
+      });
+
+      // ---- the About text ---------------------------------------------------
+
+      const abText = document.getElementById("ab-text");
+      const abStatus = document.getElementById("ab-status");
+
+      async function loadAbout() {
+        abStatus.textContent = "Loading\u2026";
+        let result;
+        try {
+          result = await post({ action: "listAbout", token: token() });
+        } catch (err) {
+          abStatus.textContent = "Could not reach the server.";
+          return;
+        }
+        if (!result.ok) { abStatus.textContent = result.message; return; }
+
+        // One textarea, blank line between paragraphs: closer to how the text
+        // reads on the page than a row of separate boxes would be.
+        abText.value = (result.paragraphs || []).join("\n\n");
+        abStatus.textContent = "";
+      }
+
+      document.getElementById("ab-save").addEventListener("click", async () => {
+        const button = document.getElementById("ab-save");
+        button.disabled = true;
+        abStatus.textContent = "Saving\u2026";
+
+        try {
+          const paragraphs = abText.value
+            .split(/\n\s*\n/)
+            .map(block => block.replace(/\s+/g, " ").trim())
+            .filter(Boolean);
+
+          const result = await post({
+            action: "saveAbout", token: token(), paragraphs: paragraphs
+          });
+          abStatus.textContent = result.message;
+        } catch (err) {
+          console.error("Could not save the About text.", err);
+          abStatus.textContent = "Could not reach the server. Please try again.";
+        } finally {
+          button.disabled = false;
+        }
       });
 
       // ---- tabs --------------------------------------------------------------
