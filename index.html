@@ -301,9 +301,26 @@ layout: default
           <input id="mf-program" name="program" type="text" maxlength="120" required />
         </div>
 
+        <div class="member-form__pair">
+          <div class="member-form__row">
+            <label for="mf-semester">Starting semester</label>
+            <select id="mf-semester" name="startSemester" required>
+              <option value="">Choose one</option>
+              <option value="Fall">Fall</option>
+              <option value="Spring">Spring</option>
+              <option value="Summer">Summer</option>
+            </select>
+          </div>
+          <div class="member-form__row">
+            <label for="mf-year">Starting year</label>
+            <input id="mf-year" name="startYear" type="text" inputmode="numeric" pattern="(19|20)[0-9]{2}" maxlength="4"
+              placeholder="2024" required />
+          </div>
+        </div>
+
         <p class="member-form__note" id="mf-note">
-          This information is shown publicly on this page. Your Name.# is the
-          same identifier as your OSU email address.
+          Your name, degree and program are shown publicly on this page. Your
+          starting semester is kept for our records only.
         </p>
 
         <!-- Honeypot: hidden from people, filled in by automated spam. -->
@@ -1359,7 +1376,8 @@ layout: default
           CATEGORY_NAMES[entry.category] || entry.category,
           entry.nameNumber,
           entry.role,
-          entry.program
+          entry.program,
+          entry.session ? "started " + entry.session : ""
         ].filter(Boolean).join(" \u00b7 ");
 
         const actions = document.createElement("div");
@@ -2312,7 +2330,8 @@ layout: default
 
   // Headers that are something other than the role column, so the detector
   // does not mistake one for it.
-  const FIXED_COLUMNS = ["sl.", "first name", "last name", "name.#", "program", "approved", "submitted"];
+  const FIXED_COLUMNS = ["sl.", "first name", "last name", "name.#", "program", "approved",
+    "submitted", "starting session"];
 
   const SHEETS = {};
   Object.keys(SHEET_SOURCES).forEach(function (key) {
@@ -2597,9 +2616,10 @@ layout: default
       nameField.required = wantsNameNumber;
       if (!wantsNameNumber) nameField.value = "";
 
-      formNote.textContent = wantsNameNumber
+      const privacy = " Your starting semester is kept for our records only and is not shown on this page.";
+      formNote.textContent = (wantsNameNumber
         ? "This information is shown publicly on this page. Your Name.# is the same identifier as your OSU email address."
-        : "This information is shown publicly on this page.";
+        : "This information is shown publicly on this page.") + privacy;
     }
 
     categoryField.addEventListener("change", applyFormShape);
