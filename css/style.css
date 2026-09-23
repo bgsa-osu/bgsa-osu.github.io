@@ -3053,8 +3053,10 @@ body {
   box-shadow: 0 0 0 3px var(--color-secondary-bright), var(--shadow-md);
 }
 
+/* Deliberately not coloured: a permanently scarlet nav item reads as the
+   page you are already on. It behaves like every other link. */
 .header__link--next {
-  color: var(--color-primary);
+  color: inherit;
 }
 
 .rsvp-card__desc a {

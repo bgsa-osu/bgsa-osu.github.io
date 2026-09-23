@@ -1249,13 +1249,28 @@ layout: default
         history.replaceState(null, "", location.pathname + "#upcoming");
       }
 
-      feedReady.then(() => {
+      function jump() {
         const html = document.documentElement;
         const previous = html.style.scrollBehavior;
         html.style.scrollBehavior = "auto";
         section.scrollIntoView({ block: "start" });
         html.style.scrollBehavior = previous;
-      });
+      }
+
+      // Go there straight away, whatever the feed is doing. If the events
+      // have not arrived yet the section says so, rather than the click
+      // appearing to do nothing at all.
+      section.hidden = false;
+      if (!list.children.length) {
+        const waiting = document.createElement("p");
+        waiting.className = "upcoming__empty";
+        waiting.textContent = "Loading\u2026";
+        list.appendChild(waiting);
+      }
+      jump();
+
+      // Then land on it properly once the list has filled in.
+      feedReady.then(jump).catch(jump);
     });
 
     // Someone arriving on /#upcoming directly needs the same wait.
