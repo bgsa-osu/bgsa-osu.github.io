@@ -2957,19 +2957,26 @@ body {
   margin-bottom: 1.2rem;
 }
 
+/* Scoped past .member-form__row label, which sets display:block and would
+   otherwise break the box away from its text. */
+.member-form__row label.officer__check,
 .officer__check {
   display: flex;
   align-items: center;
   gap: 1rem;
+  margin-bottom: 0;
   font-size: 1.6rem;
   font-weight: 600;
   color: var(--color-dark);
   cursor: pointer;
 }
 
-.officer__check input {
+.officer__check input[type="checkbox"] {
+  flex: none;
   width: 1.8rem;
   height: 1.8rem;
+  margin: 0;
+  padding: 0;
   accent-color: var(--color-primary);
 }
 
