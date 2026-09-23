@@ -1112,7 +1112,10 @@ layout: default
         const target = document.getElementById(location.hash.slice(1));
         if (target) {
           requestAnimationFrame(() => {
-            target.scrollIntoView({ behavior: "smooth", block: "start" });
+            // "auto", not "smooth": someone following a link wants to be at
+            // the event, not to watch the whole page scroll past. The events
+            // arrive after the page does, so this is already a second late.
+            target.scrollIntoView({ behavior: "auto", block: "start" });
             target.classList.add("is-linked");
           });
         }
