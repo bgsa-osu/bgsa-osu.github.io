@@ -472,6 +472,14 @@ layout: default
               </div>
             </div>
             <div class="member-form__row">
+              <label class="officer__check">
+                <input id="ev-pay" type="checkbox" checked />
+                <span>Ask attendees for payment status</span>
+              </label>
+              <p class="member-form__note">Leave unticked for a free event, and the RSVP
+                form will not mention payment at all.</p>
+            </div>
+            <div class="member-form__row">
               <label for="ev-desc">Description</label>
               <textarea id="ev-desc" rows="4" maxlength="2000"></textarea>
             </div>
@@ -1675,6 +1683,7 @@ layout: default
         document.getElementById("ev-time").value = event.time || "";
         document.getElementById("ev-location").value = event.location || "";
         document.getElementById("ev-deadline").value = event.deadline || "";
+        document.getElementById("ev-pay").checked = event.askPayment !== false;
         document.getElementById("ev-desc").value = event.description || "";
         evPhoto.value = "";
 
@@ -1691,6 +1700,7 @@ layout: default
         cancelButton.hidden = true;
         photoNote.textContent = "Resized before upload, so a photo straight off a phone is fine.";
         officerForm.reset();
+        document.getElementById("ev-pay").checked = true; // reset() unticks it
         questionList.innerHTML = "";
       }
 
@@ -1750,6 +1760,7 @@ layout: default
             time: document.getElementById("ev-time").value,
             location: document.getElementById("ev-location").value,
             deadline: document.getElementById("ev-deadline").value,
+            askPayment: document.getElementById("ev-pay").checked,
             description: document.getElementById("ev-desc").value,
             questions: collectQuestions(),
             photo: photo

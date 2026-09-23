@@ -2957,6 +2957,22 @@ body {
   margin-bottom: 1.2rem;
 }
 
+.officer__check {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--color-dark);
+  cursor: pointer;
+}
+
+.officer__check input {
+  width: 1.8rem;
+  height: 1.8rem;
+  accent-color: var(--color-primary);
+}
+
 .event-page {
   max-width: 78rem;
 }
@@ -2968,12 +2984,14 @@ body {
 }
 
 .event-page__photo img {
+  /* No fixed ratio and no cropping: this is the event's own page, so the
+     whole poster or photo should be visible, however it is shaped. The
+     cards on the home page crop to keep the grid even; here there is room. */
   display: block;
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  object-fit: cover;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto 2.4rem;
   border-radius: var(--radius);
-  margin-bottom: 2.4rem;
 }
 
 .event-page__facts {
