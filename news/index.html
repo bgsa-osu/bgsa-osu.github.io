@@ -47,10 +47,10 @@ layout: default
       <span class="heading-sec__main">Upcoming</span>
       <span class="heading-sec__sub">What is coming up, and how to say you are joining.</span>
     </h2>
-    <!-- Present in the page from the start, not revealed by script. The
-         events arrive by fetch and replace what is here; if that never
-         happens -- slow feed, blocked script, anything -- the section is
-         still on the page and the nav link still leads somewhere. -->
+    <!-- Written into the page by Jekyll, not created by script. The events
+         arrive by fetch and replace this; if that never happens -- slow
+         feed, blocked script, stale file -- the section is still here and
+         the nav link still leads somewhere. -->
     <div id="upcoming-list" class="upcoming__list">
       <p class="upcoming__empty">
         Nothing scheduled just now. Follow BGSA on Facebook and Instagram for upcoming events.
@@ -1174,9 +1174,8 @@ layout: default
       currentEvents = events;
       list.innerHTML = "";
 
-      // The section is always on the page, because "What's next?" is always
-      // in the nav. An empty answer is still an answer -- better than a link
-      // that goes nowhere.
+      // The tab is always in the nav, so the section always answers --
+      // an empty answer is still an answer.
       if (!events.length) {
         const empty = document.createElement("p");
         empty.className = "upcoming__empty";
@@ -1221,8 +1220,8 @@ layout: default
         render(await loadEvents());
       } catch (err) {
         console.warn("Could not load upcoming events.", err);
-        // Leave the message that is already in the page; only an officer
-        // needs the reason behind the failure.
+        // Only an officer needs the reason; a visitor keeps the message
+        // already in the page.
         if (officerMode) {
           list.innerHTML = "";
           const note = document.createElement("p");
@@ -1233,12 +1232,10 @@ layout: default
       }
     }
 
-    // Kept so a click on "What's next?" can wait for it. The section is
-    // hidden until the events arrive, and the browser cannot scroll to a
-    // hidden element -- which is why the first click used to do nothing and
-    // the second one worked.
     const feedReady = refresh();
 
+    // "What's next?" behaves like every other tab: it goes straight there.
+    // The section is already in the page, so nothing has to load first.
     document.addEventListener("click", e => {
       const link = e.target.closest('a[href*="#upcoming"]');
       if (!link) return;
@@ -1256,14 +1253,10 @@ layout: default
         html.style.scrollBehavior = previous;
       }
 
-      // The section is always in the page, so this always goes somewhere.
-      jump();
-
-      // Then land on it properly once the list has filled in.
-      feedReady.then(jump).catch(jump);
+      jump();                            // now
+      feedReady.then(jump).catch(jump);  // and again once the list has filled
     });
 
-    // Someone arriving on /#upcoming directly needs the same wait.
     if (location.hash === "#upcoming") {
       feedReady.then(() => section.scrollIntoView({ block: "start" }));
     }
