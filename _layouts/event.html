@@ -1,0 +1,59 @@
+---
+layout: default
+---
+<!--
+  One page per event. The file is written by the Apps Script when an officer
+  creates or edits an event, so Jekyll builds it like any post: the details
+  below are already in the HTML, and the page opens instantly.
+
+  Only the head count is fetched afterwards, because it changes as people
+  reply. Nothing else waits on the network.
+-->
+<main class="page-main">
+  <div class="main-container event-page">
+
+    <a href="{{ '/#upcoming' | relative_url }}" class="post__back">&larr; All upcoming events</a>
+
+    <h1 class="heading-primary event-page__title">{{ page.title }}</h1>
+
+    {%- if page.image %}
+    <div class="event-page__photo">
+      <img src="{{ page.image }}" alt="" />
+    </div>
+    {%- endif %}
+
+    <div class="event-page__facts">
+      {%- if page.event_date %}
+      <p class="rsvp-card__line">
+        <span class="rsvp-card__key">{% if page.event_time %}Date &amp; time:{% else %}Date:{% endif %}</span>
+        {{ page.event_date }}{% if page.event_time %} &middot; {{ page.event_time }}{% endif %}
+      </p>
+      {%- endif %}
+      {%- if page.location %}
+      <p class="rsvp-card__line"><span class="rsvp-card__key">Place:</span> {{ page.location }}</p>
+      {%- endif %}
+      {%- if page.deadline %}
+      <p class="rsvp-card__line"><span class="rsvp-card__key">RSVP deadline:</span> {{ page.deadline }}</p>
+      {%- endif %}
+    </div>
+
+    {%- if page.description %}
+    <div class="rsvp-card__desc event-page__desc" data-rich>{{ page.description }}</div>
+    {%- endif %}
+
+    <p class="rsvp-card__count" id="rsvp-count">&nbsp;</p>
+
+    <!-- The form is built from this, so it needs no round trip either. -->
+    <script type="application/json" id="event-data">
+      {
+        "id": {{ page.event_id | jsonify }},
+        "payments": {{ page.payments | jsonify }},
+        "questions": {{ page.questions | jsonify }}
+      }
+    </script>
+
+    <div id="rsvp-mount"></div>
+  </div>
+</main>
+
+<script src="{{ '/assets/js/rsvp.js' | relative_url }}"></script>

@@ -739,6 +739,7 @@ layout: default
           description: text(event.description),
           photo: text(event.photo),
           deadline: text(event.deadline),
+          page: text(event.page),
           payments: event.payments || [],
           // The script calls a multiple-choice question "choice"; the form
           // builder below has always called it "select".
@@ -987,7 +988,10 @@ layout: default
     }
 
     function eventUrl(event) {
-      return location.origin + location.pathname + "#" + eventAnchor(event);
+      // The event's own page if it has one -- that is the link worth sharing.
+      return event.page
+        ? location.origin + event.page
+        : location.origin + location.pathname + "#" + eventAnchor(event);
     }
 
     function copyButton(event) {
@@ -1072,6 +1076,21 @@ layout: default
       const actions = document.createElement("div");
       actions.className = "rsvp-card__actions";
 
+      // A real page, built by Jekyll from a file the script commits. It opens
+      // instantly, which an anchor on this page never could: the events
+      // arrive by fetch, so the card does not exist until they do.
+      if (event.page) {
+        const open = document.createElement("a");
+        open.className = "btn btn--theme rsvp-card__toggle";
+        open.href = event.page;
+        open.textContent = "Details & RSVP";
+        actions.appendChild(open);
+        actions.appendChild(copyButton(event));
+        text.appendChild(actions);
+        return card;
+      }
+
+      // Events created before pages existed keep the form on this page.
       const toggle = document.createElement("button");
       toggle.type = "button";
       toggle.className = "btn btn--theme rsvp-card__toggle";
