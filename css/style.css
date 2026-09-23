@@ -2957,6 +2957,48 @@ body {
   margin-bottom: 1.2rem;
 }
 
+.rsvp-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.2rem 1.8rem;
+}
+
+/* A quiet companion to the RSVP button: useful, but not competing with it. */
+.rsvp-card__copy {
+  font-family: var(--font-body);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-grey);
+  background: none;
+  border: none;
+  padding: 0.6rem 0;
+  cursor: pointer;
+}
+
+.rsvp-card__copy:hover {
+  color: var(--color-secondary);
+}
+
+.rsvp-card__copy-fallback {
+  font-family: var(--font-body);
+  font-size: 1.4rem;
+  padding: 0.6rem 1rem;
+  min-width: 26rem;
+  border: 1.5px solid var(--color-line);
+  border-radius: var(--radius-sm);
+}
+
+/* Arriving on a shared link: a brief marker so it is obvious which event
+   the link meant, on a page that may hold several. */
+.rsvp-card.is-linked {
+  box-shadow: 0 0 0 3px var(--color-secondary-bright), var(--shadow-md);
+}
+
+.header__link--next {
+  color: var(--color-primary);
+}
+
 .rsvp-card__desc a {
   color: var(--color-primary);
   font-weight: 600;

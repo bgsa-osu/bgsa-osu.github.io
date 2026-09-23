@@ -974,9 +974,47 @@ layout: default
       return line;
     }
 
+    // A share link points at one event: /#event-evt-1758…  The id also lets
+    // the page scroll straight to it when someone follows that link.
+    function eventAnchor(event) {
+      return "event-" + String(event.id).replace(/[^A-Za-z0-9_-]/g, "");
+    }
+
+    function eventUrl(event) {
+      return location.origin + location.pathname + "#" + eventAnchor(event);
+    }
+
+    function copyButton(event) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "rsvp-card__copy";
+      button.textContent = "Copy link";
+
+      button.addEventListener("click", async () => {
+        const url = eventUrl(event);
+        try {
+          await navigator.clipboard.writeText(url);
+          button.textContent = "Link copied";
+        } catch (err) {
+          // Clipboard access needs https and a user gesture; where it is
+          // refused, select the text so it can be copied by hand.
+          const box = document.createElement("input");
+          box.value = url;
+          box.className = "rsvp-card__copy-fallback";
+          button.replaceWith(box);
+          box.select();
+          return;
+        }
+        setTimeout(() => { button.textContent = "Copy link"; }, 2000);
+      });
+
+      return button;
+    }
+
     function buildCard(event) {
       const card = document.createElement("article");
       card.className = "rsvp-card";
+      card.id = eventAnchor(event);
 
       // Same shape as the Events page cards: image to one side, words to the
       // other, rather than a banner across the top that crops the picture to
@@ -1025,11 +1063,16 @@ layout: default
       tally.textContent = countLine(event);
       text.appendChild(tally);
 
+      const actions = document.createElement("div");
+      actions.className = "rsvp-card__actions";
+
       const toggle = document.createElement("button");
       toggle.type = "button";
       toggle.className = "btn btn--theme rsvp-card__toggle";
       toggle.textContent = "Please click here for RSVP";
-      text.appendChild(toggle);
+
+      actions.append(toggle, copyButton(event));
+      text.appendChild(actions);
 
       const form = buildForm(event);
       text.appendChild(form);
@@ -1049,6 +1092,25 @@ layout: default
       list.innerHTML = "";
       events.forEach(event => list.appendChild(buildCard(event)));
       section.hidden = events.length === 0;
+
+      // No point offering "What's next?" when nothing is scheduled.
+      document.querySelectorAll(".header__link--next").forEach(link => {
+        const item = link.closest("li") || link;
+        item.hidden = events.length === 0;
+      });
+
+      // Someone arriving on a shared link lands on that event. The events
+      // load after the page, so the browser has already given up on the
+      // hash by now and it has to be done here.
+      if (location.hash.startsWith("#event-")) {
+        const target = document.getElementById(location.hash.slice(1));
+        if (target) {
+          requestAnimationFrame(() => {
+            target.scrollIntoView({ behavior: "smooth", block: "start" });
+            target.classList.add("is-linked");
+          });
+        }
+      }
     }
 
     // ---- Go ---------------------------------------------------------------
