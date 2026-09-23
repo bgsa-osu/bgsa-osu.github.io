@@ -394,6 +394,8 @@ layout: default
             <button type="button" class="officer__tab" data-pane="pane-posts">Posts</button>
             <button type="button" class="officer__tab" data-pane="pane-gallery">Gallery</button>
             <button type="button" class="officer__tab" data-pane="pane-about">About</button>
+            <button type="button" class="officer__tab" data-pane="pane-hero">Slideshow</button>
+            <button type="button" class="officer__tab" data-pane="pane-contact">Contact</button>
             <button type="button" class="officer__tab" data-pane="pane-committee">Committee</button>
             <button type="button" class="officer__tab" data-pane="pane-approvals">Approvals</button>
           </div>
@@ -424,6 +426,29 @@ layout: default
             <button type="button" id="ab-save" class="officer__save">Save About text</button>
           </div>
           <p id="ab-status" class="member-form__status" role="status" aria-live="polite"></p>
+        </div>
+
+        <div id="pane-hero" class="officer__pane" hidden>
+          <h4 class="officer__subheading">Homepage slideshow</h4>
+          <p class="member-form__note">The photos behind the title on the home page, shown
+            in this order, six seconds each.</p>
+          <div id="hero-items"></div>
+          <button type="button" id="hero-add" class="officer__add">+ Add a photo</button>
+          <div class="officer__rsvp-actions" style="margin-top:2rem">
+            <button type="button" id="hero-save" class="officer__save">Save slideshow</button>
+          </div>
+          <p id="hero-status" class="member-form__status" role="status" aria-live="polite"></p>
+        </div>
+
+        <div id="pane-contact" class="officer__pane" hidden>
+          <h4 class="officer__subheading">Contact details</h4>
+          <p class="member-form__note">Shown in the Contact section and used by the links
+            there. Leave a field empty to keep what is there now.</p>
+          <div id="contact-fields"></div>
+          <div class="officer__rsvp-actions" style="margin-top:2rem">
+            <button type="button" id="contact-save" class="officer__save">Save contact details</button>
+          </div>
+          <p id="contact-status" class="member-form__status" role="status" aria-live="polite"></p>
         </div>
 
         <div id="pane-committee" class="officer__pane" hidden>
@@ -1277,6 +1302,8 @@ layout: default
           loadCommittees();
           loadGallery();
           loadAbout();
+          loadHero();
+          loadContact();
         }
       }
 
@@ -2269,6 +2296,151 @@ layout: default
         } catch (err) {
           console.error("Could not save the About text.", err);
           abStatus.textContent = "Could not reach the server. Please try again.";
+        } finally {
+          button.disabled = false;
+        }
+      });
+
+      // ---- the homepage slideshow -------------------------------------------
+
+      const heroItems = document.getElementById("hero-items");
+      const heroStatus = document.getElementById("hero-status");
+
+      async function loadHero() {
+        heroStatus.textContent = "Loading\u2026";
+        let result;
+        try {
+          result = await post({ action: "listHero", token: token() });
+        } catch (err) {
+          heroStatus.textContent = "Could not reach the server.";
+          return;
+        }
+        if (!result.ok) { heroStatus.textContent = result.message; return; }
+
+        heroStatus.textContent = "";
+        heroItems.innerHTML = "";
+        (result.slides || []).forEach(addHeroRow);
+        if (!result.slides || !result.slides.length) addHeroRow();
+      }
+
+      function addHeroRow(image) {
+        const row = document.createElement("div");
+        row.className = "officer__member";
+
+        const current = document.createElement("input");
+        current.type = "text";
+        current.value = image || "";
+        current.readOnly = true;
+        row.appendChild(labelled("Current file", current));
+
+        const photo = document.createElement("input");
+        photo.type = "file";
+        photo.accept = "image/*";
+        row.appendChild(labelled(image ? "Replace photo" : "Photo", photo));
+
+        const remove = document.createElement("button");
+        remove.type = "button";
+        remove.className = "officer__danger";
+        remove.textContent = "Remove";
+        remove.addEventListener("click", () => row.remove());
+        row.appendChild(remove);
+
+        row.__image = current;
+        row.__photo = photo;
+        heroItems.appendChild(row);
+      }
+
+      document.getElementById("hero-add").addEventListener("click", () => addHeroRow());
+
+      document.getElementById("hero-save").addEventListener("click", async () => {
+        const button = document.getElementById("hero-save");
+        button.disabled = true;
+        heroStatus.textContent = "Saving\u2026";
+
+        try {
+          const slides = [];
+          for (const row of Array.from(heroItems.querySelectorAll(".officer__member"))) {
+            const slide = { image: row.__image.value };
+            const file = row.__photo.files[0];
+            if (file) slide.photo64 = await readPhoto(file);
+            if (slide.image || slide.photo64) slides.push(slide);
+          }
+
+          const result = await post({ action: "saveHero", token: token(), slides: slides });
+          heroStatus.textContent = result.message;
+          if (result.ok) loadHero();
+        } catch (err) {
+          console.error("Could not save the slideshow.", err);
+          heroStatus.textContent = "Could not reach the server. Please try again.";
+        } finally {
+          button.disabled = false;
+        }
+      });
+
+      // ---- contact details --------------------------------------------------
+
+      const contactFields = document.getElementById("contact-fields");
+      const contactStatus = document.getElementById("contact-status");
+      const contactInputs = {};
+
+      const CONTACT_LABELS = [
+        ["email", "Email"],
+        ["phone", "Phone (dialled)"],
+        ["phone_display", "Phone (as shown)"],
+        ["facebook_url", "Facebook link"],
+        ["facebook_handle", "Facebook name"],
+        ["instagram_url", "Instagram link"],
+        ["instagram_handle", "Instagram name"],
+        ["youtube_url", "YouTube link"],
+        ["youtube_handle", "YouTube name"]
+      ];
+
+      async function loadContact() {
+        contactStatus.textContent = "Loading\u2026";
+        let result;
+        try {
+          result = await post({ action: "listContact", token: token() });
+        } catch (err) {
+          contactStatus.textContent = "Could not reach the server.";
+          return;
+        }
+        if (!result.ok) { contactStatus.textContent = result.message; return; }
+
+        contactStatus.textContent = "";
+        contactFields.innerHTML = "";
+
+        CONTACT_LABELS.forEach(pair => {
+          const input = document.createElement("input");
+          input.type = pair[0] === "email" ? "email" : "text";
+          input.maxLength = 300;
+          input.value = (result.contact || {})[pair[0]] || "";
+          contactInputs[pair[0]] = input;
+
+          const row = document.createElement("div");
+          row.className = "member-form__row";
+          const label = document.createElement("label");
+          label.textContent = pair[1];
+          row.append(label, input);
+          contactFields.appendChild(row);
+        });
+      }
+
+      document.getElementById("contact-save").addEventListener("click", async () => {
+        const button = document.getElementById("contact-save");
+        button.disabled = true;
+        contactStatus.textContent = "Saving\u2026";
+
+        try {
+          const contact = {};
+          Object.keys(contactInputs).forEach(key => {
+            contact[key] = contactInputs[key].value;
+          });
+
+          const result = await post({ action: "saveContact", token: token(), contact: contact });
+          contactStatus.textContent = result.message;
+        } catch (err) {
+          console.error("Could not save the contact details.", err);
+          contactStatus.textContent = "Could not reach the server. Please try again.";
         } finally {
           button.disabled = false;
         }

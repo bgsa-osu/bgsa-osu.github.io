@@ -3484,6 +3484,35 @@ body {
   color: var(--color-primary);
 }
 
+/* These rows sit outside a .member-form, so the full-width input rule does
+   not reach them. */
+#pane-contact .member-form__row input {
+  display: block;
+  width: 100%;
+  max-width: 46rem;
+  padding: 1.2rem 1.6rem;
+  font-family: var(--font-body);
+  font-size: 1.6rem;
+  color: var(--color-dark);
+  background: var(--color-light);
+  border: 1.5px solid var(--color-line);
+  border-radius: var(--radius-sm);
+}
+
+#pane-contact .member-form__row input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px var(--color-primary-soft);
+}
+
+#pane-contact .member-form__row label {
+  display: block;
+  margin-bottom: 0.7rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-dark);
+}
+
 #pane-about textarea {
   display: block;
   width: 100%;
