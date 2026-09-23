@@ -3009,6 +3009,12 @@ body {
   margin-bottom: 2.4rem;
 }
 
+.upcoming__empty {
+  font-size: 1.8rem;
+  color: var(--color-grey);
+  padding: 2rem 0;
+}
+
 .rsvp-card__actions {
   display: flex;
   flex-wrap: wrap;

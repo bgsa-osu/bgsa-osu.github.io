@@ -1,34 +1,2883 @@
 ---
 layout: default
-title: News & Announcements
-description: BGSA events and our community's achievements.
 ---
+<!--
+  HOMEPAGE LAYOUT. Most content is NOT edited here:
+    News ............ news/_posts/        Blog ........... blog/_posts/
+    Committee ....... _data/committees.yml Gallery ........ _data/gallery.yml
+    Hero photos ..... _data/hero.yml       Resources ...... _data/resources.yml
+    Goals ........... _data/goals.yml      Contact/social . _config.yml
+  See README.md for step-by-step instructions.
+-->
+
+<!-- HOME -->
+<section id="home" class="home-hero">
+  <div class="hero-slider" aria-hidden="true">
+    {%- for slide in site.data.hero %}
+    {%- assign slide_url = slide.image | relative_url %}
+    {%- if forloop.first %}
+    <div class="hero-slide is-active" style="background-image: url('{{ slide_url }}')"></div>
+    {%- else %}
+    <div class="hero-slide" data-bg="{{ slide_url }}"></div>
+    {%- endif %}
+    {%- endfor %}
+  </div>
+
+  <div class="home-hero__content">
+    <h1 class="heading-primary">{{ site.name }}</h1>
+    <div class="home-hero__info">
+      <p class="text-primary">The Ohio State University</p>
+    </div>
+    <div class="home-hero__cta">
+      <a href="#about" class="btn btn--bg">Learn More</a>
+    </div>
+  </div>
+
+  <div class="home-hero__mouse-scroll-cont">
+    <div class="mouse"></div>
+  </div>
+</section>
+
+<!-- ABOUT (WITH TABS) -->
+<!-- UPCOMING EVENTS — sits directly under the hero, because that is where
+     people land. Rows come from the Events sheet via the Apps Script. -->
+<section id="upcoming" class="upcoming sec-pad" hidden>
+  <div class="main-container">
+    <h2 class="heading heading-sec heading-sec__mb-med">
+      <span class="heading-sec__main">Upcoming</span>
+      <span class="heading-sec__sub">What is coming up, and how to say you are joining.</span>
+    </h2>
+    <div id="upcoming-list" class="upcoming__list"></div>
+  </div>
+</section>
+
+<section id="about" class="about sec-pad">
+  <div class="main-container">
+
+    <h2 class="heading heading-sec heading-sec__mb-med">
+      <span class="heading-sec__main">About BGSA</span>
+      <span class="heading-sec__sub">Learn about our organization & leadership</span>
+    </h2>
+
+    <div class="about-tabs">
+      <button class="about-tab active" data-target="about-info">About BGSA</button>
+      <button class="about-tab" data-target="about-goals">Goals</button>
+      <button class="about-tab" data-target="about-ec">Executive Committee</button>
+      <button class="about-tab" data-target="about-past">Previous Executive Committees</button>
+    </div>
+
+    <div class="about-tab-content">
+
+      <!-- TAB 1 — ABOUT -->
+      <div id="about-info" class="about-content active">
+        <div class="about__split">
+          <div class="about__logo-side">
+            <img src="{{ '/assets/png/tOSU_BGSA_logo.png' | relative_url }}" alt="BGSA logo" class="about__logo-img" />
+          </div>
+          <div class="about__text-side">
+            {%- for paragraph in site.data.about %}
+            <p class="about__description">{{ paragraph }}</p>
+            {%- endfor %}
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2 — GOALS (edit in _data/goals.yml) -->
+      <div id="about-goals" class="about-content">
+        <h3 class="heading heading-sec heading-sec__mb-med">
+          <span class="heading-sec__main">Our Goals</span>
+        </h3>
+        <div class="goals__grid">
+          {%- for goal in site.data.goals %}
+          <div class="goal-item">
+            <span class="goal-icon">✔</span>
+            <p class="goal-text">{{ goal }}</p>
+          </div>
+          {%- endfor %}
+        </div>
+      </div>
+
+      {%- assign current = site.data.committees.first %}
+
+      <!-- TAB 3 — EXECUTIVE COMMITTEE (edit in _data/committees.yml) -->
+      <div id="about-ec" class="about-content">
+        <h3 class="heading heading-sec heading-sec__mb-med">
+          <span class="heading-sec__main">Executive Committee {{ current.term }}</span>
+        </h3>
+        <div class="projects__content">
+          {%- for member in current.members %}
+          <div class="projects__row">
+            <div class="projects__row-img-cont">
+              <img src="{{ member.photo | relative_url }}" alt="{{ member.name }}, {{ member.role }}"
+                class="projects__row-img" loading="lazy" />
+            </div>
+            <div class="projects__row-content">
+              <h3 class="projects__row-content-title">{{ member.name }}</h3>
+              <p class="projects__row-content-desc">{{ member.role }}</p>
+              <p class="projects__row-content-deg">{{ member.degree }}</p>
+              <p class="projects__row-content-sub">{{ member.department }}</p>
+              <p class="projects__row-content-mail">{{ member.email }}</p>
+            </div>
+          </div>
+          {%- endfor %}
+        </div>
+      </div>
+
+      <!-- TAB 4 — PREVIOUS COMMITTEES (every term after the first in _data/committees.yml) -->
+      <div id="about-past" class="about-content">
+        <h3 class="heading heading-sec heading-sec__mb-med">
+          <span class="heading-sec__main">Previous Executive Committees</span>
+        </h3>
+        <div class="past-ec-grid">
+          {%- for committee in site.data.committees offset: 1 %}
+          <div class="past-ec-card">
+            <h4>Executive Committee {{ committee.term }}</h4>
+            <ul>
+              {%- for member in committee.members %}
+              <li><strong>{{ member.role }}:</strong> {{ member.name }}</li>
+              {%- endfor %}
+            </ul>
+          </div>
+          {%- endfor %}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- EVENTS + ACHIEVEMENTS (add posts in news/_posts/; see README) -->
 {%- assign events = site.categories.news | where: "section", "events" %}
 {%- assign achievements = site.categories.news | where: "section", "achievements" %}
-<main class="page-main">
-  <section class="projects">
-    <div class="main-container">
-      <h1 class="heading heading-sec heading-sec__mb-med">
-        <span class="heading-sec__main">News & Announcements</span>
-        <span class="heading-sec__sub">
-          <a class="news__jump" href="{{ '/news/events/' | relative_url }}">Events ({{ events.size }})</a> ·
-          <a class="news__jump" href="{{ '/news/achievements/' | relative_url }}">Achievements ({{ achievements.size }})</a>
-        </span>
-      </h1>
 
-      <h2 id="events" class="news__group-title">Events</h2>
-      <div class="news__content">
-        {%- for post in events %}
-          {% include news-card.html %}
-        {%- endfor %}
+<!-- EVENTS -->
+<section id="events" class="projects sec-pad">
+  <span id="news"></span><!-- keeps old /#news links working -->
+  <div class="main-container">
+    <h2 class="heading heading-sec heading-sec__mb-bg">
+      <span class="heading-sec__main">Events</span>
+      <span class="heading-sec__sub">Tournaments, festivals, and gatherings from the BGSA community.</span>
+    </h2>
+
+
+    <div class="news__content">
+      {%- for post in events limit: site.events_on_homepage %}
+      {% include news-card.html %}
+      {%- endfor %}
+    </div>
+    <div class="section-more">
+      <a href="{{ '/news/events/' | relative_url }}" class="btn btn--theme section-more__btn">See all events</a>
+    </div>
+  </div>
+</section>
+
+<!-- ACHIEVEMENTS -->
+<section id="achievements" class="about sec-pad">
+  <div class="main-container">
+    <h2 class="heading heading-sec heading-sec__mb-bg">
+      <span class="heading-sec__main">Achievements</span>
+      <span class="heading-sec__sub">Defenses, awards, and fellowships from our community.</span>
+    </h2>
+
+    <div class="achievements__grid">
+      {%- for post in achievements limit: site.achievements_on_homepage %}
+      {% include achievement-card.html %}
+      {%- endfor %}
+    </div>
+    <div class="section-more">
+      <a href="{{ '/news/achievements/' | relative_url }}" class="btn btn--theme section-more__btn">See all
+        achievements</a>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY (edit in _data/gallery.yml) -->
+<section id="gallery" class="sec-pad">
+  <div class="main-container">
+    <h2 class="heading heading-sec heading-sec__mb-med">
+      <span class="heading-sec__main">Gallery</span>
+      <span class="heading-sec__sub">Snapshots from our events and community moments. Send your photos to {{ site.email
+        }}.</span>
+    </h2>
+
+    <div class="gallery__grid">
+      {%- for item in site.data.gallery %}
+      <div class="gallery__item">
+        <img src="{{ item.image | relative_url }}" alt="{{ item.caption | escape }}" loading="lazy" />
+        <div class="gallery__caption">{{ item.caption }}</div>
+      </div>
+      {%- endfor %}
+    </div>
+  </div>
+</section>
+
+<section id="database" class="projects sec-pad">
+  <div class="main-container">
+    <h2 class="heading heading-sec heading-sec__mb-med">
+      <span class="heading-sec__main">Member Database</span>
+      <span class="heading-sec__sub">
+        Browse different groups of the BGSA community.
+      </span>
+    </h2>
+
+    <!-- Tabs -->
+    <div class="db-tabs">
+      <button class="db-tab active" data-target="grad">Graduate Students</button>
+      <button class="db-tab" data-target="postdoc">Post-docs & Staff</button>
+      <button class="db-tab" data-target="alumni">Alumni</button>
+      <button class="db-tab" data-target="faculty">Faculty</button>
+      <button class="db-tab" data-target="addinfo">Add Your Information</button>
+    </div>
+
+    <!-- Search -->
+    <div class="database__search" style="text-align:center; margin-bottom:2.5rem;">
+      <input type="text" id="searchInput" placeholder="🔍 Search..."
+        style="padding:1.2rem; width:70%; max-width:450px; border-radius:8px; border:1.5px solid #ccc; font-size:1.8rem;">
+    </div>
+
+    <!-- TABLE CONTAINER -->
+    <div class="database__table-container" style="overflow-x:auto;">
+      <table id="members-table" style="width:100%; border-collapse:collapse; text-align:left; font-size:1.8rem;">
+        <thead>
+          <tr style="background-color:var(--color-primary); color:#fff; cursor:pointer;">
+            <th data-col="First Name">First Name ⬍</th>
+            <th data-col="Last Name">Last Name ⬍</th>
+            <th data-col="role">Degree / Position ⬍</th>
+            <th data-col="Program">Program / Department ⬍</th>
+            <th data-col="Name.#">Name.# ⬍</th>
+          </tr>
+        </thead>
+        <tbody id="members-body"></tbody>
+      </table>
+    </div>
+
+    <!-- ADD YOUR INFORMATION TAB -->
+    <div id="addinfo" class="db-content" style="display:none; margin-top:3rem;">
+
+      <h3 class="heading heading-sec heading-sec__mb-med">
+        <span class="heading-sec__main">Add Your Information</span>
+      </h3>
+
+      <p style="font-size:1.8rem; margin-bottom:2.5rem;">
+        Add yourself to the BGSA directory. Entries appear once an officer has
+        reviewed them, usually within a few days.
+      </p>
+
+      <form id="member-form" class="member-form" novalidate>
+        <div class="member-form__row">
+          <label for="mf-category">Category</label>
+          <select id="mf-category" name="category" required>
+            <option value="grad">Graduate Student</option>
+            <option value="postdoc">Post-doc or Staff</option>
+            <option value="alumni">Alumnus / Alumna</option>
+            <option value="faculty">Faculty</option>
+          </select>
+        </div>
+
+        <div class="member-form__pair">
+          <div class="member-form__row">
+            <label for="mf-first">First name</label>
+            <input id="mf-first" name="firstName" type="text" maxlength="60" required />
+          </div>
+          <div class="member-form__row">
+            <label for="mf-last">Last name</label>
+            <input id="mf-last" name="lastName" type="text" maxlength="60" required />
+          </div>
+        </div>
+
+        <div class="member-form__pair">
+          <div class="member-form__row" id="mf-name-row">
+            <label for="mf-name">tOSU Name.#</label>
+            <input id="mf-name" name="nameNumber" type="text" maxlength="40" required />
+          </div>
+          <div class="member-form__row">
+            <label for="mf-role" id="mf-role-label">Degree / Position</label>
+            <input id="mf-role" name="role" type="text" maxlength="60" required />
+          </div>
+        </div>
+
+        <div class="member-form__row">
+          <label for="mf-program">Program / Department</label>
+          <input id="mf-program" name="program" type="text" maxlength="120" required />
+        </div>
+
+        <div class="member-form__pair">
+          <div class="member-form__row">
+            <label for="mf-semester">Starting semester</label>
+            <select id="mf-semester" name="startSemester" required>
+              <option value="">Choose one</option>
+              <option value="Fall">Fall</option>
+              <option value="Spring">Spring</option>
+              <option value="Summer">Summer</option>
+            </select>
+          </div>
+          <div class="member-form__row">
+            <label for="mf-year">Starting year</label>
+            <input id="mf-year" name="startYear" type="text" inputmode="numeric" pattern="(19|20)[0-9]{2}" maxlength="4"
+              placeholder="2024" required />
+          </div>
+        </div>
+
+        <p class="member-form__note" id="mf-note">
+          Your name, degree and program are shown publicly on this page. Your
+          starting semester is kept for our records only.
+        </p>
+
+        <!-- Honeypot: hidden from people, filled in by automated spam. -->
+        <div class="member-form__hp" aria-hidden="true">
+          <label for="mf-website">Website</label>
+          <input id="mf-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+        </div>
+
+        <button type="submit" class="btn btn--theme">Submit</button>
+        <p class="member-form__status" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </div>
+
+
+  </div>
+</section>
+
+<!-- BLOG (latest stories; add posts in blog/_posts/) -->
+<section id="blog" class="sec-pad about">
+  <div class="main-container">
+    <h2 class="heading heading-sec heading-sec__mb-med">
+      <span class="heading-sec__main">Blog</span>
+      <span class="heading-sec__sub">Articles, reflections, and creative writing from our BGSA community. Send your
+        stories to {{ site.email }}.</span>
+    </h2>
+
+    <div class="blog-list">
+      {%- for post in site.categories.blog limit: site.blog_on_homepage %}
+      {% include blog-card.html %}
+      {%- endfor %}
+    </div>
+
+    <div class="section-more">
+      <a href="{{ '/blog/' | relative_url }}" class="btn btn--theme section-more__btn">All stories</a>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT (edit details in _config.yml) -->
+<!-- ADMIN (hidden until the nav link is used; the Apps Script does the
+     real checking, this only keeps the page tidy for everyone else) -->
+<section id="admin" class="sec-pad" hidden>
+  <div class="main-container">
+    <h2 class="heading heading-sec heading-sec__mb-med">
+      <span class="heading-sec__main">Admin</span>
+      <span class="heading-sec__sub">For ExCom members: manage events, and more to come.</span>
+    </h2>
+    <div id="officer" class="officer">
+
+      <div id="officer-login">
+        <p class="member-form__note">
+          Ask for a code, read it in the BGSA inbox, and sign in. A session
+          lasts two hours, so you only do this once per sitting.
+        </p>
+        <div class="member-form__row">
+          <label for="ev-pass">One-time code</label>
+          <div class="officer__code">
+            <input id="ev-pass" type="text" inputmode="numeric" autocomplete="off" maxlength="6" />
+            <button type="button" id="ev-send-code" class="officer__add">Email a code</button>
+          </div>
+        </div>
+        <button type="button" id="ev-sign-in" class="btn btn--theme">Sign in</button>
+        <p id="ev-login-status" class="member-form__status" role="status" aria-live="polite"></p>
       </div>
 
-      <h2 id="achievements" class="news__group-title news__group-title--spaced">Achievements</h2>
-      <div class="achievements__grid">
-        {%- for post in achievements %}
-          {% include achievement-card.html %}
-        {%- endfor %}
+      <div id="officer-tools" hidden>
+        <div class="officer__bar">
+          <div class="officer__tabs">
+            <button type="button" class="officer__tab active" data-pane="pane-events">Events</button>
+            <button type="button" class="officer__tab" data-pane="pane-posts">Posts</button>
+            <button type="button" class="officer__tab" data-pane="pane-gallery">Gallery</button>
+            <button type="button" class="officer__tab" data-pane="pane-about">About</button>
+            <button type="button" class="officer__tab" data-pane="pane-hero">Slideshow</button>
+            <button type="button" class="officer__tab" data-pane="pane-contact">Contact</button>
+            <button type="button" class="officer__tab" data-pane="pane-committee">Committee</button>
+            <button type="button" class="officer__tab" data-pane="pane-approvals">Approvals</button>
+          </div>
+          <button type="button" id="ev-sign-out" class="officer__add">Sign out</button>
+        </div>
+
+        <div id="pane-gallery" class="officer__pane" hidden>
+          <h4 class="officer__subheading">Gallery</h4>
+          <p class="member-form__note">Shown in the order listed. Remove a row to take a
+            photo off the site; the file stays in the repository.</p>
+          <div id="ga-items"></div>
+          <button type="button" id="ga-add" class="officer__add">+ Add a photo</button>
+          <div class="officer__rsvp-actions" style="margin-top:2rem">
+            <button type="button" id="ga-save" class="officer__save">Save gallery</button>
+          </div>
+          <p id="ga-status" class="member-form__status" role="status" aria-live="polite"></p>
+        </div>
+
+        <div id="pane-about" class="officer__pane" hidden>
+          <h4 class="officer__subheading">About BGSA</h4>
+          <div class="member-form__row">
+            <label for="ab-text">The text under the About tab</label>
+            <textarea id="ab-text" rows="16"></textarea>
+            <p class="member-form__note">Leave a blank line between paragraphs. Each block
+              becomes its own paragraph on the page.</p>
+          </div>
+          <div class="officer__rsvp-actions">
+            <button type="button" id="ab-save" class="officer__save">Save About text</button>
+          </div>
+          <p id="ab-status" class="member-form__status" role="status" aria-live="polite"></p>
+        </div>
+
+        <div id="pane-hero" class="officer__pane" hidden>
+          <h4 class="officer__subheading">Homepage slideshow</h4>
+          <p class="member-form__note">The photos behind the title on the home page, shown
+            in this order, six seconds each.</p>
+          <div id="hero-items"></div>
+          <button type="button" id="hero-add" class="officer__add">+ Add a photo</button>
+          <div class="officer__rsvp-actions" style="margin-top:2rem">
+            <button type="button" id="hero-save" class="officer__save">Save slideshow</button>
+          </div>
+          <p id="hero-status" class="member-form__status" role="status" aria-live="polite"></p>
+        </div>
+
+        <div id="pane-contact" class="officer__pane" hidden>
+          <h4 class="officer__subheading">Contact details</h4>
+          <p class="member-form__note">Shown in the Contact section and used by the links
+            there. Leave a field empty to keep what is there now.</p>
+          <div id="contact-fields"></div>
+          <div class="officer__rsvp-actions" style="margin-top:2rem">
+            <button type="button" id="contact-save" class="officer__save">Save contact details</button>
+          </div>
+          <p id="contact-status" class="member-form__status" role="status" aria-live="polite"></p>
+        </div>
+
+        <div id="pane-committee" class="officer__pane" hidden>
+          <h4 class="officer__subheading">Executive committee</h4>
+          <div class="member-form__row">
+            <label for="ec-term">Academic year</label>
+            <select id="ec-term"></select>
+            <p class="member-form__note" id="ec-note"></p>
+          </div>
+          <div class="member-form__row" id="ec-new-row" hidden>
+            <label for="ec-new-term">New academic year</label>
+            <input id="ec-new-term" type="text" maxlength="40" placeholder="2026&ndash;2027" />
+            <p class="member-form__note">A new year goes to the top and becomes the current
+              committee. The one before it moves to Previous Executive Committees.</p>
+          </div>
+
+          <div id="ec-members"></div>
+          <button type="button" id="ec-add" class="officer__add">+ Add a member</button>
+
+          <div class="officer__rsvp-actions" style="margin-top:2rem">
+            <button type="button" id="ec-save" class="officer__save">Save committee</button>
+            <button type="button" id="ec-delete" class="officer__danger">Delete this year</button>
+          </div>
+          <p id="ec-status" class="member-form__status" role="status" aria-live="polite"></p>
+        </div>
+
+        <div id="pane-approvals" class="officer__pane" hidden>
+          <h4 class="officer__subheading">Directory approvals</h4>
+          <div id="officer-pending" class="officer__events"></div>
+          <p id="ev-pending-status" class="member-form__status" role="status" aria-live="polite"></p>
+        </div>
+
+        <div id="pane-events" class="officer__pane">
+          <h4 class="officer__subheading">Events</h4>
+          <div id="officer-events" class="officer__events"></div>
+
+          <h4 class="officer__subheading" id="ev-form-heading">Create an event</h4>
+          <form id="officer-form" class="member-form" novalidate>
+            <div class="member-form__row">
+              <label for="ev-name">Event name</label>
+              <input id="ev-name" type="text" maxlength="120" required />
+            </div>
+            <div class="member-form__pair">
+              <div class="member-form__row">
+                <label for="ev-date">Date</label>
+                <input id="ev-date" type="date" required />
+              </div>
+              <div class="member-form__row">
+                <label for="ev-time">Time</label>
+                <input id="ev-time" type="text" maxlength="60" placeholder="5:00 PM &ndash; 8:00 PM" />
+              </div>
+            </div>
+            <div class="member-form__pair">
+              <div class="member-form__row">
+                <label for="ev-location">Place</label>
+                <input id="ev-location" type="text" maxlength="200" />
+              </div>
+              <div class="member-form__row">
+                <label for="ev-deadline">RSVP deadline</label>
+                <input id="ev-deadline" type="date" />
+                <p class="member-form__note">Shown on the card. RSVPs keep coming in
+                  until you deactivate the event.</p>
+              </div>
+            </div>
+            <div class="member-form__row">
+              <label class="officer__check">
+                <input id="ev-pay" type="checkbox" checked />
+                <span>Ask attendees for payment status</span>
+              </label>
+              <p class="member-form__note">Leave unticked for a free event, and the RSVP
+                form will not mention payment at all.</p>
+            </div>
+            <div class="member-form__row">
+              <label for="ev-desc">Description</label>
+              <textarea id="ev-desc" rows="4" maxlength="2000"></textarea>
+            </div>
+            <div class="member-form__row">
+              <label for="ev-photo">Photo</label>
+              <input id="ev-photo" type="file" accept="image/*" />
+              <p class="member-form__note" id="ev-photo-note">
+                Resized before upload, so a photo straight off a phone is fine.
+              </p>
+            </div>
+
+            <div class="member-form__row">
+              <label>Extra questions <em>(optional)</em></label>
+              <div id="ev-questions" class="officer__questions"></div>
+              <button type="button" id="ev-add-question" class="officer__add">+ Add a question</button>
+            </div>
+
+            <button type="submit" class="btn btn--theme" id="ev-submit">Create event</button>
+            <button type="button" id="ev-cancel" class="officer__add" hidden>Cancel edit</button>
+            <p id="ev-status" class="member-form__status" role="status" aria-live="polite"></p>
+          </form>
+
+        </div>
+
+        <div id="pane-posts" class="officer__pane" hidden>
+          <h4 class="officer__subheading">Posts</h4>
+          <div class="member-form__row">
+            <label for="po-type">Which part of the website</label>
+            <select id="po-type">
+              <option value="achievement">Achievements &mdash; defenses, awards, fellowships</option>
+              <option value="eventPost">Event write-ups &mdash; what happened at an event</option>
+              <option value="blog">Blog &mdash; articles and reflections</option>
+            </select>
+            <p class="member-form__note" id="po-type-note"></p>
+          </div>
+          <div id="officer-posts" class="officer__events"></div>
+
+          <form id="post-form" class="member-form" novalidate>
+            <h5 class="officer__subheading" id="po-form-heading">Write a new post</h5>
+
+            <div class="member-form__row">
+              <label for="po-title">Title</label>
+              <input id="po-title" type="text" maxlength="200" required />
+            </div>
+            <div class="member-form__pair">
+              <div class="member-form__row">
+                <label for="po-date">Date</label>
+                <input id="po-date" type="date" required />
+              </div>
+              <div class="member-form__row" id="po-author-row">
+                <label for="po-author">Author</label>
+                <input id="po-author" type="text" maxlength="120" />
+              </div>
+            </div>
+            <div class="member-form__row" id="po-photo-row">
+              <label for="po-photo">Photo</label>
+              <input id="po-photo" type="file" accept="image/*" />
+              <p class="member-form__note" id="po-photo-note">
+                Resized before upload. Leave empty to keep the current one.
+              </p>
+            </div>
+            <div class="member-form__row">
+              <label for="po-body">Text</label>
+              <textarea id="po-body" rows="10" required></textarea>
+              <p class="member-form__note">
+                Markdown: **bold**, *italic*, [link](https://…), blank line between
+                paragraphs.
+              </p>
+            </div>
+
+            <button type="submit" class="btn btn--theme" id="po-submit">Publish</button>
+            <button type="button" id="po-cancel" class="officer__add" hidden>Cancel edit</button>
+            <p id="po-status" class="member-form__status" role="status" aria-live="polite"></p>
+          </form>
+        </div>
       </div>
     </div>
-  </section>
-</main>
+  </div>
+</section>
+
+<section id="contact" class="contact sec-pad dynamicBg">
+  <div class="main-container">
+    <h2 class="heading heading-sec heading-sec__mb-med">
+      <span class="heading-sec__main heading-sec__main--lt">Contact</span>
+      <span class="heading-sec__sub heading-sec__sub--lt">
+        We’d love to hear from you! Reach out to BGSA via email, phone, or social media.
+      </span>
+    </h2>
+
+    <div class="contact__cards">
+      <a class="contact__card" href="mailto:{{ site.email }}" aria-label="Email BGSA">
+        <div class="contact__icon">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm0 4-8 5-8-5V6l8 5 8-5Z" />
+          </svg>
+        </div>
+        <h3 class="contact__label">Email</h3>
+        <p class="contact__value">{{ site.email }}</p>
+      </a>
+
+      <a class="contact__card" href="tel:{{ site.phone }}" aria-label="Call BGSA">
+        <div class="contact__icon">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path
+              d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1.1-.24c1.2.48 2.6.74 4 .74a1 1 0 0 1 1 1v3.5a1 1 0 0 1-1 1A18.5 18.5 0 0 1 3.5 5a1 1 0 0 1 1-1H8a1 1 0 0 1 1 1c0 1.4.26 2.8.74 4a1 1 0 0 1-.24 1.1L6.6 10.8Z" />
+          </svg>
+        </div>
+        <h3 class="contact__label">Phone</h3>
+        <p class="contact__value">{{ site.phone_display }}</p>
+      </a>
+
+      <a class="contact__card" href="{{ site.facebook_url }}" aria-label="BGSA on Facebook">
+        <div class="contact__icon">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path
+              d="M22 12a10 10 0 1 0-11.6 9.9v-7h-2.3V12h2.3V9.7c0-2.3 1.3-3.6 3.4-3.6.98 0 2 .18 2 .18v2.2h-1.1c-1.1 0-1.5.7-1.5 1.4V12h2.6l-.4 2.9h-2.2v7A10 10 0 0 0 22 12Z" />
+          </svg>
+        </div>
+        <h3 class="contact__label">Facebook</h3>
+        <p class="contact__value">{{ site.facebook_handle }}</p>
+      </a>
+
+      <a class="contact__card" href="{{ site.instagram_url }}" aria-label="BGSA on Instagram">
+        <div class="contact__icon">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path
+              d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5Zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7Zm5 3.5A5.5 5.5 0 1 1 6.5 13 5.5 5.5 0 0 1 12 7.5Zm0 2A3.5 3.5 0 1 0 15.5 13 3.5 3.5 0 0 0 12 9.5Zm5.75-2.75a1.25 1.25 0 1 1-1.25 1.25 1.25 1.25 0 0 1 1.25-1.25Z" />
+          </svg>
+        </div>
+        <h3 class="contact__label">Instagram</h3>
+        <p class="contact__value">{{ site.instagram_handle }}</p>
+      </a>
+
+      <a class="contact__card" href="{{ site.youtube_url }}" aria-label="BGSA on YouTube">
+        <div class="contact__icon">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path
+              d="M23.5 7.2a3 3 0 0 0-2.1-2.1C19.7 4.5 12 4.5 12 4.5s-7.7 0-9.4.6A3 3 0 0 0 .5 7.2 31.6 31.6 0 0 0 0 12a31.6 31.6 0 0 0 .5 4.8 3 3 0 0 0 2.1 2.1c1.7.6 9.4.6 9.4.6s7.7 0 9.4-.6a3 3 0 0 0 2.1-2.1A31.6 31.6 0 0 0 24 12a31.6 31.6 0 0 0-.5-4.8ZM9.8 15.5v-7l6.2 3.5-6.2 3.5Z" />
+          </svg>
+        </div>
+        <h3 class="contact__label">YouTube</h3>
+        <p class="contact__value">{{ site.youtube_handle }}</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- SheetJS (reads the member database spreadsheets) -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<!-- ✅ UPCOMING EVENTS + RSVP -->
+<script>
+  (function () {
+    // ---- Where events come from ------------------------------------------
+    //
+    // The Apps Script feed, not a published sheet. Officers create events
+    // through the form on this page (see ?officer=1), and the script keeps
+    // them in a spreadsheet that is never link-shared -- RSVP rows hold
+    // names and payment status, so nothing but the event details and a
+    // headcount is ever served to the public.
+    //
+    // Same deployment as the member directory.
+    const ENDPOINT = "https://script.google.com/macros/s/AKfycbyERJU9MoHdDvPEHaGwW1L1sYfdE255YAQKqhyjljtUiifbQi7T-7oBAm3U4ZNA97tjlw/exec";
+
+    const section = document.getElementById("upcoming");
+    const list = document.getElementById("upcoming-list");
+    if (!section || !list) return;
+
+
+    // ---- Helpers ----------------------------------------------------------
+
+    function text(value) {
+      return value === undefined || value === null ? "" : String(value).trim();
+    }
+
+    function truthy(value) {
+      const v = text(value).toLowerCase();
+      return v === "" || !["false", "no", "0"].includes(v);
+    }
+
+    // "Carpool:select(Yes,No)" -> { label, type, options }
+    function parseQuestion(spec) {
+      const raw = text(spec);
+      if (!raw) return null;
+
+      const match = raw.match(/^(.*?):select\((.*)\)$/i);
+      if (match) {
+        return {
+          label: match[1].trim(),
+          type: "select",
+          options: match[2].split(",").map(o => o.trim()).filter(Boolean)
+        };
+      }
+      return { label: raw.replace(/:text$/i, "").trim(), type: "text", options: [] };
+    }
+
+    // Splits on commas, but not on commas inside select(...) -- otherwise
+    // "Carpool:select(Yes,No)" becomes two nonsense questions.
+    function splitList(value) {
+      const out = [];
+      let current = "";
+      let depth = 0;
+
+      text(value).split("").forEach(ch => {
+        if (ch === "(") depth += 1;
+        if (ch === ")") depth -= 1;
+        if (ch === "," && depth <= 0) {
+          out.push(current.trim());
+          current = "";
+        } else {
+          current += ch;
+        }
+      });
+      out.push(current.trim());
+      return out.filter(Boolean);
+    }
+
+    // A date in the past means the event has been and gone. Anything we can't
+    // parse is treated as upcoming, so a typo hides nothing.
+    function isUpcoming(event) {
+      if (!event.date) return true;                 // undated means always show
+      if (/^\d+$/.test(event.date)) return true;    // a bare number is not a date
+      // Parse as local time. new Date("2026-12-20") is treated as UTC, which
+      // in Ohio lands on the evening of the 19th and can hide same-day events.
+      const parts = event.date.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      const when = parts
+        ? new Date(Number(parts[1]), Number(parts[2]) - 1, Number(parts[3])).getTime()
+        : Date.parse(event.date);
+      if (isNaN(when)) return true;
+      const endOfDay = new Date(when);
+      endOfDay.setHours(23, 59, 59, 999);
+      return endOfDay.getTime() >= Date.now();
+    }
+
+    function rsvpClosed(event) {
+      const closes = Date.parse(event.closes);
+      if (isNaN(closes)) return false;
+      const endOfDay = new Date(closes);
+      endOfDay.setHours(23, 59, 59, 999);
+      return Date.now() > endOfDay.getTime();
+    }
+
+    function countLine(event) {
+      if (!event.rsvps) return "No one has replied yet.";
+      const people = event.attendees || 0;
+      return event.rsvps + (event.rsvps === 1 ? " reply" : " replies") +
+        ", " + people + (people === 1 ? " person" : " people") + " coming so far.";
+    }
+
+    // ---- Loading ----------------------------------------------------------
+
+    async function loadEvents() {
+      const response = await fetch(ENDPOINT, { cache: "no-store" });
+      if (!response.ok) throw new Error("Events feed responded " + response.status);
+
+      const result = await response.json();
+      if (!result.ok) throw new Error(result.message || "Events feed failed.");
+
+      return (result.events || [])
+        .map(event => ({
+          id: text(event.id),
+          title: text(event.name),
+          date: text(event.date),
+          time: text(event.time),
+          location: text(event.location),
+          description: text(event.description),
+          photo: text(event.photo),
+          deadline: text(event.deadline),
+          page: text(event.page),
+          payments: event.payments || [],
+          // The script calls a multiple-choice question "choice"; the form
+          // builder below has always called it "select".
+          extras: (event.questions || []).map(q => ({
+            label: q.label,
+            type: q.type === "choice" ? "select" : "text",
+            options: q.options || []
+          })),
+          capacity: NaN,
+          closes: "",
+          rsvps: Number(event.rsvps) || 0,
+          attendees: Number(event.attendees) || 0
+        }))
+        .filter(event => event.id && event.title && isUpcoming(event));
+    }
+
+    // ---- Rendering --------------------------------------------------------
+
+    function field(labelText, control) {
+      const wrap = document.createElement("div");
+      wrap.className = "member-form__row";
+      const label = document.createElement("label");
+      label.textContent = labelText;
+      wrap.appendChild(label);
+      wrap.appendChild(control);
+      label.htmlFor = control.id;
+      return wrap;
+    }
+
+    function input(id, type, required, extra) {
+      const el = document.createElement("input");
+      el.id = id;
+      el.type = type;
+      el.required = !!required;
+      Object.assign(el, extra || {});
+      return el;
+    }
+
+    function buildForm(event) {
+      const form = document.createElement("form");
+      form.className = "member-form rsvp__form";
+      form.hidden = true;
+
+      const key = event.id.replace(/[^A-Za-z0-9_-]/g, "");
+
+      const first = input("rsvp-first-" + key, "text", true, { maxLength: 60 });
+      const last = input("rsvp-last-" + key, "text", true, { maxLength: 60 });
+      const nameNumber = input("rsvp-namenum-" + key, "text", true, { maxLength: 40 });
+      const email = input("rsvp-email-" + key, "email", false, { maxLength: 120 });
+
+      // Not everyone coming is at Ohio State. Someone from the university is
+      // identified by their Name.#; a guest gives an email instead, which is
+      // what stops them replying twice.
+      const affiliation = document.createElement("select");
+      affiliation.id = "rsvp-aff-" + key;
+      [["osu", "I am at Ohio State"], ["guest", "I am a guest"]].forEach(pair => {
+        const option = document.createElement("option");
+        option.value = pair[0];
+        option.textContent = pair[1];
+        affiliation.appendChild(option);
+      });
+      const adults = input("rsvp-adults-" + key, "number", true, { min: 1, max: 20, value: 1 });
+      const kids = input("rsvp-kids-" + key, "number", false, { min: 0, max: 20, value: 0 });
+
+      const names = document.createElement("div");
+      names.className = "member-form__pair";
+      names.appendChild(field("First name", first));
+      names.appendChild(field("Last name", last));
+      form.appendChild(names);
+
+      form.appendChild(field("Are you at Ohio State?", affiliation));
+
+      const nameNumberRow = field("tOSU Name.#", nameNumber);
+      const emailRow = field("Email", email);
+      form.appendChild(nameNumberRow);
+      form.appendChild(emailRow);
+
+      function applyAffiliation() {
+        const guest = affiliation.value === "guest";
+        nameNumberRow.style.display = guest ? "none" : "";
+        emailRow.style.display = guest ? "" : "none";
+        nameNumber.required = !guest;
+        email.required = guest;
+        if (guest) nameNumber.value = ""; else email.value = "";
+      }
+
+      affiliation.addEventListener("change", applyAffiliation);
+      applyAffiliation();
+
+      const pair = document.createElement("div");
+      pair.className = "member-form__pair";
+      pair.appendChild(field("Adults attending (including you)", adults));
+      pair.appendChild(field("Children attending with you", kids));
+      form.appendChild(pair);
+
+      let payment = null;
+      if (event.payments.length) {
+        payment = document.createElement("select");
+        payment.id = "rsvp-payment-" + key;
+        payment.required = true;
+        const blank = document.createElement("option");
+        blank.value = "";
+        blank.textContent = "Choose one";
+        payment.appendChild(blank);
+        event.payments.forEach(option => {
+          const el = document.createElement("option");
+          el.value = option;
+          el.textContent = option;
+          payment.appendChild(el);
+        });
+        form.appendChild(field("Payment status", payment));
+      }
+
+      const extras = event.extras.map((question, index) => {
+        let control;
+        if (question.type === "select") {
+          control = document.createElement("select");
+          const blank = document.createElement("option");
+          blank.value = "";
+          blank.textContent = "Choose one";
+          control.appendChild(blank);
+          question.options.forEach(option => {
+            const el = document.createElement("option");
+            el.value = option;
+            el.textContent = option;
+            control.appendChild(el);
+          });
+        } else {
+          control = document.createElement("input");
+          control.type = "text";
+          control.maxLength = 200;
+        }
+        control.id = "rsvp-extra-" + key + "-" + index;
+        form.appendChild(field(question.label, control));
+        return { label: question.label, control: control };
+      });
+
+      // Honeypot, as on the directory form.
+      const trap = document.createElement("div");
+      trap.className = "member-form__hp";
+      trap.setAttribute("aria-hidden", "true");
+      const trapInput = input("rsvp-website-" + key, "text", false, { tabIndex: -1, autocomplete: "off" });
+      trap.appendChild(trapInput);
+      form.appendChild(trap);
+
+      const submit = document.createElement("button");
+      submit.type = "submit";
+      submit.className = "btn btn--theme";
+      submit.textContent = "Send RSVP";
+      form.appendChild(submit);
+
+      const status = document.createElement("p");
+      status.className = "member-form__status";
+      status.setAttribute("role", "status");
+      status.setAttribute("aria-live", "polite");
+      form.appendChild(status);
+
+      form.addEventListener("submit", async e => {
+        e.preventDefault();
+        if (!form.checkValidity()) return form.reportValidity();
+
+        if (!ENDPOINT) {
+          status.textContent = "RSVPs are not switched on yet. Please email {{ site.email }}.";
+          return;
+        }
+
+        submit.disabled = true;
+        status.textContent = "Sending\u2026";
+
+        const answers = {};
+        extras.forEach(extra => { answers[extra.label] = extra.control.value; });
+
+        try {
+          const response = await fetch(ENDPOINT, {
+            method: "POST",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify({
+              action: "rsvp",
+              eventId: event.id,
+              firstName: first.value,
+              lastName: last.value,
+              affiliation: affiliation.value,
+              nameNumber: nameNumber.value,
+              email: email.value,
+              adults: adults.value,
+              children: kids.value,
+              payment: payment ? payment.value : "",
+              answers: answers,
+              website: trapInput.value
+            })
+          });
+          const result = await response.json();
+          status.textContent = result.message;
+          if (result.ok) {
+            form.reset();
+            refresh();
+          }
+        } catch (err) {
+          console.error("RSVP failed.", err);
+          status.textContent = "Could not reach the server. Please try again, or email {{ site.email }}.";
+        } finally {
+          submit.disabled = false;
+        }
+      });
+
+      return form;
+    }
+
+    // The description is a spreadsheet cell, not a Markdown post, so nothing
+    // renders it. Rather than showing **stars** and running every line
+    // together, handle the three things officers actually use: line breaks,
+    // bold, and links. Everything is escaped first, so no markup an officer
+    // types can inject anything into the page.
+    function richText(value) {
+      const escaped = String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+
+      return escaped
+        .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+        // [label](url) first, so a bare-URL pass cannot break one apart
+        .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,
+          '<a href="$2" target="_blank" rel="noopener">$1</a>')
+        .replace(/(^|[\s(])((https?:\/\/)[^\s<]+)/g,
+          '$1<a href="$2" target="_blank" rel="noopener">$2</a>');
+    }
+
+    function detail(label, value) {
+      const line = document.createElement("p");
+      line.className = "rsvp-card__line";
+
+      const key = document.createElement("span");
+      key.className = "rsvp-card__key";
+      key.textContent = label + ": ";
+
+      line.appendChild(key);
+      line.appendChild(document.createTextNode(value));
+      return line;
+    }
+
+    // A share link points at one event: /#event-evt-1758…  The id also lets
+    // the page scroll straight to it when someone follows that link.
+    function eventAnchor(event) {
+      return "event-" + String(event.id).replace(/[^A-Za-z0-9_-]/g, "");
+    }
+
+    function eventUrl(event) {
+      // The event's own page if it has one -- that is the link worth sharing.
+      return event.page
+        ? location.origin + event.page
+        : location.origin + location.pathname + "#" + eventAnchor(event);
+    }
+
+    function copyButton(event) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "rsvp-card__copy";
+      button.textContent = "Copy link";
+
+      button.addEventListener("click", async () => {
+        const url = eventUrl(event);
+        try {
+          await navigator.clipboard.writeText(url);
+          button.textContent = "Link copied";
+        } catch (err) {
+          // Clipboard access needs https and a user gesture; where it is
+          // refused, select the text so it can be copied by hand.
+          const box = document.createElement("input");
+          box.value = url;
+          box.className = "rsvp-card__copy-fallback";
+          button.replaceWith(box);
+          box.select();
+          return;
+        }
+        setTimeout(() => { button.textContent = "Copy link"; }, 2000);
+      });
+
+      return button;
+    }
+
+    function buildCard(event) {
+      const card = document.createElement("article");
+      card.className = "rsvp-card";
+      card.id = eventAnchor(event);
+
+      // Same shape as the Events page cards: image to one side, words to the
+      // other, rather than a banner across the top that crops the picture to
+      // a letterbox.
+      const text = document.createElement("div");
+      text.className = "rsvp-card__text";
+
+      if (event.photo) {
+        const figure = document.createElement("div");
+        figure.className = "rsvp-card__photo";
+        const img = document.createElement("img");
+        img.src = event.photo;
+        img.alt = "";
+        img.loading = "lazy";
+        // Drive image links break often enough to be worth handling: drop the
+        // picture rather than leaving a broken frame on the card.
+        img.addEventListener("error", () => figure.remove());
+        figure.appendChild(img);
+        card.appendChild(figure);
+        card.classList.add("has-photo");
+      }
+
+      card.appendChild(text);
+
+      const title = document.createElement("h4");
+      title.className = "rsvp-card__title";
+      title.textContent = "Upcoming Event: " + event.title;
+      text.appendChild(title);
+
+      if (event.date || event.time) {
+        const when = [event.date, event.time].filter(Boolean).join("  \u00b7  ");
+        text.appendChild(detail(event.time ? "Date & time" : "Date", when));
+      }
+      if (event.location) text.appendChild(detail("Place", event.location));
+      if (event.deadline) text.appendChild(detail("RSVP deadline", event.deadline));
+
+      if (event.description) {
+        const desc = document.createElement("div");
+        desc.className = "rsvp-card__desc";
+        desc.innerHTML = richText(event.description);
+        text.appendChild(desc);
+      }
+
+      const tally = document.createElement("p");
+      tally.className = "rsvp-card__count";
+      tally.textContent = countLine(event);
+      text.appendChild(tally);
+
+      const actions = document.createElement("div");
+      actions.className = "rsvp-card__actions";
+
+      // A real page, built by Jekyll from a file the script commits. It opens
+      // instantly, which an anchor on this page never could: the events
+      // arrive by fetch, so the card does not exist until they do.
+      if (event.page) {
+        const open = document.createElement("a");
+        open.className = "btn btn--theme rsvp-card__toggle";
+        open.href = event.page;
+        open.textContent = "Details & RSVP";
+        actions.appendChild(open);
+        actions.appendChild(copyButton(event));
+        text.appendChild(actions);
+        return card;
+      }
+
+      // Events created before pages existed keep the form on this page.
+      const toggle = document.createElement("button");
+      toggle.type = "button";
+      toggle.className = "btn btn--theme rsvp-card__toggle";
+      toggle.textContent = "Please click here for RSVP";
+
+      actions.append(toggle, copyButton(event));
+      text.appendChild(actions);
+
+      const form = buildForm(event);
+      text.appendChild(form);
+
+      toggle.addEventListener("click", () => {
+        form.hidden = !form.hidden;
+        toggle.textContent = form.hidden ? "Please click here for RSVP" : "Close";
+      });
+
+      return card;
+    }
+
+    let currentEvents = [];
+
+    function render(events) {
+      currentEvents = events;
+      list.innerHTML = "";
+
+      // The section is always on the page, because "What's next?" is always
+      // in the nav. An empty answer is still an answer -- better than a link
+      // that goes nowhere.
+      if (!events.length) {
+        const empty = document.createElement("p");
+        empty.className = "upcoming__empty";
+        empty.textContent =
+          "Nothing scheduled just now. Follow BGSA on Facebook and Instagram for upcoming events.";
+        list.appendChild(empty);
+      } else {
+        events.forEach(event => list.appendChild(buildCard(event)));
+      }
+
+      section.hidden = false;
+
+      // Someone arriving on a shared link lands on that event. The events
+      // load after the page, so the browser has already given up on the
+      // hash by now and it has to be done here.
+      if (location.hash.startsWith("#event-")) {
+        const target = document.getElementById(location.hash.slice(1));
+        if (target) {
+          requestAnimationFrame(() => {
+            // The stylesheet sets html { scroll-behavior: smooth }, and
+            // scrollIntoView's "auto" means "do whatever the CSS says" --
+            // so asking for auto still gave a slow crawl down the page.
+            // Switch the CSS off for this one jump and put it back.
+            const html = document.documentElement;
+            const previous = html.style.scrollBehavior;
+            html.style.scrollBehavior = "auto";
+
+            target.scrollIntoView({ block: "start" });
+            target.classList.add("is-linked");
+
+            html.style.scrollBehavior = previous;
+          });
+        }
+      }
+    }
+
+    // ---- Go ---------------------------------------------------------------
+
+    const officerMode = new URLSearchParams(location.search).get("officer") === "1";
+
+    async function refresh() {
+      if (!ENDPOINT) return;
+      try {
+        render(await loadEvents());
+      } catch (err) {
+        console.warn("Could not load upcoming events.", err);
+        if (officerMode) {
+          // Only an officer needs to know why. A visitor just sees no events.
+          section.hidden = false;
+          list.innerHTML = "";
+          const note = document.createElement("p");
+          note.className = "rsvp-card__closed";
+          note.textContent = "Upcoming events could not be loaded: " + err.message;
+          list.appendChild(note);
+        } else {
+          section.hidden = false;
+          list.innerHTML = "";
+          const note = document.createElement("p");
+          note.className = "upcoming__empty";
+          note.textContent = "Upcoming events could not be loaded just now. Please try again shortly.";
+          list.appendChild(note);
+        }
+      }
+    }
+
+    // Kept so a click on "What's next?" can wait for it. The section is
+    // hidden until the events arrive, and the browser cannot scroll to a
+    // hidden element -- which is why the first click used to do nothing and
+    // the second one worked.
+    const feedReady = refresh();
+
+    document.addEventListener("click", e => {
+      const link = e.target.closest('a[href*="#upcoming"]');
+      if (!link) return;
+
+      e.preventDefault();
+      if (location.hash !== "#upcoming") {
+        history.replaceState(null, "", location.pathname + "#upcoming");
+      }
+
+      feedReady.then(() => {
+        const html = document.documentElement;
+        const previous = html.style.scrollBehavior;
+        html.style.scrollBehavior = "auto";
+        section.scrollIntoView({ block: "start" });
+        html.style.scrollBehavior = previous;
+      });
+    });
+
+    // Someone arriving on /#upcoming directly needs the same wait.
+    if (location.hash === "#upcoming") {
+      feedReady.then(() => section.scrollIntoView({ block: "start" }));
+    }
+
+    // ---- Officers: creating an event ---------------------------------------
+
+    // The Admin section is in the page but out of the way until someone asks
+    // for it -- by the nav link, by /#admin, or by the older ?officer=1.
+    const adminSection = document.getElementById("admin");
+    const officer = document.getElementById("officer");
+    let officerReady = false;
+
+    function revealAdmin(scroll) {
+      if (!adminSection) return;
+      adminSection.hidden = false;
+
+      if (!officerReady) {
+        officerReady = true;
+        setupOfficerTools();
+      }
+      if (scroll) {
+        // Wait a frame: the section has only just stopped being hidden, so
+        // its position is not known yet.
+        requestAnimationFrame(() => adminSection.scrollIntoView({ behavior: "smooth" }));
+      }
+    }
+
+    if (adminSection) {
+      const asked = location.hash === "#admin" ||
+        new URLSearchParams(location.search).get("officer") === "1";
+      if (asked) revealAdmin(location.hash !== "#admin");
+
+      document.addEventListener("click", e => {
+        const link = e.target.closest('a[href*="#admin"]');
+        if (link) revealAdmin(true);
+      });
+    }
+
+    function setupOfficerTools() {
+      const TOKEN_KEY = "bgsaOfficerToken";
+
+      const loginBox = document.getElementById("officer-login");
+      const toolsBox = document.getElementById("officer-tools");
+      const loginStatus = document.getElementById("ev-login-status");
+      const codeField = document.getElementById("ev-pass");
+      const eventsBox = document.getElementById("officer-events");
+
+      const officerForm = document.getElementById("officer-form");
+      const formHeading = document.getElementById("ev-form-heading");
+      const submitButton = document.getElementById("ev-submit");
+      const cancelButton = document.getElementById("ev-cancel");
+      const questionList = document.getElementById("ev-questions");
+      const evStatus = document.getElementById("ev-status");
+      const evPhoto = document.getElementById("ev-photo");
+      const photoNote = document.getElementById("ev-photo-note");
+
+      let editingId = null;
+
+      // The token lives in sessionStorage, not localStorage: closing the tab
+      // signs the officer out, which is the right default on a shared laptop.
+      function token() { return sessionStorage.getItem(TOKEN_KEY); }
+
+      async function post(body) {
+        const response = await fetch(ENDPOINT, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(body)
+        });
+        return response.json();
+      }
+
+      function signedIn(yes) {
+        loginBox.hidden = yes;
+        toolsBox.hidden = !yes;
+        if (yes) {
+          loadPending();
+          loadOfficerEvents();
+          applyPostShape();
+          loadPosts();
+          loadCommittees();
+          loadGallery();
+          loadAbout();
+          loadHero();
+          loadContact();
+        }
+      }
+
+      // ---- signing in ------------------------------------------------------
+
+      document.getElementById("ev-send-code").addEventListener("click", async e => {
+        e.target.disabled = true;
+        loginStatus.textContent = "Sending a code\u2026";
+        try {
+          const result = await post({ action: "requestEventCode" });
+          loginStatus.textContent = result.message;
+        } catch (err) {
+          loginStatus.textContent = "Could not reach the server.";
+        } finally {
+          e.target.disabled = false;
+        }
+      });
+
+      document.getElementById("ev-sign-in").addEventListener("click", async e => {
+        if (!codeField.value.trim()) {
+          loginStatus.textContent = "Enter the code from the BGSA inbox.";
+          return;
+        }
+        e.target.disabled = true;
+        loginStatus.textContent = "Checking\u2026";
+        try {
+          const result = await post({ action: "startSession", code: codeField.value });
+          loginStatus.textContent = result.message;
+          if (result.ok) {
+            sessionStorage.setItem(TOKEN_KEY, result.token);
+            codeField.value = "";
+            signedIn(true);
+          }
+        } catch (err) {
+          loginStatus.textContent = "Could not reach the server.";
+        } finally {
+          e.target.disabled = false;
+        }
+      });
+
+      document.getElementById("ev-sign-out").addEventListener("click", () => {
+        sessionStorage.removeItem(TOKEN_KEY);
+        loginStatus.textContent = "Signed out.";
+        signedIn(false);
+      });
+
+      // ---- directory approvals ---------------------------------------------
+
+      const pendingBox = document.getElementById("officer-pending");
+      const pendingStatus = document.getElementById("ev-pending-status");
+
+      async function loadPending() {
+        pendingBox.textContent = "Loading\u2026";
+        let result;
+        try {
+          result = await post({ action: "listPending", token: token() });
+        } catch (err) {
+          console.error("Could not load pending entries.", err);
+          pendingBox.textContent = "Could not reach the server.";
+          return;
+        }
+
+        if (!result.ok) {
+          pendingBox.textContent = result.message;
+          return;
+        }
+
+        pendingBox.innerHTML = "";
+        if (!result.pending.length) {
+          pendingBox.textContent = "Nothing waiting for review.";
+          return;
+        }
+
+        result.pending.forEach(entry => pendingBox.appendChild(pendingRow(entry)));
+      }
+
+      const CATEGORY_NAMES = {
+        grad: "Graduate Students",
+        postdoc: "Post-docs & Staff",
+        alumni: "Alumni",
+        faculty: "Faculty"
+      };
+
+      function pendingRow(entry) {
+        const name = (entry.firstName + " " + entry.lastName).trim();
+
+        const row = document.createElement("div");
+        row.className = "officer__event";
+
+        const label = document.createElement("div");
+        label.className = "officer__event-name";
+        label.textContent = name;
+
+        const meta = document.createElement("div");
+        meta.className = "officer__event-meta";
+        meta.textContent = [
+          CATEGORY_NAMES[entry.category] || entry.category,
+          entry.nameNumber,
+          entry.role,
+          entry.program,
+          entry.session ? "started " + entry.session : ""
+        ].filter(Boolean).join(" \u00b7 ");
+
+        const actions = document.createElement("div");
+        actions.className = "officer__event-actions";
+        actions.appendChild(action("Approve", () => decide(entry, name, true)));
+        actions.appendChild(action("Reject", () => {
+          if (!confirm("Remove " + name + " from the list? This deletes the row.")) return;
+          decide(entry, name, false);
+        }));
+
+        row.append(label, meta, actions);
+        return row;
+      }
+
+      async function decide(entry, name, approved) {
+        pendingStatus.textContent = "Working\u2026";
+        try {
+          const result = await post({
+            action: "setApproval",
+            token: token(),
+            category: entry.category,
+            rowNumber: entry.rowNumber,
+            name: name,
+            approved: approved
+          });
+          pendingStatus.textContent = result.message;
+          // Always reload: a row number that was right a moment ago may not be
+          // after an approval, since rejecting deletes a row and shifts the rest.
+          loadPending();
+        } catch (err) {
+          pendingStatus.textContent = "Could not reach the server.";
+        }
+      }
+
+      // ---- the list of events ---------------------------------------------
+
+      async function loadOfficerEvents() {
+        eventsBox.textContent = "Loading\u2026";
+        let result;
+        try {
+          result = await post({ action: "listEvents", token: token() });
+        } catch (err) {
+          console.error("Could not load events.", err);
+          eventsBox.textContent =
+            "Could not reach the server. Check the browser console for details.";
+          return;
+        }
+
+        if (!result.ok) {
+          // Only an expired session should throw the officer back to the
+          // login screen. Any other failure -- a missing spreadsheet ID, a
+          // permissions problem -- means staying put and saying so, rather
+          // than bouncing back with the reason written somewhere hidden.
+          eventsBox.textContent = result.message;
+          if (/session/i.test(result.message)) {
+            sessionStorage.removeItem(TOKEN_KEY);
+            loginStatus.textContent = result.message;
+            signedIn(false);
+          }
+          return;
+        }
+
+        eventsBox.innerHTML = "";
+        if (!result.events.length) {
+          eventsBox.textContent = "No events yet.";
+          return;
+        }
+
+        result.events.forEach(event => eventsBox.appendChild(eventRow(event)));
+      }
+
+      function eventRow(event) {
+        const row = document.createElement("div");
+        row.className = "officer__event" + (event.open ? "" : " is-closed");
+
+        const label = document.createElement("div");
+        label.className = "officer__event-name";
+        label.textContent = event.name;
+
+        const meta = document.createElement("div");
+        meta.className = "officer__event-meta";
+        meta.textContent = [
+          event.date,
+          event.deadline ? "RSVP by " + event.deadline : "",
+          event.rsvps + (event.rsvps === 1 ? " reply" : " replies"),
+          event.attendees + " coming",
+          event.open ? "" : "deactivated"
+        ].filter(Boolean).join(" \u00b7 ");
+
+        const actions = document.createElement("div");
+        actions.className = "officer__event-actions";
+        actions.appendChild(action("RSVPs (" + event.rsvps + ")", () => toggleRsvps(event, row)));
+        actions.appendChild(action("Edit", () => startEditing(event)));
+        actions.appendChild(action(event.open ? "Deactivate" : "Activate", () =>
+          run({ action: "setEventOpen", id: event.id, open: !event.open })));
+        actions.appendChild(action("Delete", () => {
+          if (!confirm("Delete \"" + event.name + "\"? Its RSVPs stay in the spreadsheet.")) return;
+          run({ action: "deleteEvent", id: event.id });
+        }));
+
+        row.append(label, meta, actions);
+        return row;
+      }
+
+      function action(text, handler) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "officer__remove";
+        button.textContent = text;
+        button.addEventListener("click", handler);
+        return button;
+      }
+
+      // ---- the replies for one event --------------------------------------
+
+      async function toggleRsvps(event, row) {
+        const open = row.querySelector(".officer__rsvps");
+        if (open) { open.remove(); return; }
+
+        const panel = document.createElement("div");
+        panel.className = "officer__rsvps";
+        panel.textContent = "Loading\u2026";
+        row.appendChild(panel);
+
+        let result;
+        try {
+          result = await post({ action: "listRsvps", token: token(), eventId: event.id });
+        } catch (err) {
+          panel.textContent = "Could not reach the server.";
+          return;
+        }
+
+        if (!result.ok) { panel.textContent = result.message; return; }
+
+        panel.innerHTML = "";
+        if (!result.rsvps.length) {
+          panel.textContent = "No replies yet.";
+          return;
+        }
+
+        result.rsvps.forEach(entry => {
+          panel.appendChild(rsvpRow(event, entry, result.payments, result.extras));
+        });
+      }
+
+      // Every control is captioned. A row of bare boxes reading "2  1" tells
+      // an officer nothing about which number is which.
+      function labelled(caption, control) {
+        const wrap = document.createElement("label");
+        wrap.className = "officer__field";
+
+        const text = document.createElement("span");
+        text.className = "officer__field-label";
+        text.textContent = caption;
+
+        wrap.append(text, control);
+        return wrap;
+      }
+
+      function rsvpRow(event, entry, payments, extras) {
+        const line = document.createElement("div");
+        line.className = "officer__rsvp";
+
+        const who = document.createElement("div");
+        who.className = "officer__rsvp-who";
+        const identifier = entry.nameNumber || entry.email;
+        who.textContent = entry.firstName + " " + entry.lastName +
+          (identifier ? " (" + identifier + ")" : "") +
+          (entry.affiliation ? " \u00b7 " + entry.affiliation : "");
+        line.appendChild(who);
+
+        const fields = document.createElement("div");
+        fields.className = "officer__rsvp-fields";
+
+        const adults = document.createElement("input");
+        adults.type = "number"; adults.min = 1; adults.max = 20; adults.value = entry.adults;
+
+        const children = document.createElement("input");
+        children.type = "number"; children.min = 0; children.max = 20; children.value = entry.children;
+
+        const payment = document.createElement("select");
+        const blank = document.createElement("option");
+        blank.value = ""; blank.textContent = "Not set";
+        payment.appendChild(blank);
+        (payments || []).forEach(option => {
+          const el = document.createElement("option");
+          el.value = option; el.textContent = option;
+          if (option === entry.payment) el.selected = true;
+          payment.appendChild(el);
+        });
+
+        fields.appendChild(labelled("Adults", adults));
+        fields.appendChild(labelled("Children", children));
+        fields.appendChild(labelled("Payment", payment));
+
+        // The officer's own questions, editable, each under its own question.
+        const answerFields = {};
+        (extras || []).forEach(label => {
+          const input = document.createElement("input");
+          input.type = "text";
+          input.maxLength = 500;
+          input.value = entry.answers[label] || "";
+          answerFields[label] = input;
+          fields.appendChild(labelled(label, input));
+        });
+
+        line.appendChild(fields);
+
+        const actions = document.createElement("div");
+        actions.className = "officer__rsvp-actions";
+
+        const save = document.createElement("button");
+        save.type = "button";
+        save.className = "officer__save";
+        save.textContent = "Save";
+        save.addEventListener("click", async () => {
+          save.disabled = true;
+          try {
+            const result = await post({
+              action: "updateRsvp", token: token(), eventId: event.id,
+              rowNumber: entry.rowNumber, identifier: identifier,
+              firstName: entry.firstName, lastName: entry.lastName,
+              adults: adults.value, children: children.value, payment: payment.value,
+              answers: Object.keys(answerFields).reduce((all, label) => {
+                all[label] = answerFields[label].value;
+                return all;
+              }, {})
+            });
+            evStatus.textContent = result.message;
+            if (result.ok) { loadOfficerEvents(); refresh(); }
+          } catch (err) {
+            evStatus.textContent = "Could not reach the server.";
+          } finally {
+            save.disabled = false;
+          }
+        });
+
+        const remove = document.createElement("button");
+        remove.type = "button";
+        remove.className = "officer__danger";
+        remove.textContent = "Remove";
+        remove.addEventListener("click", async () => {
+          if (!confirm("Remove the RSVP from " + entry.firstName + " " + entry.lastName +
+            "? They will be able to reply again.")) return;
+          const result = await post({
+            action: "deleteRsvp", token: token(), eventId: event.id,
+            rowNumber: entry.rowNumber, identifier: identifier
+          });
+          evStatus.textContent = result.message;
+          if (result.ok) { loadOfficerEvents(); refresh(); }
+        });
+
+        actions.append(save, remove);
+        line.appendChild(actions);
+        return line;
+      }
+
+      async function run(body) {
+        evStatus.textContent = "Working\u2026";
+        try {
+          const result = await post(Object.assign({ token: token() }, body));
+          evStatus.textContent = result.message;
+          if (result.ok) {
+            loadOfficerEvents();
+            refresh();
+          }
+        } catch (err) {
+          evStatus.textContent = "Could not reach the server.";
+        }
+      }
+
+      // ---- creating and editing -------------------------------------------
+
+      function addQuestionRow(question) {
+        const row = document.createElement("div");
+        row.className = "officer__question";
+
+        const label = document.createElement("input");
+        label.type = "text";
+        label.maxLength = 80;
+        label.placeholder = "Question";
+        label.value = question ? question.label : "";
+
+        const options = document.createElement("input");
+        options.type = "text";
+        options.maxLength = 200;
+        options.placeholder = "Choices, comma separated (blank for free text)";
+        options.value = question && question.options ? question.options.join(", ") : "";
+
+        const remove = action("Remove", () => row.remove());
+        row.append(label, options, remove);
+        questionList.appendChild(row);
+      }
+
+      document.getElementById("ev-add-question")
+        .addEventListener("click", () => addQuestionRow());
+
+      function collectQuestions() {
+        return Array.from(questionList.querySelectorAll(".officer__question"))
+          .map(row => {
+            const inputs = row.querySelectorAll("input");
+            const label = inputs[0].value.trim();
+            if (!label) return null;
+            return {
+              label: label,
+              options: inputs[1].value.split(",").map(o => o.trim()).filter(Boolean)
+            };
+          })
+          .filter(Boolean);
+      }
+
+      function startEditing(event) {
+        editingId = event.id;
+        formHeading.textContent = "Edit: " + event.name;
+        submitButton.textContent = "Save changes";
+        cancelButton.hidden = false;
+        photoNote.textContent = "Leave empty to keep the current photo.";
+
+        document.getElementById("ev-name").value = event.name || "";
+        document.getElementById("ev-date").value = event.date || "";
+        document.getElementById("ev-time").value = event.time || "";
+        document.getElementById("ev-location").value = event.location || "";
+        document.getElementById("ev-deadline").value = event.deadline || "";
+        document.getElementById("ev-pay").checked = event.askPayment !== false;
+        document.getElementById("ev-desc").value = event.description || "";
+        evPhoto.value = "";
+
+        questionList.innerHTML = "";
+        (event.questions || []).forEach(addQuestionRow);
+
+        officer.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      function stopEditing() {
+        editingId = null;
+        formHeading.textContent = "Create an event";
+        submitButton.textContent = "Create event";
+        cancelButton.hidden = true;
+        photoNote.textContent = "Resized before upload, so a photo straight off a phone is fine.";
+        officerForm.reset();
+        document.getElementById("ev-pay").checked = true; // reset() unticks it
+        questionList.innerHTML = "";
+      }
+
+      cancelButton.addEventListener("click", stopEditing);
+
+      // Phone photos run to several megabytes, and the whole thing travels
+      // base64-encoded inside the POST body. Downscaling in a canvas first
+      // keeps the request small and the aspect ratio intact.
+      function readPhoto(file) {
+        return new Promise((resolve, reject) => {
+          if (!file) return resolve(null);
+          const reader = new FileReader();
+          reader.onerror = () => reject(new Error("Could not read that file."));
+          reader.onload = () => {
+            const img = new Image();
+            img.onerror = () => reject(new Error("That file is not an image."));
+            img.onload = () => {
+              const scale = Math.min(1, 1600 / img.width);
+              const canvas = document.createElement("canvas");
+              canvas.width = Math.round(img.width * scale);
+              canvas.height = Math.round(img.height * scale);
+
+              const ctx = canvas.getContext("2d");
+              // JPEG has no transparency. Without this, a PNG with a clear
+              // background comes out black behind the subject.
+              ctx.fillStyle = "#ffffff";
+              ctx.fillRect(0, 0, canvas.width, canvas.height);
+              ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+              const dataUrl = canvas.toDataURL("image/jpeg", 0.85);
+              resolve({
+                name: file.name,
+                type: "image/jpeg",
+                data: dataUrl.slice(dataUrl.indexOf(",") + 1)
+              });
+            };
+            img.src = reader.result;
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+
+      officerForm.addEventListener("submit", async e => {
+        e.preventDefault();
+        if (!officerForm.checkValidity()) return officerForm.reportValidity();
+
+        submitButton.disabled = true;
+        evStatus.textContent = editingId ? "Saving\u2026" : "Creating\u2026";
+
+        try {
+          const photo = await readPhoto(evPhoto.files[0]);
+          const result = await post({
+            action: editingId ? "updateEvent" : "createEvent",
+            token: token(),
+            id: editingId,
+            name: document.getElementById("ev-name").value,
+            date: document.getElementById("ev-date").value,
+            time: document.getElementById("ev-time").value,
+            location: document.getElementById("ev-location").value,
+            deadline: document.getElementById("ev-deadline").value,
+            askPayment: document.getElementById("ev-pay").checked,
+            description: document.getElementById("ev-desc").value,
+            questions: collectQuestions(),
+            photo: photo
+          });
+
+          evStatus.textContent = result.message;
+          if (result.ok) {
+            stopEditing();
+            loadOfficerEvents();
+            refresh();
+          }
+        } catch (err) {
+          console.error("Could not save the event.", err);
+          evStatus.textContent = "Could not reach the server. Please try again.";
+        } finally {
+          submitButton.disabled = false;
+        }
+      });
+
+      // ---- posts in the repository -----------------------------------------
+
+      const postType = document.getElementById("po-type");
+      const postsBox = document.getElementById("officer-posts");
+      const postForm = document.getElementById("post-form");
+      const poHeading = document.getElementById("po-form-heading");
+      const poSubmit = document.getElementById("po-submit");
+      const poCancel = document.getElementById("po-cancel");
+      const poStatus = document.getElementById("po-status");
+      const poPhoto = document.getElementById("po-photo");
+      const poAuthorRow = document.getElementById("po-author-row");
+      const poPhotoRow = document.getElementById("po-photo-row");
+
+      let editingPost = null;   // { path, image }
+
+      // Which section of the site each kind of post ends up in, and what to
+      // call it. The form heading is a long way down the page from the
+      // dropdown, so it repeats the answer rather than assuming it is
+      // still in mind.
+      const POST_LABELS = {
+        achievement: { name: "Achievements", where: "Shown in the Achievements section." },
+        eventPost: { name: "Event write-ups", where: "Shown in the Events section, under the upcoming ones." },
+        blog: { name: "Blog", where: "Shown in the Blog section." }
+      };
+
+      const postTypeNote = document.getElementById("po-type-note");
+
+      function applyPostShape() {
+        const blog = postType.value === "blog";
+        poAuthorRow.style.display = blog ? "" : "none";
+        poPhotoRow.style.display = blog ? "none" : "";
+
+        const label = POST_LABELS[postType.value];
+        postTypeNote.textContent = label.where;
+        if (!editingPost) poHeading.textContent = "Write a new post \u2014 " + label.name;
+      }
+
+      postType.addEventListener("change", () => {
+        applyPostShape();
+        stopEditingPost();
+        loadPosts();
+      });
+
+      async function loadPosts() {
+        postsBox.textContent = "Loading\u2026";
+        let result;
+        try {
+          result = await post({ action: "listPosts", token: token(), type: postType.value });
+        } catch (err) {
+          console.error("Could not load posts.", err);
+          postsBox.textContent = "Could not reach the server.";
+          return;
+        }
+
+        if (!result.ok) {
+          postsBox.textContent = result.message;
+          return;
+        }
+
+        postsBox.innerHTML = "";
+        if (!result.posts.length) {
+          postsBox.textContent = "Nothing in " + POST_LABELS[postType.value].name + " yet.";
+          return;
+        }
+
+        result.posts.slice(0, 25).forEach(item => {
+          const row = document.createElement("div");
+          row.className = "officer__event";
+
+          const label = document.createElement("div");
+          label.className = "officer__event-name";
+          label.textContent = item.slug.replace(/-/g, " ");
+
+          const meta = document.createElement("div");
+          meta.className = "officer__event-meta";
+          meta.textContent = item.date;
+
+          const actions = document.createElement("div");
+          actions.className = "officer__event-actions";
+          actions.appendChild(action("Edit", () => startEditingPost(item)));
+          actions.appendChild(action("Delete", () => {
+            if (!confirm("Delete this post? It is removed from the site and from the repository.")) return;
+            runPost({ action: "deletePost", path: item.path });
+          }));
+
+          row.append(label, meta, actions);
+          postsBox.appendChild(row);
+        });
+      }
+
+      async function runPost(body) {
+        poStatus.textContent = "Working\u2026";
+        try {
+          const result = await post(Object.assign({ token: token(), type: postType.value }, body));
+          poStatus.textContent = result.message;
+          if (result.ok) {
+            stopEditingPost();
+            loadPosts();
+          }
+        } catch (err) {
+          poStatus.textContent = "Could not reach the server.";
+        }
+      }
+
+      async function startEditingPost(item) {
+        poStatus.textContent = "Opening\u2026";
+        let result;
+        try {
+          result = await post({ action: "getPost", token: token(), path: item.path });
+        } catch (err) {
+          poStatus.textContent = "Could not reach the server.";
+          return;
+        }
+        if (!result.ok) { poStatus.textContent = result.message; return; }
+
+        const front = result.post.front || {};
+        editingPost = { path: result.post.path, image: front.image || "" };
+
+        poHeading.textContent = "Editing " + POST_LABELS[postType.value].name.toLowerCase() +
+          " \u2014 " + (front.title || item.slug);
+        poSubmit.textContent = "Save changes";
+        poCancel.hidden = false;
+        poStatus.textContent = "";
+
+        document.getElementById("po-title").value = front.title || "";
+        document.getElementById("po-date").value = item.date || "";
+        document.getElementById("po-author").value = front.author || "";
+        document.getElementById("po-body").value = result.post.body || "";
+        poPhoto.value = "";
+
+        postForm.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      function stopEditingPost() {
+        editingPost = null;
+        poSubmit.textContent = "Publish";
+        poCancel.hidden = true;
+        postForm.reset();
+        applyPostShape(); // puts the heading back, naming the current list
+      }
+
+      poCancel.addEventListener("click", stopEditingPost);
+
+      postForm.addEventListener("submit", async e => {
+        e.preventDefault();
+        if (!postForm.checkValidity()) return postForm.reportValidity();
+
+        poSubmit.disabled = true;
+        poStatus.textContent = "Saving\u2026";
+
+        try {
+          const photo = await readPhoto(poPhoto.files[0]);
+          const result = await post({
+            action: "savePost",
+            token: token(),
+            type: postType.value,
+            originalPath: editingPost ? editingPost.path : "",
+            image: editingPost ? editingPost.image : "",
+            title: document.getElementById("po-title").value,
+            date: document.getElementById("po-date").value,
+            author: document.getElementById("po-author").value,
+            body: document.getElementById("po-body").value,
+            photo: photo
+          });
+
+          poStatus.textContent = result.message;
+          if (result.ok) {
+            stopEditingPost();
+            loadPosts();
+          }
+        } catch (err) {
+          console.error("Could not save the post.", err);
+          poStatus.textContent = "Could not reach the server. Please try again.";
+        } finally {
+          poSubmit.disabled = false;
+        }
+      });
+
+      // ---- the executive committee -----------------------------------------
+
+      const ecTerm = document.getElementById("ec-term");
+      const ecNewRow = document.getElementById("ec-new-row");
+      const ecNewTerm = document.getElementById("ec-new-term");
+      const ecMembers = document.getElementById("ec-members");
+      const ecStatus = document.getElementById("ec-status");
+      const ecNote = document.getElementById("ec-note");
+      const ecDelete = document.getElementById("ec-delete");
+
+      const NEW_TERM = "__new__";
+      let committees = [];
+
+      // `note` survives the reload, so the result of a save is still on
+      // screen after the list refreshes underneath it.
+      async function loadCommittees(keepTerm, note) {
+        ecStatus.textContent = note || "Loading\u2026";
+        let result;
+        try {
+          result = await post({ action: "listCommittees", token: token() });
+        } catch (err) {
+          ecStatus.textContent = "Could not reach the server.";
+          return;
+        }
+        if (!result.ok) { ecStatus.textContent = result.message; return; }
+
+        committees = result.terms || [];
+        ecStatus.textContent = note || "";
+
+        ecTerm.innerHTML = "";
+        committees.forEach((entry, index) => {
+          const option = document.createElement("option");
+          option.value = entry.term;
+          option.textContent = entry.term + (index === 0 ? "  (current)" : "");
+          ecTerm.appendChild(option);
+        });
+
+        const fresh = document.createElement("option");
+        fresh.value = NEW_TERM;
+        fresh.textContent = "New academic year\u2026";
+        ecTerm.appendChild(fresh);
+
+        ecTerm.value = keepTerm && committees.some(e => e.term === keepTerm)
+          ? keepTerm
+          : (committees.length ? committees[0].term : NEW_TERM);
+
+        showTerm();
+      }
+
+      function showTerm() {
+        const isNew = ecTerm.value === NEW_TERM;
+        ecNewRow.hidden = !isNew;
+        ecDelete.hidden = isNew;
+
+        const entry = committees.find(e => e.term === ecTerm.value);
+        const index = committees.indexOf(entry);
+
+        ecNote.textContent = isNew
+          ? "Adding a year that is not listed yet."
+          : (index === 0
+            ? "This is the current committee, shown with photos."
+            : "An archived committee, shown under Previous Executive Committees.");
+
+        ecMembers.innerHTML = "";
+        const members = entry ? entry.members : [];
+        if (members.length) members.forEach(addMemberRow);
+        else addMemberRow();
+      }
+
+      ecTerm.addEventListener("change", showTerm);
+      document.getElementById("ec-add").addEventListener("click", () => addMemberRow());
+
+      function addMemberRow(member) {
+        member = member || {};
+
+        const row = document.createElement("div");
+        row.className = "officer__member";
+
+        const fields = {};
+        [["role", "Role"], ["name", "Name"], ["degree", "Degree"],
+        ["department", "Department"], ["email", "Email"]].forEach(pair => {
+          const control = document.createElement("input");
+          control.type = pair[0] === "email" ? "email" : "text";
+          control.maxLength = 160;
+          control.value = member[pair[0]] || "";
+          fields[pair[0]] = control;
+          row.appendChild(labelled(pair[1], control));
+        });
+
+        // Photos matter for the current committee; archived years are names
+        // and roles only, so this is optional everywhere.
+        const photo = document.createElement("input");
+        photo.type = "file";
+        photo.accept = "image/*";
+        row.appendChild(labelled(member.photo ? "Photo (replace)" : "Photo", photo));
+
+        const remove = document.createElement("button");
+        remove.type = "button";
+        remove.className = "officer__danger";
+        remove.textContent = "Remove";
+        remove.addEventListener("click", () => row.remove());
+        row.appendChild(remove);
+
+        row.dataset.photo = member.photo || "";
+        row.__fields = fields;
+        row.__photo = photo;
+
+        ecMembers.appendChild(row);
+      }
+
+      document.getElementById("ec-save").addEventListener("click", async () => {
+        const term = ecTerm.value === NEW_TERM ? ecNewTerm.value.trim() : ecTerm.value;
+        if (!term) { ecStatus.textContent = "Give the academic year a name."; return; }
+
+        const rows = Array.from(ecMembers.querySelectorAll(".officer__member"));
+        if (!rows.length) { ecStatus.textContent = "Add at least one member."; return; }
+
+        const save = document.getElementById("ec-save");
+        save.disabled = true;
+        ecStatus.textContent = "Saving\u2026";
+
+        try {
+          const members = [];
+          for (const row of rows) {
+            const member = {
+              role: row.__fields.role.value,
+              name: row.__fields.name.value,
+              degree: row.__fields.degree.value,
+              department: row.__fields.department.value,
+              email: row.__fields.email.value,
+              photo: row.dataset.photo
+            };
+            const file = row.__photo.files[0];
+            if (file) member.photo64 = await readPhoto(file);
+            members.push(member);
+          }
+
+          const result = await post({
+            action: "saveCommittee", token: token(), term: term, members: members
+          });
+
+          ecStatus.textContent = result.message;
+          if (result.ok) {
+            ecNewTerm.value = "";
+            loadCommittees(term, result.message);
+          }
+        } catch (err) {
+          console.error("Could not save the committee.", err);
+          ecStatus.textContent = "Could not reach the server. Please try again.";
+        } finally {
+          save.disabled = false;
+        }
+      });
+
+      ecDelete.addEventListener("click", async () => {
+        const term = ecTerm.value;
+        if (term === NEW_TERM) return;
+        if (!confirm("Delete the " + term + " committee entirely?")) return;
+
+        const result = await post({ action: "deleteCommittee", token: token(), term: term });
+        ecStatus.textContent = result.message;
+        if (result.ok) loadCommittees(null, result.message);
+      });
+
+      // ---- the gallery ------------------------------------------------------
+
+      const gaItems = document.getElementById("ga-items");
+      const gaStatus = document.getElementById("ga-status");
+
+      async function loadGallery() {
+        gaStatus.textContent = "Loading\u2026";
+        let result;
+        try {
+          result = await post({ action: "listGallery", token: token() });
+        } catch (err) {
+          gaStatus.textContent = "Could not reach the server.";
+          return;
+        }
+        if (!result.ok) { gaStatus.textContent = result.message; return; }
+
+        gaStatus.textContent = "";
+        gaItems.innerHTML = "";
+        (result.items || []).forEach(addGalleryRow);
+        if (!result.items || !result.items.length) addGalleryRow();
+      }
+
+      function addGalleryRow(item) {
+        item = item || {};
+
+        const row = document.createElement("div");
+        row.className = "officer__member";
+
+        const caption = document.createElement("input");
+        caption.type = "text";
+        caption.maxLength = 400;
+        caption.value = item.caption || "";
+        row.appendChild(labelled("Caption", caption));
+
+        // The existing file path, shown so an officer can see which photo a
+        // row refers to without guessing from the caption.
+        const current = document.createElement("input");
+        current.type = "text";
+        current.value = item.image || "";
+        current.readOnly = true;
+        row.appendChild(labelled("Current file", current));
+
+        const photo = document.createElement("input");
+        photo.type = "file";
+        photo.accept = "image/*";
+        row.appendChild(labelled(item.image ? "Replace photo" : "Photo", photo));
+
+        const remove = document.createElement("button");
+        remove.type = "button";
+        remove.className = "officer__danger";
+        remove.textContent = "Remove";
+        remove.addEventListener("click", () => row.remove());
+        row.appendChild(remove);
+
+        row.__caption = caption;
+        row.__image = current;
+        row.__photo = photo;
+        gaItems.appendChild(row);
+      }
+
+      document.getElementById("ga-add").addEventListener("click", () => addGalleryRow());
+
+      document.getElementById("ga-save").addEventListener("click", async () => {
+        const button = document.getElementById("ga-save");
+        button.disabled = true;
+        gaStatus.textContent = "Saving\u2026";
+
+        try {
+          const items = [];
+          for (const row of Array.from(gaItems.querySelectorAll(".officer__member"))) {
+            const item = { caption: row.__caption.value, image: row.__image.value };
+            const file = row.__photo.files[0];
+            if (file) item.photo64 = await readPhoto(file);
+            // A row with neither an existing file nor a new one is an empty
+            // row the officer added and never filled in; skip it quietly.
+            if (item.image || item.photo64) items.push(item);
+          }
+
+          const result = await post({ action: "saveGallery", token: token(), items: items });
+          gaStatus.textContent = result.message;
+          if (result.ok) loadGallery();
+        } catch (err) {
+          console.error("Could not save the gallery.", err);
+          gaStatus.textContent = "Could not reach the server. Please try again.";
+        } finally {
+          button.disabled = false;
+        }
+      });
+
+      // ---- the About text ---------------------------------------------------
+
+      const abText = document.getElementById("ab-text");
+      const abStatus = document.getElementById("ab-status");
+
+      async function loadAbout() {
+        abStatus.textContent = "Loading\u2026";
+        let result;
+        try {
+          result = await post({ action: "listAbout", token: token() });
+        } catch (err) {
+          abStatus.textContent = "Could not reach the server.";
+          return;
+        }
+        if (!result.ok) { abStatus.textContent = result.message; return; }
+
+        // One textarea, blank line between paragraphs: closer to how the text
+        // reads on the page than a row of separate boxes would be.
+        abText.value = (result.paragraphs || []).join("\n\n");
+        abStatus.textContent = "";
+      }
+
+      document.getElementById("ab-save").addEventListener("click", async () => {
+        const button = document.getElementById("ab-save");
+        button.disabled = true;
+        abStatus.textContent = "Saving\u2026";
+
+        try {
+          const paragraphs = abText.value
+            .split(/\n\s*\n/)
+            .map(block => block.replace(/\s+/g, " ").trim())
+            .filter(Boolean);
+
+          const result = await post({
+            action: "saveAbout", token: token(), paragraphs: paragraphs
+          });
+          abStatus.textContent = result.message;
+        } catch (err) {
+          console.error("Could not save the About text.", err);
+          abStatus.textContent = "Could not reach the server. Please try again.";
+        } finally {
+          button.disabled = false;
+        }
+      });
+
+      // ---- the homepage slideshow -------------------------------------------
+
+      const heroItems = document.getElementById("hero-items");
+      const heroStatus = document.getElementById("hero-status");
+
+      async function loadHero() {
+        heroStatus.textContent = "Loading\u2026";
+        let result;
+        try {
+          result = await post({ action: "listHero", token: token() });
+        } catch (err) {
+          heroStatus.textContent = "Could not reach the server.";
+          return;
+        }
+        if (!result.ok) { heroStatus.textContent = result.message; return; }
+
+        heroStatus.textContent = "";
+        heroItems.innerHTML = "";
+        (result.slides || []).forEach(addHeroRow);
+        if (!result.slides || !result.slides.length) addHeroRow();
+      }
+
+      function addHeroRow(image) {
+        const row = document.createElement("div");
+        row.className = "officer__member";
+
+        const current = document.createElement("input");
+        current.type = "text";
+        current.value = image || "";
+        current.readOnly = true;
+        row.appendChild(labelled("Current file", current));
+
+        const photo = document.createElement("input");
+        photo.type = "file";
+        photo.accept = "image/*";
+        row.appendChild(labelled(image ? "Replace photo" : "Photo", photo));
+
+        const remove = document.createElement("button");
+        remove.type = "button";
+        remove.className = "officer__danger";
+        remove.textContent = "Remove";
+        remove.addEventListener("click", () => row.remove());
+        row.appendChild(remove);
+
+        row.__image = current;
+        row.__photo = photo;
+        heroItems.appendChild(row);
+      }
+
+      document.getElementById("hero-add").addEventListener("click", () => addHeroRow());
+
+      document.getElementById("hero-save").addEventListener("click", async () => {
+        const button = document.getElementById("hero-save");
+        button.disabled = true;
+        heroStatus.textContent = "Saving\u2026";
+
+        try {
+          const slides = [];
+          for (const row of Array.from(heroItems.querySelectorAll(".officer__member"))) {
+            const slide = { image: row.__image.value };
+            const file = row.__photo.files[0];
+            if (file) slide.photo64 = await readPhoto(file);
+            if (slide.image || slide.photo64) slides.push(slide);
+          }
+
+          const result = await post({ action: "saveHero", token: token(), slides: slides });
+          heroStatus.textContent = result.message;
+          if (result.ok) loadHero();
+        } catch (err) {
+          console.error("Could not save the slideshow.", err);
+          heroStatus.textContent = "Could not reach the server. Please try again.";
+        } finally {
+          button.disabled = false;
+        }
+      });
+
+      // ---- contact details --------------------------------------------------
+
+      const contactFields = document.getElementById("contact-fields");
+      const contactStatus = document.getElementById("contact-status");
+      const contactInputs = {};
+
+      const CONTACT_LABELS = [
+        ["email", "Email"],
+        ["phone", "Phone (dialled)"],
+        ["phone_display", "Phone (as shown)"],
+        ["facebook_url", "Facebook link"],
+        ["facebook_handle", "Facebook name"],
+        ["instagram_url", "Instagram link"],
+        ["instagram_handle", "Instagram name"],
+        ["youtube_url", "YouTube link"],
+        ["youtube_handle", "YouTube name"]
+      ];
+
+      async function loadContact() {
+        contactStatus.textContent = "Loading\u2026";
+        let result;
+        try {
+          result = await post({ action: "listContact", token: token() });
+        } catch (err) {
+          contactStatus.textContent = "Could not reach the server.";
+          return;
+        }
+        if (!result.ok) { contactStatus.textContent = result.message; return; }
+
+        contactStatus.textContent = "";
+        contactFields.innerHTML = "";
+
+        CONTACT_LABELS.forEach(pair => {
+          const input = document.createElement("input");
+          input.type = pair[0] === "email" ? "email" : "text";
+          input.maxLength = 300;
+          input.value = (result.contact || {})[pair[0]] || "";
+          contactInputs[pair[0]] = input;
+
+          const row = document.createElement("div");
+          row.className = "member-form__row";
+          const label = document.createElement("label");
+          label.textContent = pair[1];
+          row.append(label, input);
+          contactFields.appendChild(row);
+        });
+      }
+
+      document.getElementById("contact-save").addEventListener("click", async () => {
+        const button = document.getElementById("contact-save");
+        button.disabled = true;
+        contactStatus.textContent = "Saving\u2026";
+
+        try {
+          const contact = {};
+          Object.keys(contactInputs).forEach(key => {
+            contact[key] = contactInputs[key].value;
+          });
+
+          const result = await post({ action: "saveContact", token: token(), contact: contact });
+          contactStatus.textContent = result.message;
+        } catch (err) {
+          console.error("Could not save the contact details.", err);
+          contactStatus.textContent = "Could not reach the server. Please try again.";
+        } finally {
+          button.disabled = false;
+        }
+      });
+
+      // ---- tabs --------------------------------------------------------------
+
+      const tabs = Array.from(document.querySelectorAll(".officer__tab"));
+      const panes = Array.from(document.querySelectorAll(".officer__pane"));
+
+      tabs.forEach(tab => {
+        tab.addEventListener("click", () => {
+          tabs.forEach(t => t.classList.toggle("active", t === tab));
+          panes.forEach(pane => {
+            pane.hidden = pane.id !== tab.dataset.pane;
+          });
+        });
+      });
+
+      // ---- go --------------------------------------------------------------
+
+      if (!ENDPOINT) {
+        loginStatus.textContent = "Officer tools are not switched on yet.";
+        return;
+      }
+
+      signedIn(!!token());
+    }
+  })();
+</script>
+
+<!-- ✅ INTERACTIVE DATABASE SCRIPT -->
+<script>
+
+  // ---- Where the member lists come from -------------------------------
+  //
+  // Each list is a Google Sheet shared as "Anyone with the link - Viewer".
+  // The gviz endpoint below returns that sheet as CSV and works without the
+  // "Publish to web" step. If a sheet is ever renamed, only the `tab` value
+  // here changes.
+  //
+  // The first row of each tab must be the column headers, spelled exactly:
+  //   First Name | Last Name | Degree | Program | Name.#
+  // An optional `Approved` column hides a row while it is FALSE.
+  // Where each list lives. The column names are deliberately NOT written
+  // here: they differ per sheet (Degree, Position, Degree/Position,
+  // Designation) and have been renamed more than once. The code reads the
+  // header row and works out which column holds the role, so renaming a
+  // heading in the spreadsheet never breaks the page.
+  //
+  // roleLabel is only what the submission form calls the field before any
+  // sheet has loaded. The table always uses the sheet's own heading.
+  const SHEET_SOURCES = {
+    grad: { id: "1LnrYB-TD9XNjFKd9oY-fffAEDiKpwRkFCMYVl4gu2Uw", tab: "Sheet1", roleLabel: "Degree" },
+    postdoc: { id: "1aeETkS8jK3aPhW8Yoes31ChwBuN31ZVRSa_y-u5-avE", tab: "Sheet1", roleLabel: "Position" },
+    alumni: { id: "1dzhW9jUcOR8s0-fUBeQ25D_f79WnbHeXd8FdIgI_FWE", tab: "Sheet1", roleLabel: "Degree/Position" },
+    faculty: { id: "1FvuCJku9x_ElIMMKmCGc1VOdu6Mfa8qcGtFC3kgiVcw", tab: "Sheet1", roleLabel: "Designation" }
+  };
+
+  // Headers that are something other than the role column, so the detector
+  // does not mistake one for it.
+  const FIXED_COLUMNS = ["sl.", "first name", "last name", "name.#", "program", "approved",
+    "submitted", "starting session"];
+
+  const SHEETS = {};
+  Object.keys(SHEET_SOURCES).forEach(function (key) {
+    const source = SHEET_SOURCES[key];
+    SHEETS[key] = "https://docs.google.com/spreadsheets/d/" + source.id +
+      "/gviz/tq?tqx=out:csv&sheet=" + encodeURIComponent(source.tab);
+  });
+
+  // Where submissions are sent. Paste the /exec URL from the Apps Script
+  // deployment here; until then the form tells people to email instead.
+  const SUBMIT_ENDPOINT = "https://script.google.com/macros/s/AKfycbyERJU9MoHdDvPEHaGwW1L1sYfdE255YAQKqhyjljtUiifbQi7T-7oBAm3U4ZNA97tjlw/exec";
+
+  // Committed spreadsheets, used when no sheet URL is set and as the fallback.
+  const FILES = {
+    grad: "./assets/csv/grad.xlsx",
+    postdoc: "./assets/csv/staff.xlsx",
+    alumni: "./assets/csv/alumni.xlsx",
+    faculty: "./assets/csv/faculty.xlsx"
+  };
+
+  let activeData = [];      // Stores currently loaded dataset
+  let activeSection = "grad";
+  let sortState = {};       // Sorting state
+
+  // Whatever the current sheet turned out to contain.
+  let shape = { roleColumn: "Degree", roleLabel: "Degree / Position", hasNameNumber: true };
+
+  // Work out which heading holds the role. Anything that is not one of the
+  // known fixed columns is a candidate; among those, prefer the one that
+  // reads like a role. Falls back to the first spare column.
+  function detectShape(headers) {
+    const clean = headers.map(h => String(h === undefined ? "" : h).trim()).filter(Boolean);
+    const spare = clean.filter(h => !FIXED_COLUMNS.includes(h.toLowerCase()));
+    const roleColumn =
+      spare.find(h => /designation|position|degree|title|rank/i.test(h)) ||
+      spare[0] ||
+      "Degree";
+
+    return {
+      roleColumn: roleColumn,
+      roleLabel: roleColumn,
+      hasNameNumber: clean.some(h => h.toLowerCase() === "name.#")
+    };
+  }
+
+  // The column keys behind the table headings, for the list on screen.
+  function columnKeys() {
+    return ["First Name", "Last Name", shape.roleColumn, "Program", "Name.#"];
+  }
+
+  // Relabel the role heading from the sheet, and drop the Name.# heading
+  // where the sheet has no such column, so Alumni shows no empty strip.
+  function applyColumnShape() {
+    const roleHeader = document.querySelector('#members-table th[data-col="role"]');
+    const nameHeader = document.querySelector('#members-table th[data-col="Name.#"]');
+    if (roleHeader) roleHeader.textContent = shape.roleLabel + " \u2b0d";
+    if (nameHeader) nameHeader.style.display = shape.hasNameNumber ? "" : "none";
+  }
+
+  // Both loaders return the header row as well as the data, because the
+  // headers are what tell us the shape of the sheet.
+  function readWorkbook(workbook) {
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+    const headers = (XLSX.utils.sheet_to_json(sheet, { header: 1 })[0] || []);
+    return { headers: headers, rows: XLSX.utils.sheet_to_json(sheet) };
+  }
+
+  // Load XLSX file
+  async function loadExcel(filePath) {
+    const response = await fetch(filePath);
+    const arrayBuffer = await response.arrayBuffer();
+    return readWorkbook(XLSX.read(arrayBuffer, { type: "array" }));
+  }
+
+  // Load a published Google Sheet. SheetJS parses CSV as happily as XLSX.
+  async function loadSheet(url) {
+    const bust = (url.includes("?") ? "&" : "?") + "t=" + Date.now();
+    const response = await fetch(url + bust);
+    if (!response.ok) throw new Error("Sheet responded " + response.status);
+
+    const text = await response.text();
+    return readWorkbook(XLSX.read(text, { type: "string" }));
+  }
+
+  // Sheets carry blank spacer rows, and a row awaiting approval should not
+  // be public yet. Absent or empty Approved is treated as visible, so adding
+  // the column later does not make the whole directory disappear.
+  function isPublishable(member) {
+    const named = String(member["First Name"] || "").trim() ||
+      String(member["Last Name"] || "").trim();
+    if (!named) return false;
+
+    const approved = String(member["Approved"] === undefined ? "" : member["Approved"])
+      .trim().toLowerCase();
+    return !["false", "no", "0", "pending"].includes(approved);
+  }
+
+  // Live sheet first, committed file second.
+  async function loadMembers(section) {
+    let loaded;
+    if (SHEETS[section]) {
+      try {
+        loaded = await loadSheet(SHEETS[section]);
+      } catch (err) {
+        console.warn("Live sheet unavailable for " + section + ", using the committed file.", err);
+      }
+    }
+    if (!loaded) loaded = await loadExcel(FILES[section]);
+
+    shape = detectShape(loaded.headers);
+    return loaded.rows.filter(isPublishable);
+  }
+
+  // A single-cell row for "loading" and "nothing here" states, so the table
+  // is never just silently blank.
+  function renderMessage(text) {
+    const tbody = document.getElementById("members-body");
+    const columns = document.querySelectorAll("#members-table th").length || 5;
+    tbody.innerHTML =
+      '<tr><td colspan="' + columns + '" style="text-align:center;padding:3rem;color:var(--color-grey)">' +
+      text + "</td></tr>";
+  }
+
+  // Render table
+  function renderTable(filter = "") {
+    const tbody = document.getElementById("members-body");
+    const keys = columnKeys();
+    const needle = filter.toLowerCase();
+    tbody.innerHTML = "";
+
+    activeData
+      .filter(m =>
+        Object.values(m).some(v => String(v).toLowerCase().includes(needle))
+      )
+      .forEach(member => {
+        const row = document.createElement("tr");
+        keys.forEach(key => {
+          if (key === "Name.#" && !shape.hasNameNumber) return;
+          const cell = document.createElement("td");
+          cell.textContent = member[key] === undefined ? "" : member[key];
+          row.appendChild(cell);
+        });
+        tbody.appendChild(row);
+      });
+  }
+
+  // Sorting logic
+  function setupSorting() {
+    const headers = document.querySelectorAll("#members-table th");
+
+    headers.forEach((header, i) => {
+      header.addEventListener("click", () => {
+        const key = columnKeys()[i];
+        sortState[key] = !sortState[key];
+
+        activeData.sort((a, b) =>
+          sortState[key]
+            ? String(b[key] || "").localeCompare(a[key] || "")
+            : String(a[key] || "").localeCompare(b[key] || "")
+        );
+
+        headers.forEach(h => (h.innerHTML = h.innerHTML.replace(/ ↑| ↓| ⬍/g, " ⬍")));
+        header.innerHTML = header.innerHTML.replace(
+          "⬍",
+          sortState[key] ? " ↓" : " ↑"
+        );
+
+        renderTable(document.getElementById("searchInput").value);
+      });
+    });
+  }
+
+  // Load section on tab click
+  async function loadSection(section) {
+
+    // Remove active class from all tabs
+    document.querySelectorAll(".db-tab").forEach(btn =>
+      btn.classList.remove("active")
+    );
+    document.querySelector(`.db-tab[data-target="${section}"]`).classList.add("active");
+
+    const tableContainer = document.querySelector(".database__table-container");
+    const searchInput = document.getElementById("searchInput");
+    const addInfoSection = document.getElementById("addinfo");
+
+    // Hide AddInfo section by default
+    addInfoSection.style.display = "none";
+
+    // If user clicks "Add Your Information" tab
+    if (section === "addinfo") {
+      tableContainer.style.display = "none";
+      searchInput.style.display = "none";
+      addInfoSection.style.display = "block";
+      return; // 🔥 Do NOT load Excel
+    }
+
+    // For all other tabs
+    tableContainer.style.display = "block";
+    searchInput.style.display = "block";
+
+    activeSection = section;
+
+    renderMessage("Loading\u2026");
+    try {
+      activeData = await loadMembers(section);
+      applyColumnShape();
+    } catch (err) {
+      activeData = [];
+      console.error("Could not load the member list.", err);
+      renderMessage("The member list could not be loaded. Please try again shortly.");
+      return;
+    }
+
+    if (!activeData.length) {
+      renderMessage("No members listed yet.");
+      return;
+    }
+    renderTable("");
+  }
+
+  // Each tab gets its own address, so a link can point straight at one.
+  // The tab name goes in a query parameter rather than the hash, because the
+  // hash is already spoken for: it is what scrolls the page to #database.
+  const DB_TABS = ["grad", "postdoc", "alumni", "faculty", "addinfo"];
+
+  function dbTabFromUrl() {
+    const asked = new URLSearchParams(location.search).get("db");
+    return DB_TABS.includes(asked) ? asked : "grad";
+  }
+
+  function rememberDbTab(section) {
+    try {
+      const url = new URL(location.href);
+      if (section === "grad") url.searchParams.delete("db");
+      else url.searchParams.set("db", section);
+      url.hash = "database";
+      history.replaceState(null, "", url);
+    } catch (err) {
+      /* Some local file:// setups reject replaceState. The tab still works. */
+    }
+  }
+
+  // Tab click listener
+  document.querySelectorAll(".db-tab").forEach(btn => {
+    btn.addEventListener("click", () => {
+      rememberDbTab(btn.dataset.target);
+      loadSection(btn.dataset.target);
+    });
+  });
+
+  // Search listener
+  document.getElementById("searchInput").addEventListener("input", e => {
+    renderTable(e.target.value);
+  });
+
+  // ---- Submitting a new entry ------------------------------------------
+  //
+  // Content-Type is text/plain on purpose. With application/json the browser
+  // sends a preflight OPTIONS request first, and Apps Script web apps do not
+  // answer those, so the request would fail on CORS before it was ever sent.
+  // text/plain counts as a "simple" request and goes straight through; the
+  // script still parses it with JSON.parse.
+  const memberForm = document.getElementById("member-form");
+
+  if (memberForm) {
+    // The form follows the same per-list shape as the table: faculty are
+    // asked for a Designation, and alumni are not asked for a Name.# at all
+    // because their sheet has no such column to put it in.
+    const categoryField = document.getElementById("mf-category");
+    const roleLabel = document.getElementById("mf-role-label");
+    const nameRow = document.getElementById("mf-name-row");
+    const nameField = document.getElementById("mf-name");
+    const formNote = document.getElementById("mf-note");
+
+    function applyFormShape() {
+      const source = SHEET_SOURCES[categoryField.value];
+      if (!source) return;
+      const wantsNameNumber = categoryField.value !== "alumni";
+
+      roleLabel.textContent = source.roleLabel;
+      nameRow.style.display = wantsNameNumber ? "" : "none";
+      nameField.required = wantsNameNumber;
+      if (!wantsNameNumber) nameField.value = "";
+
+      const privacy = " Your starting semester is kept for our records only and is not shown on this page.";
+      formNote.textContent = (wantsNameNumber
+        ? "This information is shown publicly on this page. Your Name.# is the same identifier as your OSU email address."
+        : "This information is shown publicly on this page.") + privacy;
+    }
+
+    categoryField.addEventListener("change", applyFormShape);
+    applyFormShape();
+
+    const formStatus = memberForm.querySelector(".member-form__status");
+    const formButton = memberForm.querySelector("button[type=submit]");
+
+    memberForm.addEventListener("submit", async e => {
+      e.preventDefault();
+
+      if (!memberForm.checkValidity()) {
+        memberForm.reportValidity();
+        return;
+      }
+
+      if (!SUBMIT_ENDPOINT) {
+        formStatus.textContent =
+          "Online submissions are not switched on yet. Please email {{ site.email }}.";
+        return;
+      }
+
+      formButton.disabled = true;
+      formStatus.textContent = "Sending\u2026";
+
+      const payload = Object.fromEntries(new FormData(memberForm).entries());
+
+      try {
+        const response = await fetch(SUBMIT_ENDPOINT, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(payload)
+        });
+        const result = await response.json();
+        formStatus.textContent = result.message;
+        if (result.ok) memberForm.reset();
+      } catch (err) {
+        console.error("Submission failed.", err);
+        formStatus.textContent =
+          "Could not reach the server. Please try again, or email {{ site.email }}.";
+      } finally {
+        formButton.disabled = false;
+      }
+    });
+  }
+
+  // Initialize
+  setupSorting();
+  loadSection(dbTabFromUrl()); // honours ?db=... , otherwise Grad Students
+</script>
