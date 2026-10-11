@@ -8,7 +8,7 @@ event_time: "9:00 am - 2:30 pm"
 location: Hocking Hills
 deadline: "2026-10-14"
 image: "https://drive.google.com/thumbnail?id=1P6hnGQdxd_dx_pFKzVVQgOaM1neTpKvE&sz=w1200"
-payments: []
+payments: ["Membership fee: Paid","Entry fee: Paid","Both paid"]
 questions: [{"label":"Do you need ride?","type":"choice","options":["Yes","No"],"required":false},{"label":"Would you be able to provide a ride for others?","type":"choice","options":["Yes","No"],"required":false},{"label":"If yes, how many passenger seats are available?","type":"choice","options":["1","2","3","4","5","6"],"required":false}]
 description: |
   Hi everyone! Fall is here, and BGSA is excited to invite you to a Fall Color Adventure at Hocking Hills! 
