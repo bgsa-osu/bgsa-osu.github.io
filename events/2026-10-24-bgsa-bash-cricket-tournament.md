@@ -4,7 +4,7 @@ title: BGSA Bash Cricket Tournament
 permalink: /events/2026-10-24-bgsa-bash-cricket-tournament/
 event_id: "evt-1792162852998"
 event_date: "2026-10-24"
-event_time: "2:00 pm"
+event_time: "2:00 PM"
 location: Ohio State University Adventure Recreation Center
 deadline: "2026-10-22"
 image: "https://drive.google.com/thumbnail?id=1iRwGstlptnisWwwkq8b1BdGo2gCcNHJb&sz=w1200"
