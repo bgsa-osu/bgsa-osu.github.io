@@ -16,7 +16,7 @@ description: |
   📅 Date: Sunday, November 1, 2026
   🕓 Time: 4:00–6:00 PM
   📍 Venue: Blackburn Victory Room
-  Tournament Games: 29 and Ludu. Ludu teammates will be randomly selected. Players choosing 29 may mention a preferred teammate’s name in the registration form.
+   29 or Ludu Tournament: Ludu teammates will be randomly selected. Players choosing 29 may mention a preferred teammate’s name in the registration form.
   Other Games: Uno, Sequence, Carrom (subject to popularity), and Chess (subject to popularity). You may select multiple games, whether or not you participate in the 29 or Ludu tournaments.
   Participation Fee: The tournament is free for BGSA members who have paid their annual membership fee. Non-members can participate for $5 or become BGSA members to enjoy this event and other membership benefits.
   Player Registration: Please complete the RSVP form by October 30, 2026, and indicate your game preferences.
