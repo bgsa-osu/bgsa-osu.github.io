@@ -51,7 +51,6 @@ layout: default
         "id": {{ page.event_id | jsonify }},
         "title": {{ page.title | jsonify }},
         "date": {{ page.event_date | jsonify }},
-        "individual": {{ rsvp_profile.individual_registration | default: page.individual_registration | default: false | jsonify }},
         "verifyQuestions": {% if rsvp_profile %}true{% else %}false{% endif %},
         "payments": {{ rsvp_profile.payments | default: page.payments | jsonify }},
         "questions": {{ rsvp_profile.questions | default: page.questions | jsonify }}

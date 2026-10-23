@@ -1,7 +1,6 @@
 # Event-specific RSVP controls survive event edits made through the officer admin.
 BGSA Indoor Games Tournament:
   image: /assets/jpeg/indoor_games_flyer.jpeg
-  individual_registration: true
   payments:
   - label: Membership paid
     value: 'Membership fee: Paid'

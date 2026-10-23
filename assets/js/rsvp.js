@@ -84,7 +84,7 @@
   });
   form.appendChild(field("Are you at Ohio State?", affiliation));
 
-  const nameRow = field(event.individual ? "OSU ID (Name.#)" : "tOSU Name.#", nameNumber);
+  const nameRow = field("tOSU Name.#", nameNumber);
   const emailRow = field("Email", email);
   form.append(nameRow, emailRow);
 
@@ -105,7 +105,7 @@
     field("Adults attending (including you)", adults),
     field("Children attending with you", kids)
   );
-  if (!event.individual) form.appendChild(counts);
+  form.appendChild(counts);
 
   let payment = null;
   if ((event.payments || []).length) {
