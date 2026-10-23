@@ -531,6 +531,14 @@ layout: default
                 form will not mention payment at all.</p>
             </div>
             <div class="member-form__row">
+              <label class="officer__check">
+                <input id="ev-children" type="checkbox" checked />
+                <span>Ask how many children are attending</span>
+              </label>
+              <p class="member-form__note">Untick to leave “Children attending with you”
+                out of this event’s RSVP form.</p>
+            </div>
+            <div class="member-form__row">
               <label for="ev-desc">Description</label>
               <textarea id="ev-desc" rows="4" maxlength="2000"></textarea>
             </div>
@@ -822,6 +830,7 @@ layout: default
           deadline: text(event.deadline),
           page: text(event.page),
           payments: event.payments || [],
+          askChildren: event.askChildren !== false,
           // The script calls a multiple-choice question "choice"; the form
           // builder below has always called it "select".
           extras: (event.questions || []).map(q => ({
@@ -911,9 +920,9 @@ layout: default
       applyAffiliation();
 
       const pair = document.createElement("div");
-      pair.className = "member-form__pair";
+      pair.className = event.askChildren === false ? "" : "member-form__pair";
       pair.appendChild(field("Adults attending (including you)", adults));
-      pair.appendChild(field("Children attending with you", kids));
+      if (event.askChildren !== false) pair.appendChild(field("Children attending with you", kids));
       form.appendChild(pair);
 
       let payment = null;
@@ -1006,7 +1015,7 @@ layout: default
               nameNumber: nameNumber.value,
               email: email.value,
               adults: adults.value,
-              children: kids.value,
+              children: event.askChildren === false ? "0" : kids.value,
               payment: payment ? payment.value : "",
               answers: answers,
               website: trapInput.value
@@ -1802,6 +1811,7 @@ layout: default
         document.getElementById("ev-location").value = event.location || "";
         document.getElementById("ev-deadline").value = published.deadline || "";
         document.getElementById("ev-pay").checked = event.askPayment !== false;
+        document.getElementById("ev-children").checked = event.askChildren !== false;
         document.getElementById("ev-desc").value = event.description || "";
         evPhoto.value = "";
 
@@ -1819,6 +1829,7 @@ layout: default
         photoNote.textContent = "Resized before upload, so a photo straight off a phone is fine.";
         officerForm.reset();
         document.getElementById("ev-pay").checked = true; // reset() unticks it
+        document.getElementById("ev-children").checked = true;
         questionList.innerHTML = "";
       }
 
@@ -1879,6 +1890,7 @@ layout: default
             location: document.getElementById("ev-location").value,
             deadline: document.getElementById("ev-deadline").value,
             askPayment: document.getElementById("ev-pay").checked,
+            askChildren: document.getElementById("ev-children").checked,
             description: document.getElementById("ev-desc").value,
             questions: collectQuestions(),
             photo: photo

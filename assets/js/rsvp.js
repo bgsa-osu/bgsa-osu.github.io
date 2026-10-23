@@ -100,11 +100,9 @@
   applyAffiliation();
 
   const counts = document.createElement("div");
-  counts.className = "member-form__pair";
-  counts.append(
-    field("Adults attending (including you)", adults),
-    field("Children attending with you", kids)
-  );
+  counts.className = event.askChildren === false ? "" : "member-form__pair";
+  counts.appendChild(field("Adults attending (including you)", adults));
+  if (event.askChildren !== false) counts.appendChild(field("Children attending with you", kids));
   form.appendChild(counts);
 
   let payment = null;
@@ -241,7 +239,7 @@
           nameNumber: nameNumber.value,
           email: email.value,
           adults: adults.value,
-          children: kids.value,
+          children: event.askChildren === false ? "0" : kids.value,
           payment: payment ? payment.value : "",
           answers: answers,
           website: trapInput.value

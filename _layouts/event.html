@@ -51,6 +51,7 @@ layout: default
         "id": {{ page.event_id | jsonify }},
         "title": {{ page.title | jsonify }},
         "date": {{ page.event_date | jsonify }},
+        "askChildren": {% if page.ask_children == false %}false{% else %}true{% endif %},
         "verifyQuestions": {% if rsvp_profile %}true{% else %}false{% endif %},
         "payments": {{ rsvp_profile.payments | default: page.payments | jsonify }},
         "questions": {{ rsvp_profile.questions | default: page.questions | jsonify }}
