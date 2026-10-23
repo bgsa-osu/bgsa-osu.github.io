@@ -166,7 +166,7 @@
     if (question.after === "identity") emailRow.after(row);
     else form.appendChild(row);
     return {
-      label: question.label, question, control, row,
+      label: question.label, answerLabel: question.label, question, control, row,
       value: () => checkboxes.length
         ? checkboxes.filter(box => box.checked).map(box => box.value).join(", ")
         : control.value || ""
@@ -223,7 +223,7 @@
 
     const answers = {};
     extras.forEach(extra => {
-      if (!extra.row.hidden) answers[extra.label] = extra.value();
+      if (!extra.row.hidden) answers[extra.answerLabel] = extra.value();
     });
 
     try {
@@ -273,8 +273,15 @@
       const match = (result.events || []).find(e => event.id
         ? e.id === event.id
         : e.name === event.title && e.date === event.date);
-      const questionsReady = match && (!event.verifyQuestions || extras.every(extra =>
-        (match.questions || []).some(question => question.label === extra.label)));
+      const questionsReady = match && (!event.verifyQuestions || extras.every(extra => {
+        const questions = match.questions || [];
+        const current = questions.find(question => question.label === extra.label);
+        const previous = questions.find(question =>
+          (extra.question.previous_labels || []).includes(question.label));
+        const stored = current || previous;
+        if (stored) extra.answerLabel = stored.label;
+        return !!stored;
+      }));
       if (!match || !questionsReady) {
         if (!registrationReady) status.textContent = "Registration is not open yet. Please check back soon.";
         return;

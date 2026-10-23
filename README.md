@@ -99,6 +99,10 @@ settings survive event edits in admin. The Indoor Games form uses required phone
 and game fields, an optional teammate question shown only for 29, and checkboxes
 for other games. Payment labels map to the RSVP service's existing payment values.
 When saving this event in admin, its four response questions are added automatically.
+Renamed custom questions can list `previous_labels` in the profile. Admin normalizes
+those labels and removes duplicate legacy questions on save. The RSVP form can
+still submit to the previous response column until the renamed question is saved;
+existing spreadsheet columns and prior responses are retained.
 
 If an event page has no `event_id`, registration stays disabled until the live
 service returns an event with the same title and date. Once the event exists,

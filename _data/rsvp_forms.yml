@@ -11,7 +11,8 @@ BGSA Indoor Games Tournament:
     type: tel
     required: true
     after: identity
-  - label: Games choice
+  - label: 29 or Ludu Tournament
+    previous_labels: ["Games choice", "Choose 29 or Ludu"]
     type: choice
     required: true
     options:
@@ -21,7 +22,7 @@ BGSA Indoor Games Tournament:
   - label: Preferred teammate for 29 (optional)
     type: text
     show_if:
-      question: Games choice
+      question: 29 or Ludu Tournament
       equals: '29'
   - label: Other games (select all that apply)
     type: multichoice
