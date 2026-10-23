@@ -91,6 +91,8 @@ screen readers (otherwise the title is used).
 Create events through the officer admin so the RSVP service creates their response
 storage. Pending event pages in `events/` appear in Upcoming before registration
 is activated. Registered events continue to use the live feed.
+Published event pages supply the dates and RSVP deadlines shown in Upcoming
+and loaded into the admin editor. Live data supplies activation and response counts.
 
 `_data/rsvp_forms.yml` defines custom RSVP controls by exact event title. These
 settings survive event edits in admin. The Indoor Games form uses required phone

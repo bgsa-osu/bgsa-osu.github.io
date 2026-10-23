@@ -2,10 +2,9 @@
 <script type="application/json" id="site-events">
 [
 {%- for event in featured_events %}
-  {%- unless event.event_id %}
-  {%- if has_pending_event %},{% endif %}
   {
     "id": {{ event.event_id | default: event.url | jsonify }},
+    "pending": {% if event.event_id %}false{% else %}true{% endif %},
     "name": {{ event.title | jsonify }},
     "date": {{ event.event_date | jsonify }},
     "time": {{ event.event_time | jsonify }},
@@ -14,9 +13,7 @@
     "photo": {{ event.image | relative_url | jsonify }},
     "deadline": {{ event.deadline | jsonify }},
     "page": {{ event.url | relative_url | jsonify }}
-  }
-  {%- assign has_pending_event = true %}
-  {%- endunless %}
+  }{% unless forloop.last %},{% endunless %}
 {%- endfor %}
 ]
 </script>

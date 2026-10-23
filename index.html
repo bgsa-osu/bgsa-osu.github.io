@@ -697,6 +697,7 @@ layout: default
     const section = document.getElementById("upcoming");
     const list = document.getElementById("upcoming-list");
     if (!section || !list) return;
+    const publishedEvents = JSON.parse(document.getElementById("site-events").textContent);
 
 
     // ---- Helpers ----------------------------------------------------------
@@ -782,7 +783,7 @@ layout: default
     // ---- Loading ----------------------------------------------------------
 
     async function loadEvents() {
-      const localEvents = JSON.parse(document.getElementById("site-events").textContent);
+      const localEvents = publishedEvents;
       let liveEvents = [];
       try {
         const response = await fetch(ENDPOINT, { cache: "no-store" });
@@ -791,14 +792,22 @@ layout: default
         if (!result.ok) throw new Error(result.message || "Events feed failed.");
         liveEvents = result.events || [];
       } catch (err) {
-        if (!localEvents.length) throw err;
+        if (!localEvents.some(event => event.pending)) throw err;
         console.warn("Showing published events while the live feed is unavailable.", err);
       }
       const events = liveEvents.slice();
       localEvents.forEach(local => {
-        const match = events.findIndex(event => event.name === local.name && event.date === local.date);
-        if (match < 0) events.push(local);
-        else events[match] = Object.assign({}, local, events[match], { page: local.page });
+        const match = events.findIndex(event => event.id === local.id ||
+          (event.name === local.name && event.date === local.date));
+        if (match < 0) {
+          if (local.pending) events.push(local);
+        } else {
+          // Use the dates saved in the event page across the listing and editor.
+          // Live data still controls activation, questions and response counts.
+          events[match] = Object.assign({}, local, events[match], {
+            date: local.date, deadline: local.deadline, page: local.page
+          });
+        }
       });
 
       return events
@@ -1528,6 +1537,7 @@ layout: default
       }
 
       function eventRow(event) {
+        const published = publishedEvents.find(item => item.id === event.id) || event;
         const row = document.createElement("div");
         row.className = "officer__event" + (event.open ? "" : " is-closed");
 
@@ -1538,8 +1548,8 @@ layout: default
         const meta = document.createElement("div");
         meta.className = "officer__event-meta";
         meta.textContent = [
-          event.date,
-          event.deadline ? "RSVP by " + event.deadline : "",
+          published.date,
+          published.deadline ? "RSVP by " + published.deadline : "",
           event.rsvps + (event.rsvps === 1 ? " reply" : " replies"),
           event.attendees + " coming",
           event.open ? "" : "deactivated"
@@ -1779,6 +1789,7 @@ layout: default
       }
 
       function startEditing(event) {
+        const published = publishedEvents.find(item => item.id === event.id) || event;
         editingId = event.id;
         formHeading.textContent = "Edit: " + event.name;
         submitButton.textContent = "Save changes";
@@ -1786,10 +1797,10 @@ layout: default
         photoNote.textContent = "Leave empty to keep the current photo.";
 
         document.getElementById("ev-name").value = event.name || "";
-        document.getElementById("ev-date").value = event.date || "";
+        document.getElementById("ev-date").value = published.date || "";
         document.getElementById("ev-time").value = event.time || "";
         document.getElementById("ev-location").value = event.location || "";
-        document.getElementById("ev-deadline").value = event.deadline || "";
+        document.getElementById("ev-deadline").value = published.deadline || "";
         document.getElementById("ev-pay").checked = event.askPayment !== false;
         document.getElementById("ev-desc").value = event.description || "";
         evPhoto.value = "";
@@ -1858,7 +1869,7 @@ layout: default
 
         try {
           const photo = await readPhoto(evPhoto.files[0]);
-          const result = await post({
+          const details = {
             action: editingId ? "updateEvent" : "createEvent",
             token: token(),
             id: editingId,
@@ -1871,10 +1882,16 @@ layout: default
             description: document.getElementById("ev-desc").value,
             questions: collectQuestions(),
             photo: photo
-          });
+          };
+          const result = await post(details);
 
           evStatus.textContent = result.message;
           if (result.ok) {
+            const published = publishedEvents.find(item => item.id === editingId);
+            if (published) {
+              published.date = details.date;
+              published.deadline = details.deadline;
+            }
             stopEditing();
             loadOfficerEvents();
             refresh();
