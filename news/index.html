@@ -810,10 +810,10 @@ layout: default
         if (match < 0) {
           if (local.pending) events.push(local);
         } else {
-          // Use the dates saved in the event page across the listing and editor.
+          // Use the details saved in the event page across the listing and editor.
           // Live data still controls activation, questions and response counts.
           events[match] = Object.assign({}, local, events[match], {
-            date: local.date, deadline: local.deadline, page: local.page
+            date: local.date, deadline: local.deadline, description: local.description, page: local.page
           });
         }
       });
@@ -1830,7 +1830,7 @@ layout: default
         document.getElementById("ev-deadline").value = published.deadline || "";
         document.getElementById("ev-pay").checked = event.askPayment !== false;
         document.getElementById("ev-children").checked = event.askChildren !== false;
-        document.getElementById("ev-desc").value = event.description || "";
+        document.getElementById("ev-desc").value = published.description || "";
         evPhoto.value = "";
 
         questionList.innerHTML = "";
@@ -1921,6 +1921,7 @@ layout: default
             if (published) {
               published.date = details.date;
               published.deadline = details.deadline;
+              published.description = details.description;
             }
             stopEditing();
             loadOfficerEvents();
