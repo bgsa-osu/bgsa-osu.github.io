@@ -16,6 +16,7 @@ BGSA Indoor Games Tournament:
     options:
     - '29'
     - Ludu (teammates will be randomly selected)
+    - Neither
   - label: Preferred teammate for 29 (optional)
     type: text
     show_if:
