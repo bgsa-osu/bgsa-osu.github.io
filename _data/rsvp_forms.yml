@@ -10,6 +10,7 @@ BGSA Indoor Games Tournament:
   - label: Phone No
     type: tel
     required: true
+    after: identity
   - label: Games choice
     type: choice
     required: true

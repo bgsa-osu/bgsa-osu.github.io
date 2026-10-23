@@ -165,7 +165,8 @@
     control.id = id;
     control.required = !!question.required;
     row = question.type === "multichoice" ? control : field(question.label, control);
-    form.appendChild(row);
+    if (question.after === "identity") emailRow.after(row);
+    else form.appendChild(row);
     return {
       label: question.label, question, control, row,
       value: () => checkboxes.length
