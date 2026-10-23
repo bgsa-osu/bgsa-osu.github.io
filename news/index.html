@@ -530,9 +530,9 @@ layout: default
               <p class="member-form__note">Leave unticked for a free event, and the RSVP
                 form will not mention payment at all.</p>
             </div>
-            <div class="member-form__row">
+            <div class="member-form__row" id="ev-children-setting" hidden>
               <label class="officer__check">
-                <input id="ev-children" type="checkbox" checked />
+                <input id="ev-children" type="checkbox" checked disabled />
                 <span>Ask how many children are attending</span>
               </label>
               <p class="member-form__note">Untick to leave “Children attending with you”
@@ -1346,6 +1346,7 @@ layout: default
       const photoNote = document.getElementById("ev-photo-note");
 
       let editingId = null;
+      let childrenSettingSupported = false;
 
       // The token lives in sessionStorage, not localStorage: closing the tab
       // signs the officer out, which is the right default on a shared laptop.
@@ -1535,6 +1536,10 @@ layout: default
           }
           return;
         }
+
+        childrenSettingSupported = !!(result.capabilities && result.capabilities.askChildren === true);
+        document.getElementById("ev-children-setting").hidden = !childrenSettingSupported;
+        document.getElementById("ev-children").disabled = !childrenSettingSupported;
 
         eventsBox.innerHTML = "";
         if (!result.events.length) {
@@ -1890,7 +1895,7 @@ layout: default
             location: document.getElementById("ev-location").value,
             deadline: document.getElementById("ev-deadline").value,
             askPayment: document.getElementById("ev-pay").checked,
-            askChildren: document.getElementById("ev-children").checked,
+            askChildren: childrenSettingSupported ? document.getElementById("ev-children").checked : undefined,
             description: document.getElementById("ev-desc").value,
             questions: collectQuestions(),
             photo: photo
