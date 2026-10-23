@@ -51,6 +51,7 @@ layout: default
          arrive by fetch and replace this; if that never happens -- slow
          feed, blocked script, stale file -- the section is still here and
          the nav link still leads somewhere. -->
+    {% include upcoming-events.html %}
     <div id="upcoming-list" class="upcoming__list">
       <p class="upcoming__empty">
         Nothing scheduled just now. Follow BGSA on Facebook and Instagram for upcoming events.
@@ -781,13 +782,26 @@ layout: default
     // ---- Loading ----------------------------------------------------------
 
     async function loadEvents() {
-      const response = await fetch(ENDPOINT, { cache: "no-store" });
-      if (!response.ok) throw new Error("Events feed responded " + response.status);
+      const localEvents = JSON.parse(document.getElementById("site-events").textContent);
+      let liveEvents = [];
+      try {
+        const response = await fetch(ENDPOINT, { cache: "no-store" });
+        if (!response.ok) throw new Error("Events feed responded " + response.status);
+        const result = await response.json();
+        if (!result.ok) throw new Error(result.message || "Events feed failed.");
+        liveEvents = result.events || [];
+      } catch (err) {
+        if (!localEvents.length) throw err;
+        console.warn("Showing published events while the live feed is unavailable.", err);
+      }
+      const events = liveEvents.slice();
+      localEvents.forEach(local => {
+        const match = events.findIndex(event => event.name === local.name && event.date === local.date);
+        if (match < 0) events.push(local);
+        else events[match] = Object.assign({}, local, events[match], { page: local.page });
+      });
 
-      const result = await response.json();
-      if (!result.ok) throw new Error(result.message || "Events feed failed.");
-
-      return (result.events || [])
+      return events
         .map(event => ({
           id: text(event.id),
           title: text(event.name),
@@ -1740,7 +1754,7 @@ layout: default
         .addEventListener("click", () => addQuestionRow());
 
       function collectQuestions() {
-        return Array.from(questionList.querySelectorAll(".officer__question"))
+        const questions = Array.from(questionList.querySelectorAll(".officer__question"))
           .map(row => {
             const inputs = row.querySelectorAll("input");
             const label = inputs[0].value.trim();
@@ -1751,6 +1765,17 @@ layout: default
             };
           })
           .filter(Boolean);
+        // The server needs a response column for each custom RSVP control.
+        const profiles = JSON.parse(document.getElementById("rsvp-profiles").textContent);
+        const profile = profiles[document.getElementById("ev-name").value.trim()];
+        if (profile) {
+          profile.questions.forEach(question => {
+            if (!questions.some(item => item.label === question.label)) {
+              questions.push({ label: question.label, options: [] });
+            }
+          });
+        }
+        return questions;
       }
 
       function startEditing(event) {

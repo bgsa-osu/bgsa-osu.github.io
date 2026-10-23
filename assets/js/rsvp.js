@@ -37,6 +37,8 @@
 
   /* ---- form building ---- */
 
+  let registrationReady = !!event.id && !event.verifyQuestions;
+
   function field(labelText, control) {
     const wrap = document.createElement("div");
     wrap.className = "member-form__row";
@@ -82,7 +84,7 @@
   });
   form.appendChild(field("Are you at Ohio State?", affiliation));
 
-  const nameRow = field("tOSU Name.#", nameNumber);
+  const nameRow = field(event.individual ? "OSU ID (Name.#)" : "tOSU Name.#", nameNumber);
   const emailRow = field("Email", email);
   form.append(nameRow, emailRow);
 
@@ -103,7 +105,7 @@
     field("Adults attending (including you)", adults),
     field("Children attending with you", kids)
   );
-  form.appendChild(counts);
+  if (!event.individual) form.appendChild(counts);
 
   let payment = null;
   if ((event.payments || []).length) {
@@ -116,8 +118,8 @@
     payment.appendChild(blank);
     event.payments.forEach(option => {
       const el = document.createElement("option");
-      el.value = option;
-      el.textContent = option;
+      el.value = typeof option === "string" ? option : option.value;
+      el.textContent = typeof option === "string" ? option : option.label;
       payment.appendChild(el);
     });
     form.appendChild(field("Payment status", payment));
@@ -125,7 +127,24 @@
 
   const extras = (event.questions || []).map((question, index) => {
     let control;
-    if (question.type === "choice" && (question.options || []).length) {
+    let row;
+    const checkboxes = [];
+    const id = "rsvp-extra-" + index;
+    if (question.type === "multichoice") {
+      control = document.createElement("fieldset");
+      control.className = "rsvp__choices";
+      const legend = document.createElement("legend");
+      legend.textContent = question.label;
+      control.appendChild(legend);
+      (question.options || []).forEach((option, optionIndex) => {
+        const checkbox = input(id + "-" + optionIndex, "checkbox", false, { value: option });
+        const label = document.createElement("label");
+        label.htmlFor = checkbox.id;
+        label.append(checkbox, document.createTextNode(option));
+        control.appendChild(label);
+        checkboxes.push(checkbox);
+      });
+    } else if (question.type === "choice" && (question.options || []).length) {
       control = document.createElement("select");
       const blank = document.createElement("option");
       blank.value = "";
@@ -139,13 +158,36 @@
       });
     } else {
       control = document.createElement("input");
-      control.type = "text";
+      control.type = question.type === "tel" ? "tel" : "text";
+      if (question.type === "tel") control.autocomplete = "tel";
       control.maxLength = 200;
     }
-    control.id = "rsvp-extra-" + index;
-    form.appendChild(field(question.label, control));
-    return { label: question.label, control: control };
+    control.id = id;
+    control.required = !!question.required;
+    row = question.type === "multichoice" ? control : field(question.label, control);
+    form.appendChild(row);
+    return {
+      label: question.label, question, control, row,
+      value: () => checkboxes.length
+        ? checkboxes.filter(box => box.checked).map(box => box.value).join(", ")
+        : control.value || ""
+    };
   });
+
+  function applyConditions() {
+    extras.forEach(extra => {
+      const condition = extra.question.show_if;
+      if (!condition) return;
+      const source = extras.find(item => item.label === condition.question);
+      const visible = !!source && source.value() === condition.equals;
+      extra.row.hidden = !visible;
+      extra.control.disabled = !visible;
+      extra.control.required = visible && !!extra.question.required;
+      if (!visible) extra.control.value = "";
+    });
+  }
+  form.addEventListener("change", applyConditions);
+  applyConditions();
 
   // Honeypot, as on every other form here.
   const trap = document.createElement("div");
@@ -159,6 +201,7 @@
   submit.type = "submit";
   submit.className = "btn btn--theme";
   submit.textContent = "Send RSVP";
+  submit.disabled = !registrationReady;
   form.appendChild(submit);
 
   const status = document.createElement("p");
@@ -173,13 +216,16 @@
 
   form.addEventListener("submit", async e => {
     e.preventDefault();
+    if (!registrationReady) return;
     if (!form.checkValidity()) return form.reportValidity();
 
     submit.disabled = true;
     status.textContent = "Sending\u2026";
 
     const answers = {};
-    extras.forEach(extra => { answers[extra.label] = extra.control.value; });
+    extras.forEach(extra => {
+      if (!extra.row.hidden) answers[extra.label] = extra.value();
+    });
 
     try {
       const response = await fetch(ENDPOINT, {
@@ -205,6 +251,7 @@
       if (result.ok) {
         form.reset();
         applyAffiliation();
+        applyConditions();
         showCount();
       }
     } catch (err) {
@@ -224,8 +271,21 @@
     try {
       const response = await fetch(ENDPOINT, { cache: "no-store" });
       const result = await response.json();
-      const match = (result.events || []).find(e => e.id === event.id);
-      if (!match) return;
+      const match = (result.events || []).find(e => event.id
+        ? e.id === event.id
+        : e.name === event.title && e.date === event.date);
+      const questionsReady = match && (!event.verifyQuestions || extras.every(extra =>
+        (match.questions || []).some(question => question.label === extra.label)));
+      if (!match || !questionsReady) {
+        if (!registrationReady) status.textContent = "Registration is not open yet. Please check back soon.";
+        return;
+      }
+      if (!registrationReady) {
+        event.id = match.id;
+        registrationReady = true;
+        submit.disabled = false;
+        status.textContent = "";
+      }
 
       countLine.textContent = match.rsvps
         ? match.rsvps + (match.rsvps === 1 ? " reply" : " replies") + ", " +
@@ -234,6 +294,7 @@
     } catch (err) {
       // A missing count is not worth an error message on the page.
       console.warn("Could not load the head count.", err);
+      if (!registrationReady) status.textContent = "Registration is temporarily unavailable. Please try again later.";
     }
   }
 

@@ -1,0 +1,31 @@
+# Event-specific RSVP controls survive event edits made through the officer admin.
+BGSA Indoor Games Tournament:
+  image: /assets/jpeg/indoor_games_flyer.jpeg
+  individual_registration: true
+  payments:
+  - label: Membership paid
+    value: 'Membership fee: Paid'
+  - label: Event fee paid
+    value: 'Entry fee: Paid'
+  questions:
+  - label: Phone No
+    type: tel
+    required: true
+  - label: Games choice
+    type: choice
+    required: true
+    options:
+    - '29'
+    - Ludu (teammates will be randomly selected)
+  - label: Preferred teammate for 29 (optional)
+    type: text
+    show_if:
+      question: Games choice
+      equals: '29'
+  - label: Other games (select all that apply)
+    type: multichoice
+    options:
+    - Uno
+    - Sequence
+    - Carrom (subject to popularity)
+    - Chess (subject to popularity)

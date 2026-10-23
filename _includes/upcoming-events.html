@@ -1,0 +1,24 @@
+{%- assign featured_events = site.pages | where: "layout", "event" | sort: "event_date" -%}
+<script type="application/json" id="site-events">
+[
+{%- for event in featured_events %}
+  {%- unless event.event_id %}
+  {%- if has_pending_event %},{% endif %}
+  {
+    "id": {{ event.event_id | default: event.url | jsonify }},
+    "name": {{ event.title | jsonify }},
+    "date": {{ event.event_date | jsonify }},
+    "time": {{ event.event_time | jsonify }},
+    "location": {{ event.location | jsonify }},
+    "description": {{ event.description | jsonify }},
+    "photo": {{ event.image | relative_url | jsonify }},
+    "deadline": {{ event.deadline | jsonify }},
+    "page": {{ event.url | relative_url | jsonify }}
+  }
+  {%- assign has_pending_event = true %}
+  {%- endunless %}
+{%- endfor %}
+]
+</script>
+
+<script type="application/json" id="rsvp-profiles">{{ site.data.rsvp_forms | jsonify }}</script>

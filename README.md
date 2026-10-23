@@ -86,6 +86,22 @@ image, and text.
 Optional: add `image_alt: "..."` under `image` to describe the photo for
 screen readers (otherwise the title is used).
 
+## Event registration forms
+
+Create events through the officer admin so the RSVP service creates their response
+storage. Pending event pages in `events/` appear in Upcoming before registration
+is activated. Registered events continue to use the live feed.
+
+`_data/rsvp_forms.yml` defines custom RSVP controls by exact event title. These
+settings survive event edits in admin. The Indoor Games form uses required phone
+and game fields, an optional teammate question shown only for 29, and checkboxes
+for other games. Payment labels map to the RSVP service's existing payment values.
+When saving this event in admin, its four response questions are added automatically.
+
+If an event page has no `event_id`, registration stays disabled until the live
+service returns an event with the same title and date. Once the event exists,
+the form uses its actual ID to submit responses.
+
 ## Add a blog story
 
 Same idea, in `blog/_posts/`:

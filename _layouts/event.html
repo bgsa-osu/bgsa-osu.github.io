@@ -1,6 +1,8 @@
 ---
 layout: default
 ---
+{%- assign rsvp_profile = site.data.rsvp_forms[page.title] -%}
+{%- assign event_image = rsvp_profile.image | default: page.image -%}
 <!--
   One page per event. The file is written by the Apps Script when an officer
   creates or edits an event, so Jekyll builds it like any post: the details
@@ -16,9 +18,9 @@ layout: default
 
     <h1 class="heading-primary event-page__title">{{ page.title }}</h1>
 
-    {%- if page.image %}
+    {%- if event_image %}
     <div class="event-page__photo">
-      <img src="{{ page.image }}" alt="" />
+      <img src="{{ event_image | relative_url }}" alt="{{ page.image_alt | default: page.title | escape }}" />
     </div>
     {%- endif %}
 
@@ -47,8 +49,12 @@ layout: default
     <script type="application/json" id="event-data">
       {
         "id": {{ page.event_id | jsonify }},
-        "payments": {{ page.payments | jsonify }},
-        "questions": {{ page.questions | jsonify }}
+        "title": {{ page.title | jsonify }},
+        "date": {{ page.event_date | jsonify }},
+        "individual": {{ rsvp_profile.individual_registration | default: page.individual_registration | default: false | jsonify }},
+        "verifyQuestions": {% if rsvp_profile %}true{% else %}false{% endif %},
+        "payments": {{ rsvp_profile.payments | default: page.payments | jsonify }},
+        "questions": {{ rsvp_profile.questions | default: page.questions | jsonify }}
       }
     </script>
 
