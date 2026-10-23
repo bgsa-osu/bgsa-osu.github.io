@@ -11,19 +11,14 @@ image: "https://drive.google.com/thumbnail?id=1iRwGstlptnisWwwkq8b1BdGo2gCcNHJb&
 payments: ["Membership fee: Paid","Entry fee: Paid","Both paid"]
 questions: []
 description: |
-  The Bangladesh Graduate Students Association (BGSA) at The Ohio State University is pleased to announce a Cricket Tournament on Saturday, October 24, 2026!
-  
-  Whether you would like to play or join us as a spectator, you are warmly welcome! It will be a great opportunity to enjoy the game, connect with friends, and support our community.
-  
-  📅 Date: Saturday, October 24, 2026  
-  🕑 Time: 2:00 PM  
-  📍 Venue: Ohio State University Adventure Recreation Center
-  
-  Player Auction: Friday, October 23, 2026, at 9:00 PM. The venue will be announced later.
-  
+  The Bangladesh Graduate Student Association (BGSA) at The Ohio State University is pleased to announce the BGSA Indoor Games Tournament on Sunday, November 1, 2026!
+  Whether you would like to compete or cheer on your friends, everyone is warmly welcome! Join us for an afternoon of friendly competition, games, and community fun.
+  📅 Date: Sunday, November 1, 2026
+  🕓 Time: 4:00–6:00 PM
+  📍 Venue: Blackburn Victory Room
+  Tournament Games: 29 and Ludu. Ludu teammates will be randomly selected. Players choosing 29 may mention a preferred teammate’s name in the registration form.
+  Other Games: Uno, Sequence, Carrom (subject to popularity), and Chess (subject to popularity). You may select multiple games, whether or not you participate in the 29 or Ludu tournaments.
   Participation Fee: The tournament is free for BGSA members who have paid their annual membership fee. Non-members can participate for $5 or become BGSA members to enjoy this event and other membership benefits.
-  
-  Player Registration: If you are interested in playing, please complete the registration form by October 22, 2026.
-  
-  We look forward to everyone's enthusiastic participation and support. See you on the field!
+  Player Registration: Please complete the RSVP form by October 30, 2026, and indicate your game preferences.
+  We look forward to everyone’s enthusiastic participation and support. See you at the game tables!
 ---
