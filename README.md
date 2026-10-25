@@ -86,6 +86,34 @@ image, and text.
 Optional: add `image_alt: "..."` under `image` to describe the photo for
 screen readers (otherwise the title is used).
 
+## Event registration forms
+
+Create events through the officer admin so the RSVP service creates their response
+storage. Pending event pages in `events/` appear in Upcoming before registration
+is activated. Registered events continue to use the live feed.
+Published event pages supply the dates and RSVP deadlines shown in Upcoming
+and loaded into the admin editor. Live data supplies activation and response counts.
+
+`_data/rsvp_forms.yml` defines custom RSVP controls by permanent `event_id`
+(legacy profiles keyed by title are also supported). These settings survive title
+and photo edits in admin. Edits to dates, times, location, and description likewise
+preserve the form controls and conditions. The event page uses the photo saved
+in admin. Payment labels map to the RSVP service's existing payment values.
+Questions have permanent IDs and answer keys separate from their editable labels.
+Admin label changes preserve input types, choices, field positions, conditions,
+and existing response columns. Legacy labels can list `previous_labels` for
+migration. See [safe question editing](docs/stable-question-labels.md) for the
+required service update and compatibility safeguards.
+
+Regression check: `python tests/rsvp-profile-identity.py` verifies that routine
+event edits preserve the custom form and other events retain their defaults.
+It requires PyYAML, python-liquid, Playwright, and Chrome/Chromium and intercepts
+all network requests so no real RSVP is submitted.
+
+If an event page has no `event_id`, registration stays disabled until the live
+service returns an event with the same title and date. Once the event exists,
+the form uses its actual ID to submit responses.
+
 ## Add a blog story
 
 Same idea, in `blog/_posts/`:
