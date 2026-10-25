@@ -101,7 +101,7 @@ with sync_playwright() as playwright:
         assert page.locator(".event-page__photo img").get_attribute("src") == event["image"]
         affiliation = page.get_by_label("Are you at Ohio State?", exact=True)
         assert affiliation.locator("option").all_text_contents() == [
-            "I am an Ohio State Student, Faculty, or Staff", "I am a family Member of an Ohio State Student, Faculty, or Staff Member", "I am a guest"
+            "I am an Ohio State student, faculty, or staff", "I am a family member of an Ohio State student, faculty, or staff member", "I am a guest"
         ]
         assert page.get_by_label("tOSU Name.#").evaluate("el=>el.required")
         assert page.get_by_label("Email", exact=True).is_hidden()

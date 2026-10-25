@@ -890,8 +890,8 @@ layout: default
       // what stops them replying twice.
       const affiliation = document.createElement("select");
       affiliation.id = "rsvp-aff-" + key;
-      const affiliations = [["osu", "I am an Ohio State Student, Faculty, or Staff"],
-        ["family", "I am a family Member of an Ohio State Student, Faculty, or Staff Member"], ["guest", "I am a guest"]];
+      const affiliations = [["osu", "I am an Ohio State student, faculty, or staff"],
+        ["family", "I am a family member of an Ohio State student, faculty, or staff member"], ["guest", "I am a guest"]];
       affiliations.forEach(pair => {
         const option = document.createElement("option");
         option.value = pair[0];

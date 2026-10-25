@@ -80,7 +80,7 @@
   // Family members and guests use email instead of Name.#.
   const affiliation = document.createElement("select");
   affiliation.id = "rsvp-aff";
-  [["osu", "I am an Ohio State Student, Faculty, or Staff"], ["family", "I am a family Member of an Ohio State Student, Faculty, or Staff Member"], ["guest", "I am a guest"]].forEach(pair => {
+  [["osu", "I am an Ohio State student, faculty, or staff"], ["family", "I am a family member of an Ohio State student, faculty, or staff member"], ["guest", "I am a guest"]].forEach(pair => {
     const option = document.createElement("option");
     option.value = pair[0];
     option.textContent = pair[1];

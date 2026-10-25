@@ -42,8 +42,8 @@ Keep that deployment's URL. Reload Admin to enable label editing.
 
 The affiliation choices are:
 
-1. I am an Ohio State Student, Faculty, or Staff — valid tOSU Name.# required.
-2. I am a family Member of an Ohio State Student, Faculty, or Staff Member — email required; no tOSU ID.
+1. I am an Ohio State student, faculty, or staff — valid tOSU Name.# required.
+2. I am a family member of an Ohio State student, faculty, or staff member — email required; no tOSU ID.
 3. I am a guest — email required; no tOSU ID.
 
 The question is “Are you at Ohio State?” and the ID label is simply `tOSU Name.#`.
