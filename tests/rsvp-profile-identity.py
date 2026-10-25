@@ -99,9 +99,9 @@ with sync_playwright() as playwright:
         page.goto("https://rsvp-preview.test/event/")
         page.wait_for_function("!document.querySelector('button[type=submit]').disabled")
         assert page.locator(".event-page__photo img").get_attribute("src") == event["image"]
-        affiliation = page.get_by_label("Your affiliation", exact=True)
+        affiliation = page.get_by_label("Are you at Ohio State?", exact=True)
         assert affiliation.locator("option").all_text_contents() == [
-            "Ohio State Student, Faculty, or Staff", "Family Member of an Ohio State Student, Faculty, or Staff Member", "Guest"
+            "I am an Ohio State Student, Faculty, or Staff", "I am a family Member of an Ohio State Student, Faculty, or Staff Member", "I am a guest"
         ]
         assert page.get_by_label("tOSU Name.#").evaluate("el=>el.required")
         assert page.get_by_label("Email", exact=True).is_hidden()
@@ -168,6 +168,8 @@ with sync_playwright() as playwright:
     page.wait_for_function("!document.querySelector('button[type=submit]').disabled")
     assert page.get_by_label("tOSU Name.#").evaluate("el=>el.required")
     assert page.get_by_label("Email", exact=True).is_hidden()
+    assert page.get_by_label("Are you at Ohio State?", exact=True).locator("option").count() == 3
+    assert page.get_by_label("Are you at Ohio State?", exact=True).locator('option[value="family"]').is_disabled()
     page.close()
     browser.close()
 print("Passed: routine event edits retain phone position, game controls, teammate logic, children setting, three affiliation choices, and RSVP answers.")

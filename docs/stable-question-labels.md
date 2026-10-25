@@ -42,13 +42,14 @@ Keep that deployment's URL. Reload Admin to enable label editing.
 
 The affiliation choices are:
 
-1. Ohio State Student, Faculty, or Staff — valid tOSU Name.# required.
-2. Family Member of an Ohio State Student, Faculty, or Staff Member — email required; no tOSU ID.
-3. Guest — email required; no tOSU ID.
+1. I am an Ohio State Student, Faculty, or Staff — valid tOSU Name.# required.
+2. I am a family Member of an Ohio State Student, Faculty, or Staff Member — email required; no tOSU ID.
+3. I am a guest — email required; no tOSU ID.
 
-The ID label is simply `tOSU Name.#`. The website adds the family option once the
-service advertises `capabilities.familyAffiliation: true`. Until deployment,
-older services retain their supported Ohio State/guest options. Duplicate checks
+The question is “Are you at Ohio State?” and the ID label is simply `tOSU Name.#`.
+All three choices are visible. Family registration enables once the service
+advertises `capabilities.familyAffiliation: true`; until deployment that option
+is disabled so an older service cannot incorrectly reject or mislabel families. Duplicate checks
 use email plus any supplied Name.#. The phone field follows the OSU ID for the
 first group and email for family members and guests.
 

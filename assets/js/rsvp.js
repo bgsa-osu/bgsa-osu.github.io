@@ -80,13 +80,14 @@
   // Family members and guests use email instead of Name.#.
   const affiliation = document.createElement("select");
   affiliation.id = "rsvp-aff";
-  [["osu", "Ohio State Student, Faculty, or Staff"], ["guest", "Guest"]].forEach(pair => {
+  [["osu", "I am an Ohio State Student, Faculty, or Staff"], ["family", "I am a family Member of an Ohio State Student, Faculty, or Staff Member"], ["guest", "I am a guest"]].forEach(pair => {
     const option = document.createElement("option");
     option.value = pair[0];
     option.textContent = pair[1];
+    option.disabled = pair[0] === "family";
     affiliation.appendChild(option);
   });
-  form.appendChild(field("Your affiliation", affiliation));
+  form.appendChild(field("Are you at Ohio State?", affiliation));
 
   const nameRow = field("tOSU Name.#", nameNumber);
   const emailRow = field("Email", email);
@@ -291,13 +292,8 @@
     try {
       const response = await fetch(ENDPOINT, { cache: "no-store" });
       const result = await response.json();
-      if (result.capabilities && result.capabilities.familyAffiliation === true &&
-          !affiliation.querySelector('option[value="family"]')) {
-        const option = document.createElement("option");
-        option.value = "family";
-        option.textContent = "Family Member of an Ohio State Student, Faculty, or Staff Member";
-        affiliation.insertBefore(option, affiliation.querySelector('option[value="guest"]'));
-      }
+      affiliation.querySelector('option[value="family"]').disabled =
+        !(result.capabilities && result.capabilities.familyAffiliation === true);
       const match = (result.events || []).find(e => event.id
         ? e.id === event.id
         : e.name === event.title && e.date === event.date);

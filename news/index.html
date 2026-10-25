@@ -890,13 +890,13 @@ layout: default
       // what stops them replying twice.
       const affiliation = document.createElement("select");
       affiliation.id = "rsvp-aff-" + key;
-      const affiliations = [["osu", "Ohio State Student, Faculty, or Staff"]];
-      if (event.familyAffiliation) affiliations.push(["family", "Family Member of an Ohio State Student, Faculty, or Staff Member"]);
-      affiliations.push(["guest", "Guest"]);
+      const affiliations = [["osu", "I am an Ohio State Student, Faculty, or Staff"],
+        ["family", "I am a family Member of an Ohio State Student, Faculty, or Staff Member"], ["guest", "I am a guest"]];
       affiliations.forEach(pair => {
         const option = document.createElement("option");
         option.value = pair[0];
         option.textContent = pair[1];
+        option.disabled = pair[0] === "family" && !event.familyAffiliation;
         affiliation.appendChild(option);
       });
       const adults = input("rsvp-adults-" + key, "number", true, { min: 1, max: 20, value: 1 });
@@ -908,7 +908,7 @@ layout: default
       names.appendChild(field("Last name", last));
       form.appendChild(names);
 
-      form.appendChild(field("Your affiliation", affiliation));
+      form.appendChild(field("Are you at Ohio State?", affiliation));
 
       const nameNumberRow = field("tOSU Name.#", nameNumber);
       const emailRow = field("Email", email);
