@@ -29,6 +29,7 @@ env = Environment()
 env.add_filter("jsonify", json.dumps)
 env.add_filter("relative_url", lambda value: value or "")
 script = (ROOT / "assets/js/rsvp.js").read_text()
+profile_script = (ROOT / "assets/js/rsvp-profile.js").read_text()
 
 # Other events keep their default forms rather than inheriting this customization.
 for path in (ROOT / "events").glob("*.md"):
@@ -54,7 +55,17 @@ with sync_playwright() as playwright:
         dict(fixture, event_date="2026-11-02", event_time="1–5 PM", location="Another room",
              deadline="2026-10-31", description="Revised event description.", ask_children=True),
     ]
+    renamed_labels = {
+        "phone": "Contact telephone", "tournament": "Your tournament preference",
+        "teammate": "Your preferred partner", "other-games": "Additional games"
+    }
+    renamed = dict(fixture)
+    renamed["questions"] = [dict(id=q["id"], key=q["label"], label=renamed_labels[q["id"]], type="text", options=[])
+                            for q in profile["questions"]]
+    variants.append(renamed)
     for index, event in enumerate(variants):
+        captions = {q["id"]: next((item["label"] for item in event["questions"] if item.get("id") == q["id"]), q["label"])
+                    for q in profile["questions"]}
         rendered = env.from_string(layout).render(page=event, site={"data": {"rsvp_forms": profiles}})
         page = browser.new_page()
         errors, submissions = [], []
@@ -64,7 +75,9 @@ with sync_playwright() as playwright:
             request = route.request
             url = urlparse(request.url)
             if url.hostname == "rsvp-preview.test":
-                if url.path == "/assets/js/rsvp.js":
+                if url.path == "/assets/js/rsvp-profile.js":
+                    route.fulfill(content_type="application/javascript", body=profile_script)
+                elif url.path == "/assets/js/rsvp.js":
                     route.fulfill(content_type="application/javascript", body=script)
                 else:
                     route.fulfill(content_type="text/html; charset=utf-8", body='<meta charset="UTF-8">' + rendered)
@@ -73,7 +86,7 @@ with sync_playwright() as playwright:
                     submissions.append(request.post_data_json)
                     route.fulfill(json={"ok": True, "message": "Saved in test"})
                 else:
-                    route.fulfill(json={"ok": True, "events": [{
+                    route.fulfill(json={"ok": True, "capabilities": {"affiliationChoices": True}, "events": [{
                         "id": EVENT_ID, "name": event["title"], "date": event["event_date"],
                         "questions": event["questions"], "rsvps": 0, "attendees": 0,
                     }]})
@@ -84,13 +97,26 @@ with sync_playwright() as playwright:
         page.goto("https://rsvp-preview.test/event/")
         page.wait_for_function("!document.querySelector('button[type=submit]').disabled")
         assert page.locator(".event-page__photo img").get_attribute("src") == event["image"]
+        affiliation = page.get_by_label("Are you affiliated with tOSU?", exact=True)
+        assert affiliation.locator("option").all_text_contents() == [
+            "I am affiliated with tOSU", "I am not affiliated with tOSU", "I am a guest"
+        ]
+        for external in ["non-osu", "guest"]:
+            page.get_by_label("tOSU Name.#").fill("clear.1")
+            affiliation.select_option(external)
+            assert page.get_by_label("tOSU Name.#").is_hidden()
+            assert not page.get_by_label("tOSU Name.#").evaluate("el=>el.required")
+            assert page.get_by_label("tOSU Name.#").input_value() == ""
+            assert page.get_by_label("Email", exact=True).is_visible()
+            assert page.get_by_label("Email", exact=True).evaluate("el=>el.required")
+            affiliation.select_option("osu")
         labels = page.locator(".member-form__row:visible > label").all_text_contents()
-        assert labels[labels.index("tOSU Name.#") + 1] == "Phone No"
-        game = page.get_by_label("29 or Ludu Tournament", exact=True)
+        assert labels[labels.index("tOSU Name.#") + 1] == captions["phone"]
+        game = page.get_by_label(captions["tournament"], exact=True)
         assert game.locator("option").all_text_contents() == [
             "Choose one", "29", "Ludu (teammates will be randomly selected)", "Neither"
         ]
-        teammate = page.get_by_label("Preferred teammate for 29 (optional)")
+        teammate = page.get_by_label(captions["teammate"], exact=True)
         assert teammate.is_hidden()
         game.select_option("29")
         assert teammate.is_visible()
@@ -110,13 +136,21 @@ with sync_playwright() as playwright:
         page.get_by_label("First name").fill("Test")
         page.get_by_label("Last name").fill("Player")
         page.get_by_label("tOSU Name.#").fill("test.1")
-        page.get_by_label("Phone No").fill("6145550100")
+        page.get_by_label(captions["phone"], exact=True).fill("6145550100")
+        selected_affiliation = ["osu", "non-osu", "guest", "osu"][index]
+        affiliation.select_option(selected_affiliation)
+        if selected_affiliation != "osu":
+            page.get_by_label("Email", exact=True).fill("test@example.org")
         page.get_by_label("Payment status").select_option(label="Membership paid")
         page.get_by_label("Uno", exact=True).check()
         page.get_by_label("Sequence", exact=True).check()
         page.get_by_role("button", name="Send RSVP").click()
         page.get_by_role("status").filter(has_text="Saved in test").wait_for()
         assert len(submissions) == 1
+        assert submissions[0]["affiliation"] == selected_affiliation
+        if selected_affiliation != "osu":
+            assert submissions[0]["nameNumber"] == ""
+            assert submissions[0]["email"] == "test@example.org"
         assert submissions[0]["answers"]["29 or Ludu Tournament"] == ("Neither" if index == 0 else "29")
         assert submissions[0]["answers"]["Other games (select all that apply)"] == "Uno, Sequence"
         assert not errors, errors

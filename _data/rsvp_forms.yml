@@ -8,11 +8,13 @@ evt-1792786389442:
   - label: Event fee paid
     value: 'Entry fee: Paid'
   questions:
-  - label: Phone No
+  - id: phone
+    label: Phone No
     type: tel
     required: true
     after: identity
-  - label: 29 or Ludu Tournament
+  - id: tournament
+    label: 29 or Ludu Tournament
     previous_labels: ["Games choice", "Choose 29 or Ludu"]
     type: choice
     required: true
@@ -20,12 +22,14 @@ evt-1792786389442:
     - '29'
     - Ludu (teammates will be randomly selected)
     - Neither
-  - label: Preferred teammate for 29 (optional)
+  - id: teammate
+    label: Preferred teammate for 29 (optional)
     type: text
     show_if:
-      question: 29 or Ludu Tournament
+      question_id: tournament
       equals: '29'
-  - label: Other games (select all that apply)
+  - id: other-games
+    label: Other games (select all that apply)
     type: multichoice
     options:
     - Uno

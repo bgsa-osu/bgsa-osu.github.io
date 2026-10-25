@@ -54,7 +54,8 @@ layout: default
         "askChildren": {% if page.ask_children == false %}false{% else %}true{% endif %},
         "verifyQuestions": {% if rsvp_profile %}true{% else %}false{% endif %},
         "payments": {{ rsvp_profile.payments | default: page.payments | jsonify }},
-        "questions": {{ rsvp_profile.questions | default: page.questions | jsonify }}
+        "questions": {{ rsvp_profile.questions | default: page.questions | jsonify }},
+        "storedQuestions": {{ page.questions | jsonify }}
       }
     </script>
 
@@ -62,4 +63,5 @@ layout: default
   </div>
 </main>
 
-<script src="{{ '/assets/js/rsvp.js' | relative_url }}"></script>
+<script src="{{ '/assets/js/rsvp-profile.js' | relative_url }}?v=20261025-question-ids"></script>
+<script src="{{ '/assets/js/rsvp.js' | relative_url }}?v=20261025-question-ids"></script>

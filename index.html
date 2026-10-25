@@ -553,6 +553,7 @@ layout: default
             <div class="member-form__row">
               <label>Extra questions <em>(optional)</em></label>
               <div id="ev-questions" class="officer__questions"></div>
+              <p id="ev-question-note" class="member-form__note" hidden></p>
               <button type="button" id="ev-add-question" class="officer__add">+ Add a question</button>
             </div>
 
@@ -793,12 +794,14 @@ layout: default
     async function loadEvents() {
       const localEvents = publishedEvents;
       let liveEvents = [];
+      let liveCapabilities = {};
       try {
         const response = await fetch(ENDPOINT, { cache: "no-store" });
         if (!response.ok) throw new Error("Events feed responded " + response.status);
         const result = await response.json();
         if (!result.ok) throw new Error(result.message || "Events feed failed.");
         liveEvents = result.events || [];
+        liveCapabilities = result.capabilities || {};
       } catch (err) {
         if (!localEvents.some(event => event.pending)) throw err;
         console.warn("Showing published events while the live feed is unavailable.", err);
@@ -831,10 +834,12 @@ layout: default
           page: text(event.page),
           payments: event.payments || [],
           askChildren: event.askChildren !== false,
+          affiliationChoices: liveCapabilities.affiliationChoices === true,
           // The script calls a multiple-choice question "choice"; the form
           // builder below has always called it "select".
           extras: (event.questions || []).map(q => ({
             label: q.label,
+            key: q.key || q.label,
             type: q.type === "choice" ? "select" : "text",
             options: q.options || []
           })),
@@ -885,7 +890,10 @@ layout: default
       // what stops them replying twice.
       const affiliation = document.createElement("select");
       affiliation.id = "rsvp-aff-" + key;
-      [["osu", "I am at Ohio State"], ["guest", "I am a guest"]].forEach(pair => {
+      const affiliations = [["osu", "I am affiliated with tOSU"]];
+      if (event.affiliationChoices) affiliations.push(["non-osu", "I am not affiliated with tOSU"]);
+      affiliations.push(["guest", "I am a guest"]);
+      affiliations.forEach(pair => {
         const option = document.createElement("option");
         option.value = pair[0];
         option.textContent = pair[1];
@@ -900,7 +908,7 @@ layout: default
       names.appendChild(field("Last name", last));
       form.appendChild(names);
 
-      form.appendChild(field("Are you at Ohio State?", affiliation));
+      form.appendChild(field("Are you affiliated with tOSU?", affiliation));
 
       const nameNumberRow = field("tOSU Name.#", nameNumber);
       const emailRow = field("Email", email);
@@ -908,7 +916,7 @@ layout: default
       form.appendChild(emailRow);
 
       function applyAffiliation() {
-        const guest = affiliation.value === "guest";
+        const guest = affiliation.value !== "osu";
         nameNumberRow.style.display = guest ? "none" : "";
         emailRow.style.display = guest ? "" : "none";
         nameNumber.required = !guest;
@@ -964,7 +972,7 @@ layout: default
         }
         control.id = "rsvp-extra-" + key + "-" + index;
         form.appendChild(field(question.label, control));
-        return { label: question.label, control: control };
+        return { label: question.label, key: question.key || question.label, control: control };
       });
 
       // Honeypot, as on the directory form.
@@ -1000,7 +1008,7 @@ layout: default
         status.textContent = "Sending\u2026";
 
         const answers = {};
-        extras.forEach(extra => { answers[extra.label] = extra.control.value; });
+        extras.forEach(extra => { answers[extra.key || extra.label] = extra.control.value; });
 
         try {
           const response = await fetch(ENDPOINT, {
@@ -1347,6 +1355,8 @@ layout: default
 
       let editingId = null;
       let childrenSettingSupported = false;
+      let questionIdsSupported = false;
+      let eventSaveNeedsQuestionIds = false;
 
       // The token lives in sessionStorage, not localStorage: closing the tab
       // signs the officer out, which is the right default on a shared laptop.
@@ -1537,6 +1547,7 @@ layout: default
           return;
         }
 
+        questionIdsSupported = !!(result.capabilities && result.capabilities.questionIds === true);
         childrenSettingSupported = !!(result.capabilities && result.capabilities.askChildren === true);
         document.getElementById("ev-children-setting").hidden = !childrenSettingSupported;
         document.getElementById("ev-children").disabled = !childrenSettingSupported;
@@ -1621,7 +1632,7 @@ layout: default
         }
 
         result.rsvps.forEach(entry => {
-          panel.appendChild(rsvpRow(event, entry, result.payments, result.extras));
+          panel.appendChild(rsvpRow(event, entry, result.payments, result.extras, result.extraLabels));
         });
       }
 
@@ -1639,7 +1650,7 @@ layout: default
         return wrap;
       }
 
-      function rsvpRow(event, entry, payments, extras) {
+      function rsvpRow(event, entry, payments, extras, extraLabels) {
         const line = document.createElement("div");
         line.className = "officer__rsvp";
 
@@ -1683,7 +1694,7 @@ layout: default
           input.maxLength = 500;
           input.value = entry.answers[label] || "";
           answerFields[label] = input;
-          fields.appendChild(labelled(label, input));
+          fields.appendChild(labelled((extraLabels || {})[label] || label, input));
         });
 
         line.appendChild(fields);
@@ -1756,20 +1767,30 @@ layout: default
       function addQuestionRow(question) {
         const row = document.createElement("div");
         row.className = "officer__question";
+        const metadata = Object.assign({}, question || {});
+        if (!metadata.id && questionIdsSupported) {
+          metadata.id = "q-" + (window.crypto && window.crypto.randomUUID
+            ? window.crypto.randomUUID() : Date.now() + "-" + Math.random().toString(36).slice(2));
+        }
+        if (!metadata.key && question) metadata.key = question.label;
+        row.dataset.question = JSON.stringify(metadata);
 
         const label = document.createElement("input");
         label.type = "text";
         label.maxLength = 80;
         label.placeholder = "Question";
         label.value = question ? question.label : "";
+        label.readOnly = !!(question && question.managed && !questionIdsSupported);
 
         const options = document.createElement("input");
         options.type = "text";
         options.maxLength = 200;
         options.placeholder = "Choices, comma separated (blank for free text)";
         options.value = question && question.options ? question.options.join(", ") : "";
+        options.readOnly = !!(question && question.managed);
 
         const remove = action("Remove", () => row.remove());
+        remove.disabled = !!(question && question.managed);
         row.append(label, options, remove);
         questionList.appendChild(row);
       }
@@ -1783,20 +1804,7 @@ layout: default
         const profiles = JSON.parse(document.getElementById("rsvp-profiles").textContent);
         const profile = profiles[eventId] || profiles[name];
         if (!profile) return questions;
-        const labels = new Set(questions.map(question => question.label));
-        const current = questions.flatMap(question => {
-          const renamed = profile.questions.find(item => (item.previous_labels || []).includes(question.label));
-          if (!renamed) return [question];
-          if (labels.has(renamed.label)) return [];
-          labels.add(renamed.label);
-          return [Object.assign({}, question, { label: renamed.label })];
-        });
-        profile.questions.forEach(question => {
-          if (!current.some(item => item.label === question.label)) {
-            current.push({ label: question.label, options: [] });
-          }
-        });
-        return current;
+        return window.BGSAForms.mergeQuestions(profile.questions, questions);
       }
 
       function collectQuestions() {
@@ -1805,10 +1813,12 @@ layout: default
             const inputs = row.querySelectorAll("input");
             const label = inputs[0].value.trim();
             if (!label) return null;
-            return {
-              label: label,
-              options: inputs[1].value.split(",").map(o => o.trim()).filter(Boolean)
-            };
+            const metadata = JSON.parse(row.dataset.question || "{}");
+            const options = inputs[1].value.split(",").map(o => o.trim()).filter(Boolean);
+            if (!metadata.managed && !["tel", "multichoice"].includes(metadata.type)) {
+              metadata.type = options.length ? "choice" : "text";
+            }
+            return Object.assign({}, metadata, { label: label, options: options });
           })
           .filter(Boolean);
         // The server needs a response column for each custom RSVP control.
@@ -1818,6 +1828,8 @@ layout: default
       function startEditing(event) {
         const published = publishedEvents.find(item => item.id === event.id) || event;
         editingId = event.id;
+        eventSaveNeedsQuestionIds = !questionIdsSupported && (event.questions || []).some(question => question.id && question.key);
+        submitButton.disabled = eventSaveNeedsQuestionIds;
         formHeading.textContent = "Edit: " + event.name;
         submitButton.textContent = "Save changes";
         cancelButton.hidden = false;
@@ -1834,13 +1846,23 @@ layout: default
         evPhoto.value = "";
 
         questionList.innerHTML = "";
-        profileQuestions(event.questions || [], event.name, event.id).forEach(addQuestionRow);
+        const questions = profileQuestions(event.questions || [], event.name, event.id);
+        questions.forEach(addQuestionRow);
+        const note = document.getElementById("ev-question-note");
+        note.hidden = !eventSaveNeedsQuestionIds && !questions.some(question => question.managed);
+        note.textContent = eventSaveNeedsQuestionIds
+          ? "Update the event service before saving so question identities and existing answers stay linked."
+          : questionIdsSupported
+          ? "You can rename question labels. Field types, game choices, and conditions are preserved."
+          : "Update the event service to enable question renaming. Field types and game choices are preserved.";
 
         officer.scrollIntoView({ behavior: "smooth", block: "start" });
       }
 
       function stopEditing() {
         editingId = null;
+        eventSaveNeedsQuestionIds = false;
+        submitButton.disabled = false;
         formHeading.textContent = "Create an event";
         submitButton.textContent = "Create event";
         cancelButton.hidden = true;
@@ -1849,6 +1871,7 @@ layout: default
         document.getElementById("ev-pay").checked = true; // reset() unticks it
         document.getElementById("ev-children").checked = true;
         questionList.innerHTML = "";
+        document.getElementById("ev-question-note").hidden = true;
       }
 
       cancelButton.addEventListener("click", stopEditing);
@@ -1891,6 +1914,10 @@ layout: default
 
       officerForm.addEventListener("submit", async e => {
         e.preventDefault();
+        if (eventSaveNeedsQuestionIds) {
+          evStatus.textContent = "Update the event service before saving this event.";
+          return;
+        }
         if (!officerForm.checkValidity()) return officerForm.reportValidity();
 
         submitButton.disabled = true;
@@ -1931,7 +1958,7 @@ layout: default
           console.error("Could not save the event.", err);
           evStatus.textContent = "Could not reach the server. Please try again.";
         } finally {
-          submitButton.disabled = false;
+          submitButton.disabled = eventSaveNeedsQuestionIds;
         }
       });
 

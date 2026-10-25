@@ -102,10 +102,11 @@ in admin. The Indoor Games form uses required phone
 and game fields, an optional teammate question shown only for 29, and checkboxes
 for other games. Payment labels map to the RSVP service's existing payment values.
 When saving this event in admin, its four response questions are added automatically.
-Renamed custom questions can list `previous_labels` in the profile. Admin normalizes
-those labels and removes duplicate legacy questions on save. The RSVP form can
-still submit to the previous response column until the renamed question is saved;
-existing spreadsheet columns and prior responses are retained.
+Questions have permanent IDs and answer keys separate from their editable labels.
+Admin label changes preserve input types, choices, field positions, conditions,
+and existing response columns. Legacy labels can list `previous_labels` for
+migration. See [safe question editing](docs/stable-question-labels.md) for the
+required service update and compatibility safeguards.
 
 Regression check: `python tests/rsvp-profile-identity.py` verifies that routine
 event edits preserve the custom form and other events retain their defaults.

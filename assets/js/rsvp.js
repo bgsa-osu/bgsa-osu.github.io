@@ -21,6 +21,10 @@
     return;
   }
 
+  if (event.verifyQuestions && window.BGSAForms) {
+    event.questions = window.BGSAForms.mergeQuestions(event.questions, event.storedQuestions);
+  }
+
   /* ---- the description, which is plain text in the front matter ---- */
 
   const desc = document.querySelector("[data-rich]");
@@ -76,20 +80,20 @@
   // Guests have no Name.#, so their email is what identifies their reply.
   const affiliation = document.createElement("select");
   affiliation.id = "rsvp-aff";
-  [["osu", "I am at Ohio State"], ["guest", "I am a guest"]].forEach(pair => {
+  [["osu", "I am affiliated with tOSU"], ["guest", "I am a guest"]].forEach(pair => {
     const option = document.createElement("option");
     option.value = pair[0];
     option.textContent = pair[1];
     affiliation.appendChild(option);
   });
-  form.appendChild(field("Are you at Ohio State?", affiliation));
+  form.appendChild(field("Are you affiliated with tOSU?", affiliation));
 
   const nameRow = field("tOSU Name.#", nameNumber);
   const emailRow = field("Email", email);
   form.append(nameRow, emailRow);
 
   function applyAffiliation() {
-    const guest = affiliation.value === "guest";
+    const guest = affiliation.value !== "osu";
     nameRow.style.display = guest ? "none" : "";
     emailRow.style.display = guest ? "" : "none";
     nameNumber.required = !guest;
@@ -166,7 +170,7 @@
     if (question.after === "identity") emailRow.after(row);
     else form.appendChild(row);
     return {
-      label: question.label, answerLabel: question.label, question, control, row,
+      label: question.label, answerLabel: question.key || question.label, question, control, row,
       value: () => checkboxes.length
         ? checkboxes.filter(box => box.checked).map(box => box.value).join(", ")
         : control.value || ""
@@ -177,7 +181,8 @@
     extras.forEach(extra => {
       const condition = extra.question.show_if;
       if (!condition) return;
-      const source = extras.find(item => item.label === condition.question);
+      const source = extras.find(item => condition.question_id
+        ? item.question.id === condition.question_id : item.label === condition.question);
       const visible = !!source && source.value() === condition.equals;
       extra.row.hidden = !visible;
       extra.control.disabled = !visible;
@@ -270,16 +275,29 @@
     try {
       const response = await fetch(ENDPOINT, { cache: "no-store" });
       const result = await response.json();
+      if (result.capabilities && result.capabilities.affiliationChoices === true &&
+          !affiliation.querySelector('option[value="non-osu"]')) {
+        const option = document.createElement("option");
+        option.value = "non-osu";
+        option.textContent = "I am not affiliated with tOSU";
+        affiliation.insertBefore(option, affiliation.querySelector('option[value="guest"]'));
+      }
       const match = (result.events || []).find(e => event.id
         ? e.id === event.id
         : e.name === event.title && e.date === event.date);
       const questionsReady = match && (!event.verifyQuestions || extras.every(extra => {
         const questions = match.questions || [];
-        const current = questions.find(question => question.label === extra.label);
-        const previous = questions.find(question =>
-          (extra.question.previous_labels || []).includes(question.label));
-        const stored = current || previous;
-        if (stored) extra.answerLabel = stored.label;
+        const stored = window.BGSAForms
+          ? window.BGSAForms.findQuestion(extra.question, questions)
+          : questions.find(question => question.label === extra.label ||
+              (extra.question.previous_labels || []).includes(question.label));
+        if (stored) {
+          extra.answerLabel = stored.key || stored.label;
+          extra.label = window.BGSAForms
+            ? window.BGSAForms.displayLabel(extra.question, stored) : stored.label;
+          const caption = extra.row.querySelector(extra.row.tagName === "FIELDSET" ? "legend" : "label");
+          if (caption) caption.textContent = extra.label;
+        }
         return !!stored;
       }));
       if (!match || !questionsReady) {
