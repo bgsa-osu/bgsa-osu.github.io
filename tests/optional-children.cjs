@@ -125,17 +125,6 @@ assert.equal(empty.events.length, 0);
 events.rows = savedRows;
 console.log('Passed: column migration, create/update/reload, old-event defaults, older clients, generated pages, public/officer feeds, authorization, and RSVP counts.');
 
-// Both external affiliation choices use email, without an OSU identifier.
-assert.equal(context.submitRsvp({ ...registration, affiliation: 'non-osu', nameNumber: '', email: 'outside@example.org' }).ok, true);
-assert.equal(replies.rows.at(-1)[replyAt['Name.#']], '');
-assert.equal(replies.rows.at(-1)[replyAt.Email], 'outside@example.org');
-assert.equal(replies.rows.at(-1)[replyAt.Affiliation], 'Not affiliated with tOSU');
-assert.equal(context.submitRsvp({ ...registration, affiliation: 'guest', nameNumber: '', email: 'guest@example.org' }).ok, true);
-assert.equal(replies.rows.at(-1)[replyAt.Affiliation], 'Guest');
-assert.equal(context.submitRsvp({ ...registration, affiliation: 'guest', nameNumber: '', email: 'outside@example.org' }).ok, false);
-assert.equal(context.submitRsvp({ ...registration, affiliation: 'osu', nameNumber: '' }).ok, false);
-console.log('Passed: three affiliations, email-only external registrations, separate saved status, and duplicate prevention.');
-
 // Renamed question captions still write to the original answer column.
 events.rows[1][at.Questions] = JSON.stringify([{id:'phone',key:'Phone No',label:'Contact phone',type:'tel',options:[]}]);
 const phoneColumn = replies.rows[0].length;

@@ -80,20 +80,20 @@
   // Guests have no Name.#, so their email is what identifies their reply.
   const affiliation = document.createElement("select");
   affiliation.id = "rsvp-aff";
-  [["osu", "I am affiliated with tOSU"], ["guest", "I am a guest"]].forEach(pair => {
+  [["osu", "I am at Ohio State"], ["guest", "I am a guest"]].forEach(pair => {
     const option = document.createElement("option");
     option.value = pair[0];
     option.textContent = pair[1];
     affiliation.appendChild(option);
   });
-  form.appendChild(field("Are you affiliated with tOSU?", affiliation));
+  form.appendChild(field("Are you at Ohio State?", affiliation));
 
   const nameRow = field("tOSU Name.#", nameNumber);
   const emailRow = field("Email", email);
   form.append(nameRow, emailRow);
 
   function applyAffiliation() {
-    const guest = affiliation.value !== "osu";
+    const guest = affiliation.value === "guest";
     nameRow.style.display = guest ? "none" : "";
     emailRow.style.display = guest ? "" : "none";
     nameNumber.required = !guest;
@@ -275,13 +275,6 @@
     try {
       const response = await fetch(ENDPOINT, { cache: "no-store" });
       const result = await response.json();
-      if (result.capabilities && result.capabilities.affiliationChoices === true &&
-          !affiliation.querySelector('option[value="non-osu"]')) {
-        const option = document.createElement("option");
-        option.value = "non-osu";
-        option.textContent = "I am not affiliated with tOSU";
-        affiliation.insertBefore(option, affiliation.querySelector('option[value="guest"]'));
-      }
       const match = (result.events || []).find(e => event.id
         ? e.id === event.id
         : e.name === event.title && e.date === event.date);

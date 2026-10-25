@@ -86,7 +86,7 @@ with sync_playwright() as playwright:
                     submissions.append(request.post_data_json)
                     route.fulfill(json={"ok": True, "message": "Saved in test"})
                 else:
-                    route.fulfill(json={"ok": True, "capabilities": {"affiliationChoices": True}, "events": [{
+                    route.fulfill(json={"ok": True, "events": [{
                         "id": EVENT_ID, "name": event["title"], "date": event["event_date"],
                         "questions": event["questions"], "rsvps": 0, "attendees": 0,
                     }]})
@@ -97,11 +97,11 @@ with sync_playwright() as playwright:
         page.goto("https://rsvp-preview.test/event/")
         page.wait_for_function("!document.querySelector('button[type=submit]').disabled")
         assert page.locator(".event-page__photo img").get_attribute("src") == event["image"]
-        affiliation = page.get_by_label("Are you affiliated with tOSU?", exact=True)
+        affiliation = page.get_by_label("Are you at Ohio State?", exact=True)
         assert affiliation.locator("option").all_text_contents() == [
-            "I am affiliated with tOSU", "I am not affiliated with tOSU", "I am a guest"
+            "I am at Ohio State", "I am a guest"
         ]
-        for external in ["non-osu", "guest"]:
+        for external in ["guest"]:
             page.get_by_label("tOSU Name.#").fill("clear.1")
             affiliation.select_option(external)
             assert page.get_by_label("tOSU Name.#").is_hidden()
@@ -137,7 +137,7 @@ with sync_playwright() as playwright:
         page.get_by_label("Last name").fill("Player")
         page.get_by_label("tOSU Name.#").fill("test.1")
         page.get_by_label(captions["phone"], exact=True).fill("6145550100")
-        selected_affiliation = ["osu", "non-osu", "guest", "osu"][index]
+        selected_affiliation = ["osu", "guest", "guest", "osu"][index]
         affiliation.select_option(selected_affiliation)
         if selected_affiliation != "osu":
             page.get_by_label("Email", exact=True).fill("test@example.org")

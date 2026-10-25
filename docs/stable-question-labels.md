@@ -40,16 +40,13 @@ Replace the existing Apps Script code, save, and update the existing web-app
 deployment using **Deploy → Manage deployments → Edit → New version → Deploy**.
 Keep that deployment's URL. Reload Admin to enable label editing.
 
-The same update adds three affiliation choices: affiliated with tOSU, not affiliated
-with tOSU, and guest. The last two use a required email without an OSU identifier.
-They are recorded as distinct affiliation values. The additional non-affiliated
-choice appears when the service advertises `capabilities.affiliationChoices`;
-older services keep their supported affiliated/guest choices.
+Affiliation retains its original two choices: Ohio State and guest. Guests
+use email without an OSU identifier.
 
 ## Checks
 
 - `python tests/rsvp-profile-identity.py`: public form after title, photo, detail,
-  and question-label changes; all affiliations and OSU ID/email requirements.
+  and question-label changes; original affiliation choices and OSU ID/email requirements.
 - `python tests/rsvp-admin-question-rename.py`: real Admin code through rename,
   save, reopen, public rendering, and older-service protection.
 - `node tests/question-identity.cjs /path/to/BGSA-Code-stable-questions.gs`: schema,
