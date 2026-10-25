@@ -904,7 +904,7 @@ layout: default
 
       form.appendChild(field("Are you at Ohio State?", affiliation));
 
-      const nameNumberRow = field("tOSU Name.#", nameNumber);
+      const nameNumberRow = field("tOSU Name.# (if applicable)", nameNumber);
       const emailRow = field("Email", email);
       form.appendChild(nameNumberRow);
       form.appendChild(emailRow);
@@ -1638,7 +1638,7 @@ layout: default
 
         const text = document.createElement("span");
         text.className = "officer__field-label";
-        text.textContent = caption;
+        text.textContent = window.BGSAForms.displayText(caption);
 
         wrap.append(text, control);
         return wrap;
@@ -1812,7 +1812,9 @@ layout: default
             if (!metadata.managed && !["tel", "multichoice"].includes(metadata.type)) {
               metadata.type = options.length ? "choice" : "text";
             }
-            return Object.assign({}, metadata, { label: label, options: options });
+            const savedLabel = !questionIdsSupported && metadata.managed
+              ? (metadata.stored_label || metadata.key || label) : label;
+            return Object.assign({}, metadata, { label: savedLabel, options: options });
           })
           .filter(Boolean);
         // The server needs a response column for each custom RSVP control.

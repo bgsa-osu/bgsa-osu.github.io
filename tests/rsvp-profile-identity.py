@@ -60,8 +60,9 @@ with sync_playwright() as playwright:
         "teammate": "Your preferred partner", "other-games": "Additional games"
     }
     renamed = dict(fixture)
-    renamed["questions"] = [dict(id=q["id"], key=q["label"], label=renamed_labels[q["id"]], type="text", options=[])
-                            for q in profile["questions"]]
+    renamed["questions"] = [dict(id=q["id"], key=fixture["questions"][index].get("key", fixture["questions"][index]["label"]),
+                                 label=renamed_labels[q["id"]], type="text", options=[])
+                            for index, q in enumerate(profile["questions"])]
     variants.append(renamed)
     for index, event in enumerate(variants):
         captions = {q["id"]: next((item["label"] for item in event["questions"] if item.get("id") == q["id"]), q["label"])
@@ -111,17 +112,17 @@ with sync_playwright() as playwright:
             assert page.get_by_label("Email", exact=True).evaluate("el=>el.required")
             affiliation.select_option("osu")
         labels = page.locator(".member-form__row:visible > label").all_text_contents()
-        assert labels[labels.index("tOSU Name.#") + 1] == captions["phone"]
+        assert labels[labels.index("tOSU Name.# (if applicable)") + 1] == captions["phone"]
         game = page.get_by_label(captions["tournament"], exact=True)
         assert game.locator("option").all_text_contents() == [
-            "Choose one", "29", "Ludu (teammates will be randomly selected)", "Neither"
+            "Choose one", "29", "Ludo (teammates will be randomly selected)", "Neither"
         ]
         teammate = page.get_by_label(captions["teammate"], exact=True)
         assert teammate.is_hidden()
         game.select_option("29")
         assert teammate.is_visible()
         teammate.fill("Test teammate")
-        game.select_option(label="Ludu (teammates will be randomly selected)")
+        game.select_option(label="Ludo (teammates will be randomly selected)")
         assert teammate.is_hidden() and teammate.input_value() == ""
         game.select_option("Neither" if index == 0 else "29")
         if index:

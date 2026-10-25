@@ -14,13 +14,13 @@ evt-1792786389442:
     required: true
     after: identity
   - id: tournament
-    label: 29 or Ludu Tournament
-    previous_labels: ["Games choice", "Choose 29 or Ludu"]
+    label: 29 or Ludo Tournament
+    previous_labels: ["29 or Ludu Tournament", "Games choice", "Choose 29 or Ludu", "Choose 29 or Ludo"]
     type: choice
     required: true
     options:
     - '29'
-    - Ludu (teammates will be randomly selected)
+    - Ludo (teammates will be randomly selected)
     - Neither
   - id: teammate
     label: Preferred teammate for 29 (optional)

@@ -88,7 +88,7 @@
   });
   form.appendChild(field("Are you at Ohio State?", affiliation));
 
-  const nameRow = field("tOSU Name.#", nameNumber);
+  const nameRow = field("tOSU Name.# (if applicable)", nameNumber);
   const emailRow = field("Email", email);
   form.append(nameRow, emailRow);
 

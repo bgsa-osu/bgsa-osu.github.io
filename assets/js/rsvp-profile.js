@@ -13,10 +13,15 @@
       stored.find(item => labels.includes(item.label));
   }
 
+  function displayText(value) {
+    return String(value || "").replace(/\bludu\b/gi, "Ludo");
+  }
+
   function displayLabel(question, stored) {
-    if (question.id && stored.id === question.id) return stored.label;
-    return (question.previous_labels || []).includes(stored.label) && stored.label !== question.label
-      ? question.label : stored.label;
+    const label = question.id && stored.id === question.id ? stored.label
+      : (question.previous_labels || []).includes(stored.label) && stored.label !== question.label
+        ? question.label : stored.label;
+    return displayText(label);
   }
 
   function mergeQuestions(definitions, stored) {
@@ -31,6 +36,7 @@
       return Object.assign({}, match || {}, definition, {
         label: match ? displayLabel(definition, match) : definition.label,
         key: match ? (match.key || match.label) : (definition.key || definition.label),
+        stored_label: match ? match.label : definition.label,
         previous_labels: [definition.label].concat(definition.previous_labels || []),
         managed: true
       });
@@ -38,5 +44,5 @@
     return questions.concat(stored.filter(item => !used.has(item)));
   }
 
-  return { findQuestion, displayLabel, mergeQuestions };
+  return { findQuestion, displayText, displayLabel, mergeQuestions };
 });

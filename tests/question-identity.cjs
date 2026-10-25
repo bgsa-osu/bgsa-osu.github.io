@@ -8,7 +8,7 @@ new vm.Script(fs.readFileSync(process.argv[2], 'utf8'), { filename: 'Code.gs' })
 const plain = value => JSON.parse(JSON.stringify(value));
 const definitions = [
   { id: 'phone', label: 'Phone No', type: 'tel', after: 'identity', required: true },
-  { id: 'tournament', label: 'Tournament', type: 'choice', options: ['29', 'Ludu', 'Neither'] },
+  { id: 'tournament', label: 'Tournament', type: 'choice', options: ['29', 'Ludo', 'Neither'] },
   { id: 'teammate', label: 'Teammate', type: 'text', show_if: { question_id: 'tournament', equals: '29' } },
   { id: 'other', label: 'Other games', type: 'multichoice', options: ['Uno', 'Sequence'] }
 ];
@@ -16,6 +16,11 @@ const legacy = definitions.map(question => ({ label: question.label, type: 'text
 const aliased = forms.mergeQuestions([{id:'tournament',label:'Tournament',previous_labels:['Games choice'],type:'choice'}], [{label:'Games choice'}]);
 assert.equal(aliased[0].label, 'Tournament');
 assert.equal(aliased[0].key, 'Games choice');
+assert.equal(forms.displayLabel({id:'tournament'}, {id:'tournament',label:'29 or Ludu Tournament'}), '29 or Ludo Tournament');
+const spelling = context.parseQuestions(JSON.stringify([{label:'29 or Ludu Tournament',options:['Ludu']}]));
+assert.equal(spelling[0].label,'29 or Ludo Tournament');
+assert.equal(spelling[0].key,'29 or Ludu Tournament');
+assert.equal(spelling[0].options[0],'Ludo');
 const initial = forms.mergeQuestions(definitions, legacy);
 const saved = context.normaliseQuestions(initial, legacy);
 assert.deepEqual(Array.from(saved, q => q.key), definitions.map(q => q.label));
@@ -28,11 +33,11 @@ assert.deepEqual(Array.from(updated, q => q.id), definitions.map(q => q.id));
 const visible = forms.mergeQuestions(definitions, plain(updated));
 assert.deepEqual(visible.map(q => q.label), renamed.map(q => q.label));
 assert.deepEqual(visible.map(q => q.type), definitions.map(q => q.type));
-assert.deepEqual(visible[1].options, ['29', 'Ludu', 'Neither']);
+assert.deepEqual(visible[1].options, ['29', 'Ludo', 'Neither']);
 assert.deepEqual(visible[2].show_if, { question_id: 'tournament', equals: '29' });
 assert.equal(visible[0].after, 'identity');
 assert.equal(context.questionAnswer('Tournament', { 'Renamed field 1': '29' }, updated), '29');
-assert.equal(context.questionAnswer('Tournament', { Tournament: 'Ludu' }, updated), 'Ludu');
+assert.equal(context.questionAnswer('Tournament', { Tournament: 'Ludo' }, updated), 'Ludo');
 
 // Question renames must reuse, rather than rename/add, the spreadsheet columns.
 const headers = definitions.map(q => q.label);
