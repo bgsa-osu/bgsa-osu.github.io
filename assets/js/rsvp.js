@@ -7,7 +7,7 @@
  * reply, and it arrives quietly after the page is already usable.
  */
 (function () {
-  const ENDPOINT = "https://script.google.com/macros/s/AKfycbyiMgYGEsS8egcRmpeaCh9ZDZ4oWVN3rlHY-kJm9bFZEe0he-2NY7RcSrng-UL9Gbwx/exec";
+  const ENDPOINT = "https://script.google.com/macros/s/AKfycbyYjaFhdXjDK2J4U2WztRzByJ2VrFotbWVnW_s-5Dkn91KVg2no67eionE9zZs5iYSRGQ/exec";
 
   const mount = document.getElementById("rsvp-mount");
   const dataTag = document.getElementById("event-data");
