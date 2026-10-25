@@ -7,7 +7,7 @@ event_date: "2026-11-01"
 event_time: "3:00 PM - 7:00 PM"
 location: Blackburn Victory Room
 deadline: "2026-10-30"
-image: "https://drive.google.com/thumbnail?id=1xLMfktEnFBaFt3PrvCRHzZyX05226CPt&sz=w1200"
+image: "https://drive.google.com/thumbnail?id=1145q0BoQ1EFc7xV8dPxgK_2LnDFoYCLS&sz=w1200"
 payments: ["Membership fee: Paid","Entry fee: Paid","Neither paid"]
 ask_children: true
 questions: [{"label":"Phone No","type":"text","options":[],"required":false},{"label":"29 or Ludu Tournament","type":"text","options":[],"required":false},{"label":"Preferred teammate for 29 (optional)","type":"text","options":[],"required":false},{"label":"Other games (select all that apply)","type":"text","options":[],"required":false}]
@@ -17,10 +17,10 @@ description: |
   Whether you would like to compete or cheer on your friends, everyone is warmly welcome! Join us for an afternoon of friendly competition, games, and community fun.
   
   📅 Date: Sunday, November 1, 2026
-  🕓 Time: 3:00–7:00 PM
+  🕓 Time: 4:00–6:00 PM
   📍 Venue: Blackburn Victory Room
   
-  29 or Ludu Tournament: Ludu teammates will be randomly selected. Players choosing 29 may mention a preferred teammate’s name in the registration form.
+   29 or Ludu Tournament: Ludu teammates will be randomly selected. Players choosing 29 may mention a preferred teammate’s name in the registration form.
   
   Other Games: Uno, Sequence, Carrom (subject to popularity), and Chess (subject to popularity). You may select multiple games, whether or not you participate in the 29 or Ludu tournaments.
   
