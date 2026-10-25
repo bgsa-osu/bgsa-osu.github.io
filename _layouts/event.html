@@ -1,8 +1,8 @@
 ---
 layout: default
 ---
-{%- assign rsvp_profile = site.data.rsvp_forms[page.title] -%}
-{%- assign event_image = rsvp_profile.image | default: page.image -%}
+{%- assign rsvp_profile = site.data.rsvp_forms[page.event_id] | default: site.data.rsvp_forms[page.title] -%}
+{%- assign event_image = page.image | default: rsvp_profile.image -%}
 <!--
   One page per event. The file is written by the Apps Script when an officer
   creates or edits an event, so Jekyll builds it like any post: the details

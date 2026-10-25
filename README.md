@@ -94,8 +94,11 @@ is activated. Registered events continue to use the live feed.
 Published event pages supply the dates and RSVP deadlines shown in Upcoming
 and loaded into the admin editor. Live data supplies activation and response counts.
 
-`_data/rsvp_forms.yml` defines custom RSVP controls by exact event title. These
-settings survive event edits in admin. The Indoor Games form uses required phone
+`_data/rsvp_forms.yml` defines custom RSVP controls by permanent `event_id`
+(legacy profiles keyed by title are also supported). These settings survive title
+and photo edits in admin. Edits to dates, times, location, and description likewise
+preserve the form controls and conditions. The event page uses the photo saved
+in admin. The Indoor Games form uses required phone
 and game fields, an optional teammate question shown only for 29, and checkboxes
 for other games. Payment labels map to the RSVP service's existing payment values.
 When saving this event in admin, its four response questions are added automatically.
@@ -103,6 +106,11 @@ Renamed custom questions can list `previous_labels` in the profile. Admin normal
 those labels and removes duplicate legacy questions on save. The RSVP form can
 still submit to the previous response column until the renamed question is saved;
 existing spreadsheet columns and prior responses are retained.
+
+Regression check: `python tests/rsvp-profile-identity.py` verifies that routine
+event edits preserve the custom form and other events retain their defaults.
+It requires PyYAML, python-liquid, Playwright, and Chrome/Chromium and intercepts
+all network requests so no real RSVP is submitted.
 
 If an event page has no `event_id`, registration stays disabled until the live
 service returns an event with the same title and date. Once the event exists,

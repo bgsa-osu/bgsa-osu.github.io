@@ -1,5 +1,6 @@
-# Event-specific RSVP controls survive event edits made through the officer admin.
-BGSA Indoor Games Tournament:
+# Custom RSVP controls are keyed by permanent event ID so renaming an event
+# or changing its photo cannot detach its form settings.
+evt-1792786389442:
   image: /assets/jpeg/indoor_games_flyer.jpeg
   payments:
   - label: Membership paid

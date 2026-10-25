@@ -1779,9 +1779,9 @@ layout: default
 
       // Rename known custom fields without retaining duplicate legacy questions.
       // The service keeps their existing spreadsheet columns and prior answers.
-      function profileQuestions(questions, name) {
+      function profileQuestions(questions, name, eventId) {
         const profiles = JSON.parse(document.getElementById("rsvp-profiles").textContent);
-        const profile = profiles[name];
+        const profile = profiles[eventId] || profiles[name];
         if (!profile) return questions;
         const labels = new Set(questions.map(question => question.label));
         const current = questions.flatMap(question => {
@@ -1812,7 +1812,7 @@ layout: default
           })
           .filter(Boolean);
         // The server needs a response column for each custom RSVP control.
-        return profileQuestions(questions, document.getElementById("ev-name").value.trim());
+        return profileQuestions(questions, document.getElementById("ev-name").value.trim(), editingId);
       }
 
       function startEditing(event) {
@@ -1834,7 +1834,7 @@ layout: default
         evPhoto.value = "";
 
         questionList.innerHTML = "";
-        profileQuestions(event.questions || [], event.name).forEach(addQuestionRow);
+        profileQuestions(event.questions || [], event.name, event.id).forEach(addQuestionRow);
 
         officer.scrollIntoView({ behavior: "smooth", block: "start" });
       }
