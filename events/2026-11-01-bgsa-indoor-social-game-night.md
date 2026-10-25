@@ -10,14 +10,14 @@ deadline: "2026-10-30"
 image: "https://drive.google.com/thumbnail?id=1145q0BoQ1EFc7xV8dPxgK_2LnDFoYCLS&sz=w1200"
 payments: ["Membership fee: Paid","Entry fee: Paid","Neither paid"]
 ask_children: true
-questions: [{"label":"Phone No","type":"text","options":[],"required":false},{"label":"29 or Ludo Tournament","key":"29 or Ludu Tournament","type":"text","options":[],"required":false},{"label":"Preferred teammate for 29 (optional)","type":"text","options":[],"required":false},{"label":"Other games (select all that apply)","type":"text","options":[],"required":false}]
+questions: [{"id":"phone","key":"Phone No","label":"Phone No","type":"tel","options":[],"required":true,"after":"identity"},{"id":"tournament","key":"29 or Ludu Tournament","label":"29 or Ludo Tournament","type":"choice","options":["29","Ludo (teammates will be randomly selected)","Neither"],"required":true},{"id":"teammate","key":"Preferred teammate for 29 (optional)","label":"Preferred teammate for 29 (optional)","type":"text","options":[],"required":false,"show_if":{"equals":"29","question_id":"tournament"}},{"id":"other-games","key":"Other games (select all that apply)","label":"Which other games would you like to participate in? (Select all that apply)","type":"multichoice","options":["Uno","Sequence","Carrom","Chess"],"required":false,"help":"Please select only the games you genuinely intend to play and ensure that you will participate if the games are organized. Some games may be organized depending on the number of interested participants.","help_bold":true}]
 description: |
   The Bangladesh Graduate Student Association (BGSA) at The Ohio State University is pleased to announce the BGSA Indoor Games Tournament on Sunday, November 1, 2026!
   
   Whether you would like to compete or cheer on your friends, everyone is warmly welcome! Join us for an afternoon of friendly competition, games, and community fun.
   
   📅 Date: Sunday, November 1, 2026
-  🕓 Time: 4:00–6:00 PM
+  🕓 Time: 3:00–7:00 PM
   📍 Venue: Blackburn Victory Room
   
    29 or Ludo Tournament: Ludo teammates will be randomly selected. Players choosing 29 may mention a preferred teammate’s name in the registration form.
