@@ -64,6 +64,7 @@ with sync_playwright() as playwright:
                                  label=renamed_labels[q["id"]], type="text", options=[])
                             for index, q in enumerate(profile["questions"])]
     variants.append(renamed)
+    supports_family = True
     for index, event in enumerate(variants):
         captions = {q["id"]: next((item["label"] for item in event["questions"] if item.get("id") == q["id"]), q["label"])
                     for q in profile["questions"]}
@@ -87,7 +88,7 @@ with sync_playwright() as playwright:
                     submissions.append(request.post_data_json)
                     route.fulfill(json={"ok": True, "message": "Saved in test"})
                 else:
-                    route.fulfill(json={"ok": True, "events": [{
+                    route.fulfill(json={"ok": True, "capabilities": {"familyAffiliation": supports_family}, "events": [{
                         "id": EVENT_ID, "name": event["title"], "date": event["event_date"],
                         "questions": event["questions"], "rsvps": 0, "attendees": 0,
                     }]})
@@ -98,11 +99,13 @@ with sync_playwright() as playwright:
         page.goto("https://rsvp-preview.test/event/")
         page.wait_for_function("!document.querySelector('button[type=submit]').disabled")
         assert page.locator(".event-page__photo img").get_attribute("src") == event["image"]
-        affiliation = page.get_by_label("Are you at Ohio State?", exact=True)
+        affiliation = page.get_by_label("Your affiliation", exact=True)
         assert affiliation.locator("option").all_text_contents() == [
-            "I am at Ohio State", "I am a guest"
+            "Ohio State Student, Faculty, or Staff", "Family Member of an Ohio State Student, Faculty, or Staff Member", "Guest"
         ]
-        for external in ["guest"]:
+        assert page.get_by_label("tOSU Name.#").evaluate("el=>el.required")
+        assert page.get_by_label("Email", exact=True).is_hidden()
+        for external in ["family", "guest"]:
             page.get_by_label("tOSU Name.#").fill("clear.1")
             affiliation.select_option(external)
             assert page.get_by_label("tOSU Name.#").is_hidden()
@@ -112,7 +115,7 @@ with sync_playwright() as playwright:
             assert page.get_by_label("Email", exact=True).evaluate("el=>el.required")
             affiliation.select_option("osu")
         labels = page.locator(".member-form__row:visible > label").all_text_contents()
-        assert labels[labels.index("tOSU Name.# (if applicable)") + 1] == captions["phone"]
+        assert labels[labels.index("tOSU Name.#") + 1] == captions["phone"]
         game = page.get_by_label(captions["tournament"], exact=True)
         assert game.locator("option").all_text_contents() == [
             "Choose one", "29", "Ludo (teammates will be randomly selected)", "Neither"
@@ -127,8 +130,9 @@ with sync_playwright() as playwright:
         game.select_option("Neither" if index == 0 else "29")
         if index:
             teammate.fill("Test teammate")
+        assert page.locator(".rsvp__help strong").inner_text() == profile["questions"][3]["help"]
         assert page.locator(".rsvp__choices label").all_text_contents() == [
-            "Uno", "Sequence", "Carrom (subject to popularity)", "Chess (subject to popularity)"
+            "Uno", "Sequence", "Carrom", "Chess"
         ]
         assert page.get_by_label("Children attending with you").count() == (0 if event.get("ask_children") is False else 1)
         assert event["event_time"] in page.locator(".event-page__facts").text_content()
@@ -137,8 +141,9 @@ with sync_playwright() as playwright:
         page.get_by_label("First name").fill("Test")
         page.get_by_label("Last name").fill("Player")
         page.get_by_label("tOSU Name.#").fill("test.1")
+        assert page.get_by_label("Email", exact=True).is_hidden()
         page.get_by_label(captions["phone"], exact=True).fill("6145550100")
-        selected_affiliation = ["osu", "guest", "guest", "osu"][index]
+        selected_affiliation = ["osu", "family", "guest", "osu"][index]
         affiliation.select_option(selected_affiliation)
         if selected_affiliation != "osu":
             page.get_by_label("Email", exact=True).fill("test@example.org")
@@ -156,5 +161,13 @@ with sync_playwright() as playwright:
         assert submissions[0]["answers"]["Other games (select all that apply)"] == "Uno, Sequence"
         assert not errors, errors
         page.close()
+    supports_family = False
+    page = browser.new_page()
+    page.route("**/*", respond)
+    page.goto("https://rsvp-preview.test/event/")
+    page.wait_for_function("!document.querySelector('button[type=submit]').disabled")
+    assert page.get_by_label("tOSU Name.#").evaluate("el=>el.required")
+    assert page.get_by_label("Email", exact=True).is_hidden()
+    page.close()
     browser.close()
-print("Passed: routine event edits retain phone position, game controls, teammate logic, children setting, and RSVP answers.")
+print("Passed: routine event edits retain phone position, game controls, teammate logic, children setting, three affiliation choices, and RSVP answers.")

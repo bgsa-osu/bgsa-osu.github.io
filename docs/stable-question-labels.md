@@ -40,13 +40,22 @@ Replace the existing Apps Script code, save, and update the existing web-app
 deployment using **Deploy → Manage deployments → Edit → New version → Deploy**.
 Keep that deployment's URL. Reload Admin to enable label editing.
 
-Affiliation retains its original two choices: Ohio State and guest. Guests
-use email without an OSU identifier.
+The affiliation choices are:
+
+1. Ohio State Student, Faculty, or Staff — valid tOSU Name.# required.
+2. Family Member of an Ohio State Student, Faculty, or Staff Member — email required; no tOSU ID.
+3. Guest — email required; no tOSU ID.
+
+The ID label is simply `tOSU Name.#`. The website adds the family option once the
+service advertises `capabilities.familyAffiliation: true`. Until deployment,
+older services retain their supported Ohio State/guest options. Duplicate checks
+use email plus any supplied Name.#. The phone field follows the OSU ID for the
+first group and email for family members and guests.
 
 ## Checks
 
 - `python tests/rsvp-profile-identity.py`: public form after title, photo, detail,
-  and question-label changes; original affiliation choices and OSU ID/email requirements.
+  and question-label changes; three affiliation choices and OSU ID/email requirements.
 - `python tests/rsvp-admin-question-rename.py`: real Admin code through rename,
   save, reopen, public rendering, and older-service protection.
 - `node tests/question-identity.cjs /path/to/BGSA-Code-stable-questions.gs`: schema,

@@ -64,7 +64,7 @@ with sync_playwright() as p:
                 if data['action'] == 'listEvents':
                     route.fulfill(json={'ok':True,'capabilities':{'askChildren':True,'questionIds':supported},'events':[current]})
                 elif data['action'] == 'updateEvent':
-                    current['questions'] = [{key:value for key,value in question.items() if key in ['id','key','label','type','options','required','after','show_if']} for question in data['questions']]
+                    current['questions'] = [{key:value for key,value in question.items() if key in ['id','key','label','type','options','required','after','show_if','help','help_bold']} for question in data['questions']]
                     route.fulfill(json={'ok':True,'message':'Saved'})
                 else:
                     route.fulfill(json={'ok':False,'message':'Not needed by test'})
@@ -98,7 +98,7 @@ with sync_playwright() as p:
     page.goto('https://admin-preview.test/event/')
     page.wait_for_function("!document.querySelector('button[type=submit]').disabled")
     labels = page.locator('.member-form__row:visible > label').all_text_contents()
-    assert labels[labels.index('tOSU Name.# (if applicable)')+1] == renamed[0]
+    assert labels[labels.index('tOSU Name.#')+1] == renamed[0]
     game = page.get_by_label(renamed[1],exact=True)
     assert game.locator('option').count() == 4
     game.select_option('29')

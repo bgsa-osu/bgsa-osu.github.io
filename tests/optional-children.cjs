@@ -134,3 +134,20 @@ assert.equal(replies.rows.at(-1)[phoneColumn],'6145550101');
 assert.equal(context.submitRsvp({...registration,nameNumber:'keys.2',answers:{'Phone No':'6145550102'}}).ok,true);
 assert.equal(replies.rows.at(-1)[phoneColumn],'6145550102');
 console.log('Passed: renamed questions save both legacy-label and stable-key submissions in the original column.');
+
+
+// Three clear affiliations: Ohio State needs Name.#; family and guests use email.
+assert.equal(context.doGet({}).capabilities.familyAffiliation,true);
+assert.equal(context.submitRsvp({...registration,nameNumber:'',email:'affiliated@example.org'}).ok,false);
+assert.equal(context.submitRsvp({...registration,nameNumber:'invalid',email:'valid@example.org'}).ok,false);
+assert.equal(context.submitRsvp({...registration,affiliation:'family',nameNumber:'',email:'family@example.org'}).ok,true);
+assert.equal(replies.rows.at(-1)[replyAt['Name.#']],'');
+assert.equal(replies.rows.at(-1)[replyAt.Email],'family@example.org');
+assert.equal(replies.rows.at(-1)[replyAt.Affiliation],'Family Member of an Ohio State Student, Faculty, or Staff Member');
+assert.equal(context.submitRsvp({...registration,affiliation:'family',nameNumber:'',email:''}).ok,false);
+assert.equal(context.submitRsvp({...registration,affiliation:'guest',nameNumber:'',email:'guest@example.org'}).ok,true);
+assert.equal(replies.rows.at(-1)[replyAt.Affiliation],'Guest');
+assert.equal(context.submitRsvp({...registration,affiliation:'family',nameNumber:'',email:'test.1@osu.edu'}).ok,false);
+assert.equal(context.submitRsvp({...registration,affiliation:'family',nameNumber:'',email:'reverse.1@osu.edu'}).ok,true);
+assert.equal(context.submitRsvp({...registration,nameNumber:'reverse.1'}).ok,false);
+console.log('Passed: Ohio State ID requirement, family/guest email-only signup, distinct affiliations, and duplicate prevention.');

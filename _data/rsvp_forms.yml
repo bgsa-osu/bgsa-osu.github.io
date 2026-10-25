@@ -29,10 +29,13 @@ evt-1792786389442:
       question_id: tournament
       equals: '29'
   - id: other-games
-    label: Other games (select all that apply)
+    label: Which other games would you like to participate in? (Select all that apply)
+    previous_labels: ["Other games (select all that apply)"]
+    help: Please select only the games you genuinely intend to play and ensure that you will participate if the games are organized. Some games may be organized depending on the number of interested participants.
+    help_bold: true
     type: multichoice
     options:
     - Uno
     - Sequence
-    - Carrom (subject to popularity)
-    - Chess (subject to popularity)
+    - Carrom
+    - Chess

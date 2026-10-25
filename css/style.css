@@ -3168,6 +3168,11 @@ body {
   color: var(--color-dark);
 }
 
+.rsvp__help {
+  margin-bottom: 1.2rem;
+  line-height: 1.5;
+}
+
 .rsvp__choices label {
   display: flex;
   align-items: center;

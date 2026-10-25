@@ -794,12 +794,14 @@ layout: default
     async function loadEvents() {
       const localEvents = publishedEvents;
       let liveEvents = [];
+      let liveCapabilities = {};
       try {
         const response = await fetch(ENDPOINT, { cache: "no-store" });
         if (!response.ok) throw new Error("Events feed responded " + response.status);
         const result = await response.json();
         if (!result.ok) throw new Error(result.message || "Events feed failed.");
         liveEvents = result.events || [];
+        liveCapabilities = result.capabilities || {};
       } catch (err) {
         if (!localEvents.some(event => event.pending)) throw err;
         console.warn("Showing published events while the live feed is unavailable.", err);
@@ -832,6 +834,7 @@ layout: default
           page: text(event.page),
           payments: event.payments || [],
           askChildren: event.askChildren !== false,
+          familyAffiliation: liveCapabilities.familyAffiliation === true,
           // The script calls a multiple-choice question "choice"; the form
           // builder below has always called it "select".
           extras: (event.questions || []).map(q => ({
@@ -887,7 +890,10 @@ layout: default
       // what stops them replying twice.
       const affiliation = document.createElement("select");
       affiliation.id = "rsvp-aff-" + key;
-      [["osu", "I am at Ohio State"], ["guest", "I am a guest"]].forEach(pair => {
+      const affiliations = [["osu", "Ohio State Student, Faculty, or Staff"]];
+      if (event.familyAffiliation) affiliations.push(["family", "Family Member of an Ohio State Student, Faculty, or Staff Member"]);
+      affiliations.push(["guest", "Guest"]);
+      affiliations.forEach(pair => {
         const option = document.createElement("option");
         option.value = pair[0];
         option.textContent = pair[1];
@@ -902,20 +908,21 @@ layout: default
       names.appendChild(field("Last name", last));
       form.appendChild(names);
 
-      form.appendChild(field("Are you at Ohio State?", affiliation));
+      form.appendChild(field("Your affiliation", affiliation));
 
-      const nameNumberRow = field("tOSU Name.# (if applicable)", nameNumber);
+      const nameNumberRow = field("tOSU Name.#", nameNumber);
       const emailRow = field("Email", email);
       form.appendChild(nameNumberRow);
       form.appendChild(emailRow);
 
       function applyAffiliation() {
-        const guest = affiliation.value === "guest";
-        nameNumberRow.style.display = guest ? "none" : "";
-        emailRow.style.display = guest ? "" : "none";
-        nameNumber.required = !guest;
-        email.required = guest;
-        if (guest) nameNumber.value = ""; else email.value = "";
+        const useEmail = affiliation.value !== "osu";
+        if (useEmail) nameNumber.value = "";
+        nameNumberRow.style.display = useEmail ? "none" : "";
+        emailRow.style.display = useEmail ? "" : "none";
+        nameNumber.required = !useEmail;
+        email.required = useEmail;
+        if (!useEmail) email.value = "";
       }
 
       affiliation.addEventListener("change", applyAffiliation);

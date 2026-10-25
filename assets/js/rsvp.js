@@ -77,28 +77,34 @@
   names.append(field("First name", first), field("Last name", last));
   form.appendChild(names);
 
-  // Guests have no Name.#, so their email is what identifies their reply.
+  // Family members and guests use email instead of Name.#.
   const affiliation = document.createElement("select");
   affiliation.id = "rsvp-aff";
-  [["osu", "I am at Ohio State"], ["guest", "I am a guest"]].forEach(pair => {
+  [["osu", "Ohio State Student, Faculty, or Staff"], ["guest", "Guest"]].forEach(pair => {
     const option = document.createElement("option");
     option.value = pair[0];
     option.textContent = pair[1];
     affiliation.appendChild(option);
   });
-  form.appendChild(field("Are you at Ohio State?", affiliation));
+  form.appendChild(field("Your affiliation", affiliation));
 
-  const nameRow = field("tOSU Name.# (if applicable)", nameNumber);
+  const nameRow = field("tOSU Name.#", nameNumber);
   const emailRow = field("Email", email);
   form.append(nameRow, emailRow);
 
   function applyAffiliation() {
-    const guest = affiliation.value === "guest";
-    nameRow.style.display = guest ? "none" : "";
-    emailRow.style.display = guest ? "" : "none";
-    nameNumber.required = !guest;
-    email.required = guest;
-    if (guest) nameNumber.value = ""; else email.value = "";
+    const useEmail = affiliation.value !== "osu";
+    if (useEmail) nameNumber.value = "";
+    nameRow.style.display = useEmail ? "none" : "";
+    emailRow.style.display = useEmail ? "" : "none";
+    nameNumber.required = !useEmail;
+    email.required = useEmail;
+    if (!useEmail) email.value = "";
+    let anchor = useEmail ? emailRow : nameRow;
+    form.querySelectorAll("[data-after-identity]").forEach(row => {
+      anchor.after(row);
+      anchor = row;
+    });
   }
   affiliation.addEventListener("change", applyAffiliation);
   applyAffiliation();
@@ -138,6 +144,14 @@
       const legend = document.createElement("legend");
       legend.textContent = question.label;
       control.appendChild(legend);
+      if (question.help) {
+        const note = document.createElement("p");
+        note.className = "member-form__note rsvp__help";
+        const text = document.createElement(question.help_bold ? "strong" : "span");
+        text.textContent = question.help;
+        note.appendChild(text);
+        control.appendChild(note);
+      }
       (question.options || []).forEach((option, optionIndex) => {
         const checkbox = input(id + "-" + optionIndex, "checkbox", false, { value: option });
         const label = document.createElement("label");
@@ -167,8 +181,10 @@
     control.id = id;
     control.required = !!question.required;
     row = question.type === "multichoice" ? control : field(question.label, control);
-    if (question.after === "identity") emailRow.after(row);
-    else form.appendChild(row);
+    if (question.after === "identity") {
+      row.dataset.afterIdentity = "true";
+      (affiliation.value !== "osu" ? emailRow : nameRow).after(row);
+    } else form.appendChild(row);
     return {
       label: question.label, answerLabel: question.key || question.label, question, control, row,
       value: () => checkboxes.length
@@ -275,6 +291,13 @@
     try {
       const response = await fetch(ENDPOINT, { cache: "no-store" });
       const result = await response.json();
+      if (result.capabilities && result.capabilities.familyAffiliation === true &&
+          !affiliation.querySelector('option[value="family"]')) {
+        const option = document.createElement("option");
+        option.value = "family";
+        option.textContent = "Family Member of an Ohio State Student, Faculty, or Staff Member";
+        affiliation.insertBefore(option, affiliation.querySelector('option[value="guest"]'));
+      }
       const match = (result.events || []).find(e => event.id
         ? e.id === event.id
         : e.name === event.title && e.date === event.date);

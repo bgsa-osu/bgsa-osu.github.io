@@ -10,7 +10,7 @@ const definitions = [
   { id: 'phone', label: 'Phone No', type: 'tel', after: 'identity', required: true },
   { id: 'tournament', label: 'Tournament', type: 'choice', options: ['29', 'Ludo', 'Neither'] },
   { id: 'teammate', label: 'Teammate', type: 'text', show_if: { question_id: 'tournament', equals: '29' } },
-  { id: 'other', label: 'Other games', type: 'multichoice', options: ['Uno', 'Sequence'] }
+  { id: 'other', label: 'Other games', type: 'multichoice', options: ['Uno', 'Sequence'], help:'Please select the games you intend to play.', help_bold:true }
 ];
 const legacy = definitions.map(question => ({ label: question.label, type: 'text', options: [] }));
 const aliased = forms.mergeQuestions([{id:'tournament',label:'Tournament',previous_labels:['Games choice'],type:'choice'}], [{label:'Games choice'}]);
@@ -62,6 +62,8 @@ assert.deepEqual(Array.from(compatible, q => q.key), definitions.map(q => q.labe
 assert.equal(compatible[0].after, 'identity');
 assert.deepEqual(plain(compatible[2].show_if), { equals: '29', question_id: 'tournament' });
 assert.equal(compatible[3].type, 'multichoice');
+assert.equal(compatible[3].help, definitions[3].help);
+assert.equal(compatible[3].help_bold, true);
 assert.throws(() => context.normaliseQuestions([updated[0], updated[0]], updated), /distinct/);
 assert.throws(() => context.normaliseQuestions([{label:'Unknown rename',options:[]}], updated), /refresh Admin/);
 const textField = {id:'generic',key:'Original question',label:'Original question',type:'text',options:[]};

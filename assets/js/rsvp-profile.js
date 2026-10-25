@@ -18,9 +18,9 @@
   }
 
   function displayLabel(question, stored) {
-    const label = question.id && stored.id === question.id ? stored.label
-      : (question.previous_labels || []).includes(stored.label) && stored.label !== question.label
-        ? question.label : stored.label;
+    const canonical = question.canonical_label || question.label;
+    const label = (question.previous_labels || []).includes(stored.label) && stored.label !== canonical
+      ? canonical : stored.label;
     return displayText(label);
   }
 
@@ -35,6 +35,7 @@
       });
       return Object.assign({}, match || {}, definition, {
         label: match ? displayLabel(definition, match) : definition.label,
+        canonical_label: definition.label,
         key: match ? (match.key || match.label) : (definition.key || definition.label),
         stored_label: match ? match.label : definition.label,
         previous_labels: [definition.label].concat(definition.previous_labels || []),
