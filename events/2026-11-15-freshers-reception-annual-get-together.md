@@ -7,7 +7,7 @@ event_date: "2026-11-15"
 event_time: "10:00 AM"
 location: Hitchcock Hall 131
 deadline: "2026-11-12"
-image: "https://drive.google.com/thumbnail?id=1GdARIodLbJlrtvAFNuVu-g9N_vpHeGjM&sz=w1200"
+image: "https://drive.google.com/thumbnail?id=14tVRAnitzKJLrqA9jVZ_1HOavQ75bjd6&sz=w1200"
 payments: ["Membership fee: Paid","Entry fee: Paid","Neither paid"]
 ask_children: true
 questions: []
