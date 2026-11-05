@@ -11,8 +11,6 @@ BGSA at OSU hosted its second cricket tournament, **BGSA Bash**! 🏏 Congratula
 
 **🥈 Runners-up:** Bat Ache, Run Nai (*Manager: Abdullah Al Mahmud*)
 
-**Individual Awards**
-
 **Most Valuable Batsman:** Md Majidur Rahman Rahid
 
 **Most Valuable Bowler:** Md Ishtiaq Obaidi Tanvir
